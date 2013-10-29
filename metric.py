@@ -13,11 +13,11 @@
 'Au'
 >>> m.values
 [MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...'), MetricValue('None','N',3.13,'Authentication is not required...')]
->>> m.selection = 4
+>>> m.value = 4
 Traceback (most recent call last):
 ...
-AssertionError: not in range
->>> m.selection = 1
+AssertionError: must be in range [0, 3[
+>>> m.value = 1
 >>> m.value
 MetricValue('Single','S',2.12,'The vulnerability requires...')
 >>> print(m.value)
@@ -27,24 +27,11 @@ S
 """
 
 class Metric:
-    def __init__(self, name, short_name, metric_values, index = 0):
+    def __init__(self, name, short_name, metric_values, value = 0):
         self.__name = name
         self.__abbr = short_name
         self.__values = tuple(metric_values)
-        self.selection = index
-
-    @property
-    def value(self):
-        return self.__values[self.__index]
-
-    @property
-    def selection(self):
-        return self.__index
-
-    @value.setter
-    def selection(self, value):
-        assert 0 <= value < len(self.__values), "not in range"
-        self.__index = value
+        self.value = value
 
     @property
     def name(self):
@@ -57,6 +44,16 @@ class Metric:
     @property
     def values(self):
         return list(self.__values)
+
+    @property
+    def value(self):
+        return self.__values[self.__value]
+
+    @value.setter
+    def value(self, value):
+        L = len(self.__values)
+        assert 0 <= value < L, "must be in range [{0}, {1}[".format(0,L)
+        self.__value = value
 
 
 if __name__ == "__main__":
