@@ -1,35 +1,35 @@
 #! /usr/bin/env python3
 #
-"""Metrics used by CVSS.
-
->>> from metric_value import MetricValue
->>> values = [ MetricValue('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
-               MetricValue('Single', 'S', 2.12, 'The vulnerability requires...'), ]
->>> m = Metric("Authentication", "Au", values, 1)
->>> m.name
-'Authentication'
->>> m.short_name
-'Au'
->>> m.values
-[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')]
->>> m.value = 4
-Traceback (most recent call last):
-...
-AssertionError: must be in range [0, 2[
->>> m.value = 1
->>> m.value
-MetricValue('Single','S',2.12,'The vulnerability requires...')
->>> print(m.value)
-S
->>> float(m.value)
-2.12
->>> print(m)
-Au:S
->>> repr(m)
-"Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
-"""
+"""Metrics used by CVSS."""
 
 class Metric:
+    """
+    >>> from metric_value import MetricValue
+    >>> values = [ MetricValue('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
+                   MetricValue('Single', 'S', 2.12, 'The vulnerability requires...'), ]
+    >>> m = Metric("Authentication", "Au", values, 1)
+    >>> m.name
+    'Authentication'
+    >>> m.short_name
+    'Au'
+    >>> m.values
+    [MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')]
+    >>> m.value = 4
+    Traceback (most recent call last):
+    ...
+    AssertionError: must be in range [0, 2[
+    >>> m.value = 1
+    >>> m.value
+    MetricValue('Single','S',2.12,'The vulnerability requires...')
+    >>> print(m.value)
+    S
+    >>> float(m.value)
+    2.12
+    >>> print(m)
+    Au:S
+    >>> repr(m)
+    "Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
+    """
     def __init__(self, name, short_name, metric_values, value = 0):
         self.__name = name
         self.__abbr = short_name
