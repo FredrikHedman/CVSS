@@ -1,0 +1,227 @@
+* 2013-10-30
+  * Need to decide on clearer way to store Metrics and their values.
+  * Create a test program to that recreates the values from the examples in the specification.
+  * CommonVulnerabilityScore is constructed with a set of Mettrics.
+    It can calculate the different scores and the vector.
+  * Parsing a command line or interactive input is a different matter.
+
+* 2013-10-29
+** CVSS, how does it work?
+Base metrics are assigned values, the base equation calculates a score
+ranging from 0 to 10, and a vector is created.  The vector facilitates
+the "open" nature of the framework.  It is a text string that contains
+the values assigned to each metric, and it is used to communicate
+exactly how the score for each vulnerability is derived.
+
+The base score can be refined by assigning values to the temporal and
+environmental metrics.  This is useful in order to provide additional
+context for a vulnerability by more accurately reflecting the risk
+posed by the vulnerability to a user's environment. 
+
+For a temporal score, the temporal equation will combine the temporal
+metrics with the base score to produce a temporal score ranging from 0
+to 10. Similarly, if an environmental score is needed, the
+environmental equation will combine the environmental metrics with the
+temporal score to produce an environmental score ranging from 0 to 10.
+
+** Base, Temporal, Environmental Vectors
+
+Each metric in the vector consists of the abbreviated metric name,
+followed by a ":" (colon), then the abbreviated metric value. The
+vector lists these metrics in a predetermined order, using the "/"
+(slash) character to separate the metrics. If a temporal or
+environmental metric is not to be used, it is given a value of "ND"
+(not defined). The base, temporal, and environmental vectors are shown
+below in Table 13.
+
+Metric Value	Description
+Base	       AV:[L,A,N]/AC:[H,M,L]/Au:[M,S,N]/C:[N,P,C]/I:[N,P,C]/A:[N,P,C]
+Temporal	   E:[U,POC,F,H,ND]/RL:[OF,TF,W,U,ND]/RC:[UC,UR,C,ND]
+Environmental  CDP:[N,L,LM,MH,H,ND]/TD:[N,L,M,H,ND]/CR:[L,M,H,ND]/ IR:[L,M,H,ND]/AR:[L,M,H,ND]
+
+Table 13: Base, Temporal and Environmental Vectors
+
+For example, a vulnerability with base metric values of "Access
+Vector: Low, Access Complexity: Medium, Authentication: None,
+Confidentiality Impact: None, Integrity Impact: Partial, Availability
+Impact: Complete" would have the following base vector:
+"AV:L/AC:M/Au:N/C:N/I:P/A:C."
+
+** Equations
+Scoring equations and algorithms for the base, temporal and
+environmental metric groups are described below. Further discussion of
+the origin and testing of these equations is available at
+http://www.first.org/cvss.  There are three set of Equations:
+
+*** Base Equation
+The base equation is the foundation of CVSS scoring. The base equation
+(formula version 2.10) is:
+
+**** BaseScore      = round_to_1_decimal(
+                    (0.6*Impact + 0.4*Exploitability - 1.5)*
+                    f(Impact)
+                 )
+
+**** Impact         = 10.41*(1-(1-ConfImpact)*(1-IntegImpact)*(1-AvailImpact))
+**** Exploitability = 20 * AccessVector * AccessComplexity * Authentication
+**** f(Impact)= 0 if Impact=0, 1.176 otherwise
+**** AccessVector     = case AccessVector of
+                        requires local access: 0.395
+                        adjacent network accessible: 0.646
+                        network accessible: 1.0
+
+**** AccessComplexity = case AccessComplexity of
+                        high: 0.35
+                        medium: 0.61
+                        low: 0.71
+
+**** Authentication   = case Authentication of
+                        requires multiple instances of authentication: 0.45
+                        requires single instance of authentication: 0.56
+                        requires no authentication: 0.704
+
+**** ConfImpact       = case ConfidentialityImpact of
+                        none:             0.0
+                        partial:          0.275
+                        complete:         0.660
+
+**** IntegImpact      = case IntegrityImpact of
+                        none:             0.0
+                        partial:          0.275
+                        complete:         0.660
+
+**** AvailImpact      = case AvailabilityImpact of
+                        none:             0.0
+                        partial:          0.275
+                        complete:         0.660
+*** Temporal Equation
+If employed, the temporal equation will combine the temporal metrics
+with the base score to produce a temporal score ranging from 0
+to 10. Further, the temporal score will produce a temporal score no
+higher than the base score, and no greater than 33% lower than the
+base score. The temporal equation is:
+
+**** TemporalScore = round_to_1_decimal(BaseScore*Exploitability
+                *RemediationLevel*ReportConfidence)
+
+**** Exploitability   = case Exploitability of
+                        unproven:             0.85
+                        proof-of-concept:     0.9
+                        functional:           0.95
+                        high:                 1.00
+			not defined:          1.00
+
+**** RemediationLevel = case RemediationLevel of
+                        official-fix:         0.87
+                        temporary-fix:        0.90
+                        workaround:           0.95
+                        unavailable:          1.00
+                        not defined:          1.00
+
+**** ReportConfidence = case ReportConfidence of
+                        unconfirmed:          0.90
+                        uncorroborated:       0.95
+                        confirmed:            1.00
+                        not defined:          1.00
+
+*** Environmental Equation
+If employed, the environmental equation will combine the environmental
+metrics with the temporal score to produce an environmental score
+ranging from 0 to 10. Further, this equation will produce a score no
+higher than the temporal score. The environmental equation is:
+
+**** EnvironmentalScore = round_to_1_decimal((AdjustedTemporal+
+      (10-AdjustedTemporal)*CollateralDamagePotential)*TargetDistribution)
+
+**** AdjustedTemporal = TemporalScore recomputed with the BaseScores Impact
+     sub-equation replaced with the AdjustedImpact equation
+
+**** AdjustedImpact = min(10,10.41*(1-(1-ConfImpact*ConfReq)*(1-IntegImpact*IntegReq)
+                 *(1-AvailImpact*AvailReq)))
+
+**** CollateralDamagePotential = case CollateralDamagePotential of
+                                 none:            0
+                                 low:             0.1
+                                 low-medium:      0.3
+                                 medium-high:     0.4
+                                 high:            0.5
+                                 not defined:     0
+
+**** TargetDistribution        = case TargetDistribution of
+                                 none:            0
+                                 low:             0.25
+                                 medium:          0.75
+                                 high:            1.00
+                                 not defined:     1.00
+
+**** ConfReq 	         = case ConfReq of
+                        low:              0.5
+                        medium:           1.0
+                        high:             1.51
+                        not defined:      1.0
+
+**** IntegReq         = case IntegReq of
+                        low:              0.5
+                        medium:           1.0
+                        high:             1.51
+                        not defined:      1.0
+
+**** AvailReq         = case AvailReq of
+                        low:              0.5
+                        medium:           1.0
+                        high:             1.51
+                        not defined:      1.0
+
+
+** First Action Plan
+*** Program
+   The program reads an number of key-value pairs and from these
+   calculates a score based on the values read and their respective
+   weight.  It also prints a vulnerability vector.
+*** How to test
+
+     In http://www.first.org/cvss/cvss-guide.html there are
+     a number of examples.  That can be used to verify.
+
+     At http://nvd.nist.gov/cvss.cfm?calculator&adv&version=2 we can
+     calculate scores using a web interface and get a number of
+     vectors.  
+
+     At http://jvnrss.ise.chuo-u.ac.jp/jtg/cvss/en/CVSSv2.html there
+     is another calculator.  Can be sued to compare.
+
+*** Next step
+Rewrite code to use python3.  Add tests and a command line interface
+using standard python modules.  When this is done add an interactive
+mode.
+
+*** Integartion with emacs
+Use pymacs or write your own elsip interactive function.
+
+*** Alternatives
+
+docopt, 7 Python libs.
+
+** First reading
+   No documentation and a number of global variables.  Appear to break
+   the DRY-principle in several places.
+
+   A set of global variables (acc_vec, ...) where the order seems to
+   matter according to a comment.  Why?
+
+   Three functions and a *very* long main function.  Hard to modify
+   and extend.
+
+   *is_valid_input* :  mixing all metric_value abbreviations in one big
+   if.  Cute and brittle.  Adding a metric means that the function has
+   to change.
+
+   *cvss_score* : input parameter *ib* not used?  Formula unclear and
+   obfuscated.
+
+   *find_risk* : not scalable and not very pythonic.
+
+   *main* : just too long.  Separate presenation, calculation and logic.
+
+   *no tests* : nada, niente, rien...
+
