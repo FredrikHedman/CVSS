@@ -7,7 +7,7 @@ class Metric:
     >>> from metric_value import MetricValue
     >>> values = [ MetricValue('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
                    MetricValue('Single', 'S', 2.12, 'The vulnerability requires...'), ]
-    >>> m = Metric("Authentication", "Au", values, 1)
+    >>> m = Metric("Authentication", values, 1)
     >>> m.name
     'Authentication'
     >>> m.values
@@ -28,7 +28,7 @@ class Metric:
     >>> repr(m)
     "Metric('Authentication',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],1)"
     """
-    def __init__(self, name, short_name, metric_values, index = 0):
+    def __init__(self, name, metric_values, index = 0):
         self.__name = name
         self.__values = tuple(metric_values)
         self.index = index

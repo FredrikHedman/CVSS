@@ -12,12 +12,14 @@ These have been implemented in a first version.  Looking at how
 MetricVAlue and a Metric is constructed it is not good that the
 formulas use index values that must be given on construction.  This
 mapping should be moved to the class that uses the index values.  The
-problem is that the metric short name is used inside Metric.
-
+problem is that the metric short name is used inside Metric.  To make
+this happen do the following:
 *** Create a mapping in CommonVulnerabilityScore use it internally.
-Created mapping from Metric to short name for matric.  Tested.
+Created mapping from Metric to short name for matric.  Tested. Done.
 *** Remove the need for short_name in Metric.
-Removed short_name in Metric.  Tested.
+Removed short_name in Metric.  Tested. Done
+*** Change interface of Metric.
+
 
 ** Parsing a command line or interactive input is a different matter.
 
