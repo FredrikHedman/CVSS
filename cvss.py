@@ -10,11 +10,10 @@ def cvs_factory():
     from cvss import CommonVulnerabilityScore
     lmetrics = []
 
-    m1 = MetricValue("Local", "L", 0.395, "Local access")
-    m2 = MetricValue("Adjecent Network", "A", 0.646, "Adjacent network access")
-    m3 = MetricValue("Network", "N", 1.0, "Network access")
-    avm = [m1, m2, m3]
-    lmetrics.append(Metric("Access Vector", avm))
+    mvv = ["Access Vector", [("Local", "L", 0.395, "Local access"),
+                             ("Adjecent Network", "A", 0.646, "Adjacent network access"),
+                             ("Network", "N", 1.0, "Network access")]]
+    lmetrics.append(Metric(*mvv))
 
     m1 = MetricValue("High", "H", 0.35, "Specialized access conditions exist")
     m2 = MetricValue("Medium", "M", 0.61,

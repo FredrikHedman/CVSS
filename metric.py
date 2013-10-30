@@ -2,6 +2,8 @@
 #
 """Metrics used by CVSS."""
 
+from metric_value import MetricValue
+
 class Metric:
     """
     >>> from metric_value import MetricValue
@@ -30,7 +32,13 @@ class Metric:
     """
     def __init__(self, name, metric_values, index = 0):
         self.__name = name
-        self.__values = tuple(metric_values)
+        vals = []
+        for x in metric_values:
+            if isinstance(x, MetricValue):
+                vals.append(x)
+            else:
+                vals.append(MetricValue(*x))
+        self.__values = tuple(vals)
         self.index = index
 
     def __repr__(self):
