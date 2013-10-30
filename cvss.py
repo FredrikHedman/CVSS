@@ -4,13 +4,28 @@
 Calculate CVSS metrics based on a list of Metrics.
 """
 
-from collections import defaultdict
-
 class CommonVulnerabilityScore:
     def __init__(self, metrics_seq):
-        self.metrics = defaultdict(int)
+        # A mapping from metric names to their short names used to
+        # access them in the different algorithms.
+        mapping = (("Access Vector", "AV"),
+                   ("Access Complexity", "AC"),
+                   ("Authentication", "Au"),
+                   ("Confidentiality Impact", "C"),
+                   ("Integrity Impact", "I"),
+                   ("Availability Impact", "A"),
+                   ("Exploitability", "E"),
+                   ("Remediation Level", "RL"),
+                   ("Report Confidence", "RC"),
+                   ("Collateral Damage Potential", "CDP"),
+                   ("Target Distribution", "TD"),
+                   ("Confidentiality Requirement", "CR"),
+                   ("Integrity Requirement", "IR"),
+                   ("Availability Requirement", "AR"))
+        short_name = dict(mapping)
+        self.metrics = {}
         for m in metrics_seq:
-            self.metrics[m.short_name] = m
+            self.metrics[short_name[m.name]] = m
 
     @property
     def base_score(self):
@@ -40,7 +55,7 @@ class CommonVulnerabilityScore:
         vv = ['AV', 'AC', 'Au', 'C', 'I', 'A']
         vstr = []
         for v in vv:
-            vstr.append(str(self.metrics[v]))
+            vstr.append("{0}:{1}".format(v, str(self.metrics[v])))
         return '/'.join(vstr)
 
     @property
@@ -48,7 +63,7 @@ class CommonVulnerabilityScore:
         vv = ['E', 'RL', 'RC']
         vstr = []
         for v in vv:
-            vstr.append(str(self.metrics[v]))
+            vstr.append("{0}:{1}".format(v, str(self.metrics[v])))
         return '/'.join(vstr)
 
     @property
@@ -56,7 +71,7 @@ class CommonVulnerabilityScore:
         vv = ['CDP', 'TD', 'CR', 'IR', 'AR']
         vstr = []
         for v in vv:
-            vstr.append(str(self.metrics[v]))
+            vstr.append("{0}:{1}".format(v, str(self.metrics[v])))
         return '/'.join(vstr)
 
     @property
