@@ -74,15 +74,23 @@ class CommonVulnerabilityScore:
     @property
 
     def adjusted_base(self):
-        return 0
+        score = (0.6*self.adjusted_impact + 0.4*self.exploitability - 1.5)
+        score *= self.fcn(self.adjusted_impact, 'BaseScore') 
+        return round(score, ndigits=1)
 
     @property
     def adjusted_temporal(self):
-        return 0
+        score = self.adjusted_base
+        score *= float(self.metrics['E'])
+        score *= float(self.metrics['RL'])
+        score *= float(self.metrics['RC'])
+        return round(score, ndigits=1)
 
     @property
     def environmental_score(self):
-        return (0,0)
+        score = self.adjusted_temporal + (10.0 - self.adjusted_temporal)*float(self.metrics['CDP'])
+        score *= float(self.metrics['TD'])
+        return round(score, ndigits=1)
 
 if __name__ == "__main__":
     import doctest

@@ -130,8 +130,9 @@ metrics with the temporal score to produce an environmental score
 ranging from 0 to 10. Further, this equation will produce a score no
 higher than the temporal score. The environmental equation is:
 
-**** EnvironmentalScore = round_to_1_decimal((AdjustedTemporal+
-      (10-AdjustedTemporal)*CollateralDamagePotential)*TargetDistribution)
+**** EnvironmentalScore = round_to_1_decimal(
+       (AdjustedTemporal+ (10-AdjustedTemporal)*CollateralDamagePotential)*TargetDistribution
+)
 
 **** AdjustedTemporal = TemporalScore recomputed with the BaseScores Impact
      sub-equation replaced with the AdjustedImpact equation
