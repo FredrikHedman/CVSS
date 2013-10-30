@@ -38,6 +38,10 @@ MetricValues.  Fix the at a later stage.
 *** cvs_factory refactored II
     Function moved over to metric.py.  Less coupling.
     Tested. Done.
+*** cvs_factory refactored III
+    Metric refactored.  Find a way to make selections in a cvs.
+    Tested. All tests changed. Done.
+
 *** What should the data look like to build the Metrics?
 *** Use namedtuple for MetricValue and or Metric?
 *** update tests

@@ -1,62 +1,21 @@
 Basic tests
 ===========
 
->>> from metric_value import MetricValue
->>> from metric import Metric
+>>> from metric import cvs_factory
 >>> from cvss import CommonVulnerabilityScore
->>> lmetrics = []
->>> m1 = MetricValue("Local", "L", 0.395, "Local access")
->>> m2 = MetricValue("Adjecent Network", "A", 0.646, "Adjacent network access")
->>> m3 = MetricValue("Network", "N", 1.0, "Network access")
->>> avm = [m1, m2, m3]
->>> lmetrics.append(Metric("Access Vector", avm, 0))
->>>
->>> m1 = MetricValue("High", "H", 0.35, "Specialized access conditions exist")
->>> m2 = MetricValue("Medium", "M", 0.61, "The access conditions are somewhat specialized")
->>> m2 = MetricValue("Low", "L", 0.71, "No specialized access exist")
->>> avm = [m1, m2, m3]
->>> lmetrics.append(Metric("Access Complexity", avm, 0))
->>>
->>> m1 = MetricValue("Multiple", "M", 0.45, "Authenticate two or more times")
->>> m2 = MetricValue("Single", "S", 0.56, "Logged into the system")
->>> m3 = MetricValue("None", "N", 0.704, "Authentication not required")
->>> avm = [m1, m2, m3]
->>> lmetrics.append(Metric("Authentication", avm, 0))
->>>
->>> exploitability = 20
->>> for x in lmetrics: exploitability *= float(x)
->>> exploitability
-1.24425
->>> cvs = CommonVulnerabilityScore(lmetrics)
->>> print(cvs.exploitability)
-1.24425
+
+>>> selected = [2, 2, 2, 0, 0, 2]
+>>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
+>>> print(round(cvs.exploitability, 1))
+10.0
 >>> print(cvs.fcn(1.2))
 1.176
 >>> print(cvs.base_score)
-Traceback (most recent call last):
-...
-KeyError: 'C'
->>> m1 = MetricValue("None", "N", 0.0, "No impact")
->>> m2 = MetricValue("Partial", "P", 0.275, "Considerable disclosure")
->>> m3 = MetricValue("Complete", "C", 0.660, "Total inforamtion disclosure")
->>> avm = [m1, m2, m3]
->>> lmetrics.append(Metric("Confidentiality Impact", avm, 2))
->>>
->>> m1 = MetricValue("None", "N", 0.0, "No impact")
->>> m2 = MetricValue("Partial", "P", 0.275, "Possible to modify some system files or information")
->>> m3 = MetricValue("Complete", "C", 0.660, "Total compromise of system integrity")
->>> avm = [m1, m2, m3]
->>> lmetrics.append(Metric("Integrity Impact", avm, 2))
->>>
->>> m1 = MetricValue("None", "N", 0.0, "No impact")
->>> m2 = MetricValue("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability")
->>> m3 = MetricValue("Complete", "C", 0.660, "Total shutdown of the affected resource")
->>> avm = [m1, m2, m3]
->>> lmetrics.append(Metric("Availability Impact", avm, 2))
->>>
->>> cvs = CommonVulnerabilityScore(lmetrics)
+7.8
+>>> selected = [2, 2, 2, 0, 0, 2]
+>>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 >>> print(cvs.base_score)
-5.9
+7.8
 >>> print(round(cvs.impact,1))
-10.0
+6.9
 

@@ -4,7 +4,7 @@
 
 from metric_value import MetricValue
 
-def set_base_metrics(lmetrics):
+def set_base_metrics(lmetrics, selected):
     base_metrics = [
     ["Access Vector",
      [("Local", "L", 0.395, "Local access"),
@@ -31,11 +31,16 @@ def set_base_metrics(lmetrics):
       ("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability"),
       ("Complete", "C", 0.660, "Total shutdown of the affected resource") ]],
     ]
-    for mm in base_metrics:
-        lmetrics.append(Metric(*mm))
+    if selected != None and len(selected):
+        for i, mm in enumerate(base_metrics):
+            lmetrics.append(Metric(*mm, index = selected[0]))
+            selected.pop(0)
+    else:
+        for mm in base_metrics:
+            lmetrics.append(Metric(*mm))
 
 
-def set_temporal_metrics(lmetrics):
+def set_temporal_metrics(lmetrics, selected):
     temporal_metrics = [
     ["Exploitability",
      [("Unproven", "U", 0.85, "No exploit code is available"),
@@ -55,10 +60,15 @@ def set_temporal_metrics(lmetrics):
       ("Confirmed", "C", 1.0, "Acknowledged by the vendor or author"),
       ("Not Defined", "ND", 1.0, "Skip this metric") ]],
     ]
-    for mm in temporal_metrics:
-        lmetrics.append(Metric(*mm))
+    if selected != None and len(selected):
+        for i, mm in enumerate(temporal_metrics):
+            lmetrics.append(Metric(*mm, index = selected[0]))
+            selected.pop(0)
+    else:
+        for mm in temporal_metrics:
+            lmetrics.append(Metric(*mm))
 
-def set_environmental_metrics(lmetrics):
+def set_environmental_metrics(lmetrics, selected):
     environmental_metrics = [
     ["Collateral Damage Potential",
      [("None", "N", 0.0, "No potential for loss of life"),
@@ -89,15 +99,20 @@ def set_environmental_metrics(lmetrics):
       ("High", "H", 1.51, "Catastrophic adverse effect"),
       ("Not Defined", "ND", 1.0, "Skip this metric") ]],
     ]
-    for mm in environmental_metrics:
-        lmetrics.append(Metric(*mm))
+    if selected != None and len(selected):
+        for i, mm in enumerate(environmental_metrics):
+            lmetrics.append(Metric(*mm, index = selected[0]))
+            selected.pop(0)
+    else:
+        for mm in environmental_metrics:
+            lmetrics.append(Metric(*mm))
 
 
-def cvs_factory(cls):
+def cvs_factory(cls, selected = None):
     lmetrics = []
-    set_base_metrics(lmetrics)
-    set_temporal_metrics(lmetrics)
-    set_environmental_metrics(lmetrics)
+    set_base_metrics(lmetrics, selected)
+    set_temporal_metrics(lmetrics, selected)
+    set_environmental_metrics(lmetrics, selected)
     return cls(lmetrics)
 
 
