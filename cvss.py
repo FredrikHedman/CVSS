@@ -12,12 +12,11 @@ class CommonVulnerabilityScore:
         for m in metrics_seq:
             self.metrics[m.short_name] = m
 
-    def fcn(self, impact, case):
-        if case == 'BaseScore':
-            if impact == 0:
-                return 0.0
-            else:
-                return 1.176
+    def fcn(self, impact):
+        val = 1.176
+        if impact == 0:
+            val = 0.0
+        return val
 
     @property
     def impact(self):
@@ -38,7 +37,7 @@ class CommonVulnerabilityScore:
     @property
     def base_score(self):
         score = (0.6*self.impact + 0.4*self.exploitability - 1.5)
-        score *= self.fcn(self.impact, 'BaseScore') 
+        score *= self.fcn(self.impact) 
         return round(score, ndigits=1)
 
     @property
@@ -75,7 +74,7 @@ class CommonVulnerabilityScore:
 
     def adjusted_base(self):
         score = (0.6*self.adjusted_impact + 0.4*self.exploitability - 1.5)
-        score *= self.fcn(self.adjusted_impact, 'BaseScore') 
+        score *= self.fcn(self.adjusted_impact)
         return round(score, ndigits=1)
 
     @property

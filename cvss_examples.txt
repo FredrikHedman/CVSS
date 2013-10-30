@@ -32,7 +32,7 @@ Basic tests
 1.24425
 >>> print(cvs.impact)
 0.0
->>> print(cvs.fcn(1.2, 'BaseScore'))
+>>> print(cvs.fcn(1.2))
 1.176
 >>> print(cvs.base_score)
 -0.0
