@@ -30,12 +30,12 @@ Basic tests
 >>> cvs = CommonVulnerabilityScore(lmetrics)
 >>> print(cvs.exploitability)
 1.24425
->>> print(cvs.impact)
-0.0
 >>> print(cvs.fcn(1.2))
 1.176
 >>> print(cvs.base_score)
--0.0
+Traceback (most recent call last):
+...
+KeyError: 'C'
 >>> m1 = MetricValue("None", "N", 0.0, "No impact")
 >>> m2 = MetricValue("Partial", "P", 0.275, "Considerable disclosure")
 >>> m3 = MetricValue("Complete", "C", 0.660, "Total inforamtion disclosure")
@@ -57,4 +57,6 @@ Basic tests
 >>> cvs = CommonVulnerabilityScore(lmetrics)
 >>> print(cvs.base_score)
 5.9
+>>> print(round(cvs.impact,1))
+10.0
 
