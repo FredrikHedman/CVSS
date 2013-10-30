@@ -136,7 +136,7 @@ The base vector for this vulnerability is: AV:N/AC:L/Au:N/C:N/I:N/A:C.
 10.0
 >>> print(cvs.base_score)
 7.8
->>> print(cvs.vulnerability_vector)
+>>> print(cvs.base_vulnerability_vector)
 AV:N/AC:L/Au:N/C:N/I:N/A:C
 
 This completes the tests for base metrics.
@@ -191,7 +191,7 @@ Add som more metrics and reproduce the following score.
 10.0
 >>> print(cvs.base_score)
 7.8
->>> print(cvs.vulnerability_vector)
+>>> print(cvs.base_vulnerability_vector)
 AV:N/AC:L/Au:N/C:N/I:N/A:C
 
 >>> print(cvs.temporal_score)
@@ -259,8 +259,12 @@ Now add the extra metrics needed with their respective possible values.
 10.0
 >>> print(cvs.base_score)
 7.8
->>> print(cvs.vulnerability_vector)
+>>> print(cvs.base_vulnerability_vector)
 AV:N/AC:L/Au:N/C:N/I:N/A:C
+>>> print(cvs.temporal_vulnerability_vector)
+E:F/RL:OF/RC:C
+>>> print(cvs.environmental_vulnerability_vector)
+CDP:H/TD:H/CR:M/IR:M/AR:H
 >>> print(cvs.temporal_score)
 6.4
 >>>
