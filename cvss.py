@@ -35,13 +35,6 @@ class CommonVulnerabilityScore:
         return score
 
     @property
-    def impact(self):
-        ConfImpact = float(self.metrics['C'])
-        IntegImpact = float(self.metrics['I'])
-        AvailImpact = float(self.metrics['A'])
-        return self.impact_fcn(ConfImpact, IntegImpact, AvailImpact)
-
-    @property
     def exploitability(self):
         res = 20.0
         res *= float(self.metrics['AV'])
@@ -50,20 +43,11 @@ class CommonVulnerabilityScore:
         return res
 
     @property
-    def base_score(self):
-        return round(self.base_fcn(self.impact), ndigits=1)
-
-    @property
-    def vulnerability_vector(self):
-        vv = ['AV', 'AC', 'Au', 'C', 'I', 'A']
-        vstr = []
-        for v in vv:
-            vstr.append(str(self.metrics[v]))
-        return '/'.join(vstr)
-
-    @property
-    def temporal_score(self):
-        return round(self.temporal_fcn(self.base_score), ndigits=1)
+    def impact(self):
+        ConfImpact = float(self.metrics['C'])
+        IntegImpact = float(self.metrics['I'])
+        AvailImpact = float(self.metrics['A'])
+        return self.impact_fcn(ConfImpact, IntegImpact, AvailImpact)
 
     @property
     def adjusted_impact(self):
@@ -74,18 +58,37 @@ class CommonVulnerabilityScore:
         return min(10.0, result)
 
     @property
-    def adjusted_base(self):
-        return round(self.base_fcn(self.adjusted_impact), ndigits=1)
+    def base_score(self):
+        return round(self.base_fcn(self.impact), ndigits=1)
 
     @property
-    def adjusted_temporal(self):
-        return round(self.temporal_fcn(self.adjusted_base), ndigits=1)
+    def adjusted_base_score(self):
+        return round(self.base_fcn(self.adjusted_impact), ndigits=1)
+
+
+    @property
+    def temporal_score(self):
+        return round(self.temporal_fcn(self.base_score), ndigits=1)
+
+    @property
+    def adjusted_temporal_score(self):
+        return round(self.temporal_fcn(self.adjusted_base_score), ndigits=1)
 
     @property
     def environmental_score(self):
-        score = self.adjusted_temporal + (10.0 - self.adjusted_temporal)*float(self.metrics['CDP'])
+        score = self.adjusted_temporal_score + (10.0 -
+                self.adjusted_temporal_score)*float(self.metrics['CDP'])
         score *= float(self.metrics['TD'])
         return round(score, ndigits=1)
+
+    @property
+    def vulnerability_vector(self):
+        vv = ['AV', 'AC', 'Au', 'C', 'I', 'A']
+        vstr = []
+        for v in vv:
+            vstr.append(str(self.metrics[v]))
+        return '/'.join(vstr)
+
 
 
 if __name__ == "__main__":

@@ -266,9 +266,9 @@ AV:N/AC:L/Au:N/C:N/I:N/A:C
 >>>
 >>> print(cvs.adjusted_impact)
 10.0
->>> print(cvs.adjusted_base)
+>>> print(cvs.adjusted_base_score)
 10.0
->>> print(cvs.adjusted_temporal)
+>>> print(cvs.adjusted_temporal_score)
 8.3
 >>> print(cvs.environmental_score)
 9.2
