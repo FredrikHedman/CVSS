@@ -41,8 +41,6 @@ class CommonVulnerabilityScore:
         score *= self.fcn(self.impact, 'BaseScore') 
         return round(score, ndigits=1)
 
-
-
     @property
     def vulnerability_vector(self):
         vv = ['AV', 'AC', 'Au', 'C', 'I', 'A']
@@ -50,6 +48,16 @@ class CommonVulnerabilityScore:
         for v in vv:
             vstr.append(str(self.metrics[v]))
         return '/'.join(vstr)
+
+
+
+    @property
+    def temporal_score(self):
+        score = self.base_score
+        score *= float(self.metrics['E'])
+        score *= float(self.metrics['RL'])
+        score *= float(self.metrics['RC'])
+        return round(score, ndigits=1)
 
 
 if __name__ == "__main__":

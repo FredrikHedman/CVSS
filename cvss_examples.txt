@@ -141,10 +141,58 @@ AV:N/AC:L/Au:N/C:N/I:N/A:C
 
 This completes the tests for base metrics.
 
+Temporal Metric for CVE-2002-0392
+---------------------------------
 
+Add som more metrics and reproduce the following score.
 
+        ----------------------------------------------------
+        TEMPORAL METRIC             EVALUATION         SCORE
+        ----------------------------------------------------
+        Exploitability              [Functional]      (0.95)
+        Remediation Level           [Official-Fix]    (0.87)
+        Report Confidence           [Confirmed]       (1.00)
+        ----------------------------------------------------
+        TEMPORAL FORMULA                      TEMPORAL SCORE
+        ----------------------------------------------------
+        round(7.8 * 0.95 * 0.87 * 1.00)             == (6.4)
+        ----------------------------------------------------
 
+>>> print(len(lmetrics))
+6
+>>>
+>>> m1 = MetricValue("Unproven", "U", 0.85, "No exploit code is available")
+>>> m2 = MetricValue("Proof-of-Concept", "POC", 0.9, "Proof-of-concept exploit code exists")
+>>> m3 = MetricValue("Functional", "F", 0.95, "Functional exploit code is available")
+>>> m4 = MetricValue("High", "H", 1.0, "Exploitable by functional mobile autonomous code")
+>>> m5 = MetricValue("Not Defined", "ND", 1.0, "Skip this metric")
+>>> avm = [m1, m2, m3, m4, m5]
+>>> lmetrics.append(Metric("Exploitability", "E", avm, 2))
 
+>>> m1 = MetricValue("Official Fix", "OF", 0.87, "Complete vendor solution is available")
+>>> m2 = MetricValue("Temporary Fix", "TF", 0.90, "Official but temporary fix available")
+>>> m3 = MetricValue("Workaround", "W", 0.95, "Unofficial, non-vendor solution available")
+>>> m4 = MetricValue("Unavailable", "U", 1.0, "No solution available or it is impossible to apply")
+>>> m5 = MetricValue("Not Defined", "ND", 1.0, "Skip this metric")
+>>> avm = [m1, m2, m3, m4, m5]
+>>> lmetrics.append(Metric("Remediation Level", "RL", avm, 0))
 
+>>> m1 = MetricValue("Unconfirmed", "UC", 0.90, "Single unconfirmed source")
+>>> m2 = MetricValue("Uncorroborated", "UR", 0.95, "Multiple non-official sources")
+>>> m3 = MetricValue("Confirmed", "C", 1.0, "Acknowledged by the vendor or author")
+>>> m4 = MetricValue("Not Defined", "ND", 1.0, "Skip this metric")
+>>> avm = [m1, m2, m3, m4]
+>>> lmetrics.append(Metric("Report Confidence", "RC", avm, 2))
+>>>
+>>> cvs = CommonVulnerabilityScore(lmetrics)
+>>> print(round(cvs.impact, 1))
+6.9
+>>> print(round(cvs.exploitability, 1))
+10.0
+>>> print(cvs.base_score)
+7.8
+>>> print(cvs.vulnerability_vector)
+AV:N/AC:L/Au:N/C:N/I:N/A:C
 
-
+>>> print(cvs.temporal_score)
+6.4
