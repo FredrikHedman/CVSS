@@ -28,6 +28,12 @@ class CommonVulnerabilityScore:
         score *= self.fcn(impact)
         return score
 
+    def temporal_fcn(self, score):
+        score *= float(self.metrics['E'])
+        score *= float(self.metrics['RL'])
+        score *= float(self.metrics['RC'])
+        return score
+
     @property
     def impact(self):
         ConfImpact = float(self.metrics['C'])
@@ -57,11 +63,7 @@ class CommonVulnerabilityScore:
 
     @property
     def temporal_score(self):
-        score = self.base_score
-        score *= float(self.metrics['E'])
-        score *= float(self.metrics['RL'])
-        score *= float(self.metrics['RC'])
-        return round(score, ndigits=1)
+        return round(self.temporal_fcn(self.base_score), ndigits=1)
 
     @property
     def adjusted_impact(self):
@@ -77,11 +79,7 @@ class CommonVulnerabilityScore:
 
     @property
     def adjusted_temporal(self):
-        score = self.adjusted_base
-        score *= float(self.metrics['E'])
-        score *= float(self.metrics['RL'])
-        score *= float(self.metrics['RC'])
-        return round(score, ndigits=1)
+        return round(self.temporal_fcn(self.adjusted_base), ndigits=1)
 
     @property
     def environmental_score(self):
