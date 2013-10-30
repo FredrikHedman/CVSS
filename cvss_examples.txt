@@ -196,3 +196,48 @@ AV:N/AC:L/Au:N/C:N/I:N/A:C
 
 >>> print(cvs.temporal_score)
 6.4
+
+Environmental Metric for CVE-2002-0392
+---------------------------------
+
+        ----------------------------------------------------
+        ENVIRONMENTAL METRIC        EVALUATION         SCORE
+        ----------------------------------------------------
+        Collateral Damage Potential [None - High]  {0 - 0.5}
+        Target Distribution         [None - High]  {0 - 1.0}
+        Confidentiality Req.        [Medium]           (1.0)
+        Integrity Req.              [Medium]           (1.0)
+        Availability Req.           [High]             (1.51)
+        ----------------------------------------------------
+        ENVIRONMENTAL FORMULA            ENVIRONMENTAL SCORE
+        ----------------------------------------------------
+        AdjustedImpact = min(10,10.41*(1-(1-0*1)*(1-0*1)
+                 *(1-0.66*1.51))                   == (10.0)
+        AdjustedBase =((0.6*10)+(0.4*10.0)1.5)*1.176
+                                                   == (10.0)
+        AdjustedTemporal == (10*0.95*0.87*1.0)      == (8.3)
+        EnvScore = round((8.3+(10-8.3)*{0-0.5})*{0-1})
+                                             == (0.00 - 9.2)
+        ----------------------------------------------------
+
+>>> print(len(lmetrics))
+9
+>>> cvs = CommonVulnerabilityScore(lmetrics)
+>>> print(round(cvs.impact, 1))
+6.9
+>>> print(round(cvs.exploitability, 1))
+10.0
+>>> print(cvs.base_score)
+7.8
+>>> print(cvs.vulnerability_vector)
+AV:N/AC:L/Au:N/C:N/I:N/A:C
+>>> print(cvs.temporal_score)
+6.4
+>>> print(cvs.adjusted_impact)
+10.0
+>>> print(cvs.adjusted_base)
+10.0
+>>> print(cvs.adjusted_temporal)
+8.3
+>>> print(cvs.environmental_score)
+(0.00, 9,2)

@@ -1,7 +1,7 @@
 * 2013-10-30
   * Need to decide on clearer way to store Metrics and their values.
   * Create a test program to that recreates the values from the examples in the specification.
-  * CommonVulnerabilityScore is constructed with a set of Mettrics.
+  * CommonVulnerabilityScore is constructed with a set of Metrics.
     It can calculate the different scores and the vector.
   * Parsing a command line or interactive input is a different matter.
 

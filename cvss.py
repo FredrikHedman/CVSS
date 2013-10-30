@@ -59,6 +59,21 @@ class CommonVulnerabilityScore:
         score *= float(self.metrics['RC'])
         return round(score, ndigits=1)
 
+    @property
+    def adjusted_impact(self):
+        return 0
+
+    @property
+    def adjusted_base(self):
+        return 0
+
+    @property
+    def adjusted_temporal(self):
+        return 0
+
+    @property
+    def environmental_score(self):
+        return (0,0)
 
 if __name__ == "__main__":
     import doctest
