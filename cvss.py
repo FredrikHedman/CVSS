@@ -23,7 +23,7 @@ Calculate CVSS metrics based on a list of Metrics.
 >>> avm = [m1, m2, m3]
 >>> au = Metric("Authentication", "Au", avm, 0)
 >>>
->>> exploitability = 20 * float(av.value) * float(ac.value) * float(au.value)
+>>> exploitability = 20 * float(av) * float(ac) * float(au)
 >>> exploitability
 1.24425
 >>> lmetrics = [ av, ac, au ]
@@ -42,9 +42,9 @@ class CommonVulnerabilityScore:
     @property
     def exploitability(self):
         res = 20.0
-        res *= float(self.metrics['AV'].value)
-        res *= float(self.metrics['AC'].value)
-        res *= float(self.metrics['Au'].value)
+        res *= float(self.metrics['AV'])
+        res *= float(self.metrics['AC'])
+        res *= float(self.metrics['Au'])
         return res
 
 
