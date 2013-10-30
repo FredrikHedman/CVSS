@@ -1,0 +1,89 @@
+Examples from the cvss specification
+====================================
+
+Using the Basic Metric trying to reproduce the following examples.
+
+Basic Metric for CVE-2002-0392
+------------------------------
+
+The base vector for this vulnerability is: AV:N/AC:L/Au:N/C:N/I:N/A:C.
+
+        ----------------------------------------------------
+        BASE METRIC                 EVALUATION         SCORE
+        ----------------------------------------------------
+        Access Vector               [Network]         (1.00)
+        Access Complexity           [Low]             (0.71)
+        Authentication              [None]            (0.704)
+        Confidentiality Impact      [None]            (0.00)
+        Integrity Impact            [None]            (0.00)
+        Availability Impact         [Complete]        (0.66)
+        ----------------------------------------------------
+        BASE FORMULA                              BASE SCORE
+        ----------------------------------------------------
+        Impact = 10.41*(1-(1)*(1)*(0.34)) == 6.9
+        Exploitability = 20*0.71*0.704*1 == 10.0
+        f(Impact) = 1.176
+        BaseScore = (0.6*6.9 + 0.4*10.0  1.5)*1.176
+                                                    == (7.8)
+        ----------------------------------------------------
+
+>>> from metric_value import MetricValue
+>>> from metric import Metric
+>>> from cvss import CommonVulnerabilityScore
+>>> lmetrics = []
+>>>
+>>> m1 = MetricValue("Local", "L", 0.395, "Local access")
+>>> m2 = MetricValue("Adjecent Network", "A", 0.646, "Adjacent network access")
+>>> m3 = MetricValue("Network", "N", 1.0, "Network access")
+>>> avm = [m1, m2, m3]
+>>> lmetrics.append(Metric("Access Vector", "AV", avm, 2))
+>>>
+>>> m1 = MetricValue("High", "H", 0.35, "Specialized access conditions exist")
+>>> m2 = MetricValue("Medium", "M", 0.61, "The access conditions are somewhat specialized")
+>>> m3 = MetricValue("Low", "L", 0.71, "No specialized access exist")
+>>> avm = [m1, m2, m3]
+>>> lmetrics.append(Metric("Access Complexity", "AC", avm, 2))
+>>>
+>>> m1 = MetricValue("Multiple", "M", 0.45, "Authenticate two or more times")
+>>> m2 = MetricValue("Single", "S", 0.56, "Logged into the system")
+>>> m3 = MetricValue("None", "N", 0.704, "Authentication not required")
+>>> avm = [m1, m2, m3]
+>>> lmetrics.append(Metric("Authentication", "Au", avm, 2))
+>>>
+>>> m1 = MetricValue("None", "N", 0.0, "No impact")
+>>> m2 = MetricValue("Partial", "P", 0.275, "Considerable disclosure")
+>>> m3 = MetricValue("Complete", "C", 0.660, "Total inforamtion disclosure")
+>>> avm = [m1, m2, m3]
+>>> lmetrics.append(Metric("Confidentiality Impact", "C", avm, 0))
+>>>
+>>> m1 = MetricValue("None", "N", 0.0, "No impact")
+>>> m2 = MetricValue("Partial", "P", 0.275, "Possible to modify some system files or information")
+>>> m3 = MetricValue("Complete", "C", 0.660, "Total compromise of system integrity")
+>>> avm = [m1, m2, m3]
+>>> lmetrics.append(Metric("Integrity Impact", "I", avm, 0))
+>>>
+>>> m1 = MetricValue("None", "N", 0.0, "No impact")
+>>> m2 = MetricValue("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability")
+>>> m3 = MetricValue("Complete", "C", 0.660, "Total shutdown of the affected resource")
+>>> avm = [m1, m2, m3]
+>>> lmetrics.append(Metric("Availability Impact", "A", avm, 2))
+>>>
+>>> cvs = CommonVulnerabilityScore(lmetrics)
+>>> print(round(cvs.impact, 1))
+6.9
+>>> print(round(cvs.exploitability, 1))
+10.0
+>>> print(cvs.base_score)
+7.8
+>>> print(cvs.vulnerability_vector)
+AV:N/AC:L/Au:N/C:N/I:N/A:C
+
+This completes the tests for base metrics.
+
+
+
+
+
+
+
+

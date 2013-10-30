@@ -97,6 +97,16 @@ class CommonVulnerabilityScore:
         return round(score, ndigits=1)
 
 
+
+    @property
+    def vulnerability_vector(self):
+        vv = ['AV', 'AC', 'Au', 'C', 'I', 'A']
+        vstr = []
+        for v in vv:
+            vstr.append(str(self.metrics[v]))
+        return '/'.join(vstr)
+
+
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
