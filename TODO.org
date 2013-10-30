@@ -35,7 +35,10 @@ MetricValues.  Fix the at a later stage.
     Does not look right.  Need a simpler way.  I want it to be easier
     to set the actual value of a metric.  Is there a better data
     structure for this.  Maybe dict or namedtuple?
-*** What should the data look like ti build the Metrics?
+*** cvs_factory refactored II
+    Function moved over to metric.py.  Less coupling.
+    Tested. Done.
+*** What should the data look like to build the Metrics?
 *** Use namedtuple for MetricValue and or Metric?
 *** update tests
 
