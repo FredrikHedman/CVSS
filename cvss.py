@@ -61,9 +61,18 @@ class CommonVulnerabilityScore:
 
     @property
     def adjusted_impact(self):
-        return 0
+        ConfImpact = float(self.metrics['C'])
+        ConfReq = float(self.metrics['CR'])
+        IntegImpact = float(self.metrics['I'])
+        IntegReq = float(self.metrics['IR'])
+        AvailImpact = float(self.metrics['A'])
+        AvailReq = float(self.metrics['AR'])
+        result = (1-(1-ConfImpact*ConfReq)*(1-IntegImpact*IntegReq)*(1-AvailImpact*AvailReq))
+        result *= 10.41
+        return min(10.0, result)
 
     @property
+
     def adjusted_base(self):
         return 0
 
