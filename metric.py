@@ -31,13 +31,9 @@ def set_base_metrics(lmetrics, selected):
       ("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability"),
       ("Complete", "C", 0.660, "Total shutdown of the affected resource") ]],
     ]
-    if selected != None and len(selected):
-        for i, mm in enumerate(base_metrics):
-            lmetrics.append(Metric(*mm, index = selected[0]))
-            selected.pop(0)
-    else:
-        for mm in base_metrics:
-            lmetrics.append(Metric(*mm))
+    for i, mm in enumerate(base_metrics):
+        lmetrics.append(Metric(*mm, index = selected[0]))
+        selected.pop(0)
 
 
 def set_temporal_metrics(lmetrics, selected):
@@ -60,13 +56,9 @@ def set_temporal_metrics(lmetrics, selected):
       ("Confirmed", "C", 1.0, "Acknowledged by the vendor or author"),
       ("Not Defined", "ND", 1.0, "Skip this metric") ]],
     ]
-    if selected != None and len(selected):
-        for i, mm in enumerate(temporal_metrics):
-            lmetrics.append(Metric(*mm, index = selected[0]))
-            selected.pop(0)
-    else:
-        for mm in temporal_metrics:
-            lmetrics.append(Metric(*mm))
+    for i, mm in enumerate(temporal_metrics):
+        lmetrics.append(Metric(*mm, index = selected[0]))
+        selected.pop(0)
 
 def set_environmental_metrics(lmetrics, selected):
     environmental_metrics = [
@@ -99,17 +91,16 @@ def set_environmental_metrics(lmetrics, selected):
       ("High", "H", 1.51, "Catastrophic adverse effect"),
       ("Not Defined", "ND", 1.0, "Skip this metric") ]],
     ]
-    if selected != None and len(selected):
-        for i, mm in enumerate(environmental_metrics):
-            lmetrics.append(Metric(*mm, index = selected[0]))
-            selected.pop(0)
-    else:
-        for mm in environmental_metrics:
-            lmetrics.append(Metric(*mm))
-
+    for i, mm in enumerate(environmental_metrics):
+        lmetrics.append(Metric(*mm, index = selected[0]))
+        selected.pop(0)
 
 def cvs_factory(cls, selected = None):
     lmetrics = []
+    if selected == None:
+        selected = (6+3+5) * [0]
+    else:
+        selected.extend((6+3+5) * [0])
     set_base_metrics(lmetrics, selected)
     set_temporal_metrics(lmetrics, selected)
     set_environmental_metrics(lmetrics, selected)

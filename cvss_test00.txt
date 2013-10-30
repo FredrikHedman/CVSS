@@ -3,7 +3,6 @@ Basic tests
 
 >>> from metric import cvs_factory
 >>> from cvss import CommonVulnerabilityScore
-
 >>> selected = [2, 2, 2, 0, 0, 2]
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 >>> print(round(cvs.exploitability, 1))
