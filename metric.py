@@ -104,9 +104,11 @@ def cvs_factory(cls):
 class Metric:
     """
     >>> from metric_value import MetricValue
-    >>> values = [ MetricValue('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
-                   MetricValue('Single', 'S', 2.12, 'The vulnerability requires...'), ]
-    >>> m = Metric("Authentication", values, 1)
+    >>> values = ["Authentication", [ ('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
+                                       ('Single', 'S', 2.12, 'The vulnerability requires...'), ], \
+                  1 \
+                 ]
+    >>> m = Metric(*values)
     >>> m.name
     'Authentication'
     >>> m.values
@@ -132,7 +134,7 @@ class Metric:
         vals = []
         for x in metric_values:
             if isinstance(x, MetricValue):
-                vals.append(x)
+                assert x == None
             else:
                 vals.append(MetricValue(*x))
         self.__values = tuple(vals)
