@@ -14,37 +14,40 @@ class Metric:
     'Au'
     >>> m.values
     [MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')]
-    >>> m.value = 4
+    >>> m.choice = 4
     Traceback (most recent call last):
     ...
     AssertionError: must be in range [0, 2[
-    >>> m.value = 1
-    >>> m.value
+    >>> m.choice = 1
+    >>> m.values[m.choice]
     MetricValue('Single','S',2.12,'The vulnerability requires...')
-    >>> print(m.value)
+    >>> print(m.values[m.choice])
     S
-    >>> float(m.value)
+    >>> float(m)
     2.12
     >>> print(m)
     Au:S
     >>> repr(m)
-    "Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
+    "Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],1)"
     """
-    def __init__(self, name, short_name, metric_values, value = 0):
+    def __init__(self, name, short_name, metric_values, choice = 0):
         self.__name = name
         self.__abbr = short_name
         self.__values = tuple(metric_values)
-        self.value = value
+        self.choice = choice
 
     def __str__(self):
-        return "{0}:{1}".format(self.short_name, self.value)
+        return "{0}:{1}".format(self.short_name, self.__values[self.choice])
 
     def __repr__(self):
-        return ("{0}('{1}','{2}',{3},'{4}')".format(self.__class__.__name__,
-                                              self.name,
-                                              self.short_name,
-                                              self.values,
-                                                    self.value))
+        return ("{0}('{1}','{2}',{3},{4})".format(self.__class__.__name__,
+                                                  self.name,
+                                                  self.short_name,
+                                                  self.values,
+                                                  self.choice))
+
+    def __float__(self):
+        return float(self.__values[self.choice])
 
     @property
     def name(self):
@@ -59,14 +62,14 @@ class Metric:
         return list(self.__values)
 
     @property
-    def value(self):
-        return self.__values[self.__value]
+    def choice(self):
+        return self.__choice
 
-    @value.setter
-    def value(self, value):
+    @choice.setter
+    def choice(self, choice):
         L = len(self.__values)
-        assert 0 <= value < L, "must be in range [{0}, {1}[".format(0,L)
-        self.__value = value
+        assert 0 <= choice < L, "must be in range [{0}, {1}[".format(0,L)
+        self.__choice = choice
 
 
 if __name__ == "__main__":
