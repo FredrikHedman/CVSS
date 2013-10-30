@@ -22,6 +22,14 @@ Removed short_name in Metric.  Tested. Done
 Fixed. Tested. Done. 
 
 ** Parsing a command line or interactive input is a different matter.
+Need a factory for CommonVulnerabilityScore to ease the pain of building. Let it
+take a number of Metrics with their respective MetricValues.  Fix the at a later stage.
+
+*** cvs_factory
+    First version in place.  Added a default test.  Tested.  Done.
+*** cvs_factory refactored
+    Group into three groups.  Loop.
+*** update tests
 
 * 2013-10-29
 ** CVSS, how does it work?
