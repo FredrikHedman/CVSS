@@ -19,7 +19,7 @@ Created mapping from Metric to short name for matric.  Tested. Done.
 *** Remove the need for short_name in Metric.
 Removed short_name in Metric.  Tested. Done
 *** Change interface of Metric.
-
+Fixed. Tested. Done. 
 
 ** Parsing a command line or interactive input is a different matter.
 
