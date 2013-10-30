@@ -9,98 +9,96 @@ def cvs_factory():
     from metric import Metric
     from cvss import CommonVulnerabilityScore
     lmetrics = []
+    def set_base_metrics(lmetrics):
+        base_metrics = [
+        ["Access Vector",
+         [("Local", "L", 0.395, "Local access"),
+          ("Adjecent Network", "A", 0.646, "Adjacent network access"),
+          ("Network", "N", 1.0, "Network access") ]],
+        ["Access Complexity",
+         [("High", "H", 0.35, "Specialized access conditions exist"),
+           ("Medium", "M", 0.61, "The access conditions are somewhat specialized"),
+           ("Low", "L", 0.71, "No specialized access exist") ]],
+        ["Authentication",
+         [("Multiple", "M", 0.45, "Authenticate two or more times"),
+           ("Single", "S", 0.56, "Logged into the system"),
+           ("None", "N", 0.704, "Authentication not required") ]],
+        ["Confidentiality Impact",
+         [("None", "N", 0.0, "No impact"),
+           ("Partial", "P", 0.275, "Considerable disclosure"),
+           ("Complete", "C", 0.660, "Total inforamtion disclosure") ]],
+        ["Integrity Impact",
+         [("None", "N", 0.0, "No impact"),
+           ("Partial", "P", 0.275, "Possible to modify some system files or information"),
+           ("Complete", "C", 0.660, "Total compromise of system integrity") ]],
+        ["Availability Impact",
+         [("None", "N", 0.0, "No impact"),
+          ("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability"),
+          ("Complete", "C", 0.660, "Total shutdown of the affected resource") ]],
+        ]
+        for mm in base_metrics:
+            lmetrics.append(Metric(*mm))
 
-    mvv = ["Access Vector", [("Local", "L", 0.395, "Local access"),
-                             ("Adjecent Network", "A", 0.646, "Adjacent network access"),
-                             ("Network", "N", 1.0, "Network access")]]
-    lmetrics.append(Metric(*mvv))
+    def set_temporal_metrics(lmetrics):
+        temporal_metrics = [
+        ["Exploitability",
+         [("Unproven", "U", 0.85, "No exploit code is available"),
+          ("Proof-of-Concept", "POC", 0.9, "Proof-of-concept exploit code exists"),
+          ("Functional", "F", 0.95, "Functional exploit code is available"),
+          ("High", "H", 1.0, "Exploitable by functional mobile autonomous code"),
+          ("Not Defined", "ND", 1.0, "Skip this metric") ]],
+        ["Remediation Level",
+         [("Official Fix", "OF", 0.87, "Complete vendor solution is available"),
+          ("Temporary Fix", "TF", 0.90, "Official but temporary fix available"),
+          ("Workaround", "W", 0.95, "Unofficial, non-vendor solution available"),
+          ("Unavailable", "U", 1.0, "No solution available or it is impossible to apply"),
+          ("Not Defined", "ND", 1.0, "Skip this metric") ]],
+        ["Report Confidence",
+         [("Unconfirmed", "UC", 0.90, "Single unconfirmed source"),
+          ("Uncorroborated", "UR", 0.95, "Multiple non-official sources"),
+          ("Confirmed", "C", 1.0, "Acknowledged by the vendor or author"),
+          ("Not Defined", "ND", 1.0, "Skip this metric") ]],
+        ]
+        for mm in temporal_metrics:
+            lmetrics.append(Metric(*mm))
+        
+    def set_environmental_metrics(lmetrics):
+        environmental_metrics = [
+        ["Collateral Damage Potential",
+         [("None", "N", 0.0, "No potential for loss of life"),
+          ("Low", "L", 0.1, "Potential for slight physical or property damage"),
+          ("Low-Medium", "LM", 0.3, "Moderate physical or property damage"),
+          ("Medium-High", "MH", 0.4, "Significant physical or property damage or loss"),
+          ("High", "H", 0.5, "Catastrophic physical or property damage and loss"),
+          ("Not Defined", "ND", 0.9, "Skip this metric") ]],
+        ["Target Distribution",
+         [("None", "N", 0.0, "No target systems exist"),
+          ("Low", "L", 0.25, "Targets exist on a small scale inside the environment"),
+          ("Medium", "M", 0.75, "Targets exist on a medium scale"),
+          ("High", "H", 1.0, "Targets exist on a considerable scale"),
+          ("Not Defined", "ND", 1.0, "Skip this metric") ]],
+        ["Confidentiality Requirement",
+         [("Low", "L", 0.5, "Limited adverse effect"),
+          ("Medium", "M", 1.0, "Serious adverse effect"),
+          ("High", "H", 1.51, "Catastrophic adverse effect"),
+          ("Not Defined", "ND", 1.0, "Skip this metric") ]],
+        ["Integrity Requirement",
+         [("Low", "L", 0.5, "Limited adverse effect"),
+          ("Medium", "M", 1.0, "Serious adverse effect"),
+          ("High", "H", 1.51, "Catastrophic adverse effect"),
+          ("Not Defined", "ND", 1.0, "Skip this metric") ]],
+        ["Availability Requirement",
+         [("Low", "L", 0.5, "Limited adverse effect"),
+          ("Medium", "M", 1.0, "Serious adverse effect"),
+          ("High", "H", 1.51, "Catastrophic adverse effect"),
+          ("Not Defined", "ND", 1.0, "Skip this metric") ]],
+        ]
+        for mm in environmental_metrics:
+            lmetrics.append(Metric(*mm))
 
-    m1 = MetricValue("High", "H", 0.35, "Specialized access conditions exist")
-    m2 = MetricValue("Medium", "M", 0.61,
-                     "The access conditions are somewhat specialized")
-    m3 = MetricValue("Low", "L", 0.71, "No specialized access exist")
-    avm = [m1, m2, m3]
-    lmetrics.append(Metric("Access Complexity", avm))
-
-    m1 = MetricValue("Multiple", "M", 0.45, "Authenticate two or more times")
-    m2 = MetricValue("Single", "S", 0.56, "Logged into the system")
-    m3 = MetricValue("None", "N", 0.704, "Authentication not required")
-    avm = [m1, m2, m3]
-    lmetrics.append(Metric("Authentication", avm))
-
-    m1 = MetricValue("None", "N", 0.0, "No impact")
-    m2 = MetricValue("Partial", "P", 0.275, "Considerable disclosure")
-    m3 = MetricValue("Complete", "C", 0.660, "Total inforamtion disclosure")
-    avm = [m1, m2, m3]
-    lmetrics.append(Metric("Confidentiality Impact", avm))
-
-    m1 = MetricValue("None", "N", 0.0, "No impact")
-    m2 = MetricValue("Partial", "P", 0.275,
-                     "Possible to modify some system files or information")
-    m3 = MetricValue("Complete", "C", 0.660,
-                     "Total compromise of system integrity")
-    avm = [m1, m2, m3]
-    lmetrics.append(Metric("Integrity Impact", avm))
-
-    m1 = MetricValue("None", "N", 0.0, "No impact")
-    m2 = MetricValue("Partial", "P", 0.275,
-                     "Reduced performance or interruptions in resource availability")
-    m3 = MetricValue("Complete", "C", 0.660,
-                     "Total shutdown of the affected resource")
-    avm = [m1, m2, m3]
-    lmetrics.append(Metric("Availability Impact", avm))
-
-    m1 = MetricValue("Unproven", "U", 0.85, "No exploit code is available")
-    m2 = MetricValue("Proof-of-Concept", "POC", 0.9,
-                     "Proof-of-concept exploit code exists")
-    m3 = MetricValue("Functional", "F", 0.95, "Functional exploit code is available")
-    m4 = MetricValue("High", "H", 1.0,
-                     "Exploitable by functional mobile autonomous code")
-    m5 = MetricValue("Not Defined", "ND", 1.0, "Skip this metric")
-    avm = [m1, m2, m3, m4, m5]
-    lmetrics.append(Metric("Exploitability", avm))
-
-    m1 = MetricValue("Official Fix", "OF", 0.87, "Complete vendor solution is available")
-    m2 = MetricValue("Temporary Fix", "TF", 0.90, "Official but temporary fix available")
-    m3 = MetricValue("Workaround", "W", 0.95, "Unofficial, non-vendor solution available")
-    m4 = MetricValue("Unavailable", "U", 1.0, "No solution available or it is impossible to apply")
-    m5 = MetricValue("Not Defined", "ND", 1.0, "Skip this metric")
-    avm = [m1, m2, m3, m4, m5]
-    lmetrics.append(Metric("Remediation Level", avm))
-
-    m1 = MetricValue("Unconfirmed", "UC", 0.90, "Single unconfirmed source")
-    m2 = MetricValue("Uncorroborated", "UR", 0.95, "Multiple non-official sources")
-    m3 = MetricValue("Confirmed", "C", 1.0, "Acknowledged by the vendor or author")
-    m4 = MetricValue("Not Defined", "ND", 1.0, "Skip this metric")
-    avm = [m1, m2, m3, m4]
-    lmetrics.append(Metric("Report Confidence", avm))
-
-    m1 = MetricValue("None", "N", 0.0, "No potential for loss of life")
-    m2 = MetricValue("Low", "L", 0.1, "Potential for slight physical or property damage")
-    m3 = MetricValue("Low-Medium", "LM", 0.3, "Moderate physical or property damage")
-    m4 = MetricValue("Medium-High", "MH", 0.4, "Significant physical or property damage or loss")
-    m5 = MetricValue("High", "H", 0.5, "Catastrophic physical or property damage and loss")
-    m6 = MetricValue("Not Defined", "ND", 0.9, "Skip this metric")
-    avm = [m1, m2, m3, m4, m5, m6]
-    lmetrics.append(Metric("Collateral Damage Potential", avm))
-
-    m1 = MetricValue("None", "N", 0.0, "No target systems exist")
-    m2 = MetricValue("Low", "L", 0.25, "Targets exist on a small scale inside the environment")
-    m3 = MetricValue("Medium", "M", 0.75, "Targets exist on a medium scale")
-    m4 = MetricValue("High", "H", 1.0, "Targets exist on a considerable scale")
-    m5 = MetricValue("Not Defined", "ND", 1.0, "Skip this metric")
-    avm = [m1, m2, m3, m4, m5]
-    lmetrics.append(Metric("Target Distribution", avm))
-
-    m1 = MetricValue("Low", "L", 0.5, "Limited adverse effect")
-    m2 = MetricValue("Medium", "M", 1.0, "Serious adverse effect")
-    m3 = MetricValue("High", "H", 1.51, "Catastrophic adverse effect")
-    m4 = MetricValue("Not Defined", "ND", 1.0, "Skip this metric")
-    avm = [m1, m2, m3, m4]
-    lmetrics.append(Metric("Confidentiality Requirement", avm))
-    lmetrics.append(Metric("Integrity Requirement", avm))
-    lmetrics.append(Metric("Availability Requirement", avm))
-
+    set_base_metrics(lmetrics)
+    set_temporal_metrics(lmetrics)
+    set_environmental_metrics(lmetrics)
     return CommonVulnerabilityScore(lmetrics)
 
 

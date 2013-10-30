@@ -22,13 +22,21 @@ Removed short_name in Metric.  Tested. Done
 Fixed. Tested. Done. 
 
 ** Parsing a command line or interactive input is a different matter.
-Need a factory for CommonVulnerabilityScore to ease the pain of building. Let it
-take a number of Metrics with their respective MetricValues.  Fix the at a later stage.
+Need a factory for CommonVulnerabilityScore to ease the pain of
+building. Let it take a number of Metrics with their respective
+MetricValues.  Fix the at a later stage.
 
 *** cvs_factory
     First version in place.  Added a default test.  Tested.  Done.
 *** cvs_factory refactored
-    Group into three groups.  Loop.
+    Group into three groups.  Loop. Tested. Done.
+    Not too happy about this one.
+*** cvs_factory refactored
+    Does not look right.  Need a simpler way.  I want it to be easier
+    to set the actual value of a metric.  Is there a better data
+    structure for this.  Maybe dict or namedtuple?
+*** What should the data look like ti build the Metrics?
+*** Use namedtuple for MetricValue and or Metric?
 *** update tests
 
 * 2013-10-29
@@ -251,4 +259,4 @@ docopt, 7 Python libs.
    *main* : just too long.  Separate presenation, calculation and logic.
 
    *no tests* : nada, niente, rien...
-
+   
