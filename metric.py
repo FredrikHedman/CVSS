@@ -10,8 +10,6 @@ class Metric:
     >>> m = Metric("Authentication", "Au", values, 1)
     >>> m.name
     'Authentication'
-    >>> m.short_name
-    'Au'
     >>> m.values
     [MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')]
     >>> m.index = 4
@@ -26,36 +24,32 @@ class Metric:
     >>> float(m)
     2.12
     >>> print(m)
-    Au:S
+    S
     >>> repr(m)
-    "Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],1)"
+    "Metric('Authentication',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],1)"
     """
     def __init__(self, name, short_name, metric_values, index = 0):
         self.__name = name
-        self.__abbr = short_name
         self.__values = tuple(metric_values)
         self.index = index
 
-    def __str__(self):
-        return "{0}:{1}".format(self.short_name, self.selected)
-
     def __repr__(self):
-        return ("{0}('{1}','{2}',{3},{4})".format(self.__class__.__name__,
+        return ("{0}('{1}',{2},{3})".format(self.__class__.__name__,
                                                   self.name,
-                                                  self.short_name,
                                                   self.values,
                                                   self.index))
 
+    def __str__(self):
+        "Use selected MetricValue as a string"
+        return str(self.selected)
+
     def __float__(self):
+        "Use selected MetricValue as a float"
         return float(self.selected)
 
     @property
     def name(self):
         return self.__name
-
-    @property
-    def short_name(self):
-        return self.__abbr
 
     @property
     def values(self):

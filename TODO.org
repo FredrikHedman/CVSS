@@ -15,7 +15,9 @@ mapping should be moved to the class that uses the index values.  The
 problem is that the metric short name is used inside Metric.
 
 *** Create a mapping in CommonVulnerabilityScore use it internally.
+Created mapping from Metric to short name for matric.  Tested.
 *** Remove the need for short_name in Metric.
+Removed short_name in Metric.  Tested.
 
 ** Parsing a command line or interactive input is a different matter.
 
