@@ -23,6 +23,11 @@ class CommonVulnerabilityScore:
         result *= 10.41
         return result
 
+    def base_fcn(self, impact):
+        score = (0.6*impact + 0.4*self.exploitability - 1.5)
+        score *= self.fcn(impact)
+        return score
+
     @property
     def impact(self):
         ConfImpact = float(self.metrics['C'])
@@ -40,9 +45,7 @@ class CommonVulnerabilityScore:
 
     @property
     def base_score(self):
-        score = (0.6*self.impact + 0.4*self.exploitability - 1.5)
-        score *= self.fcn(self.impact) 
-        return round(score, ndigits=1)
+        return round(self.base_fcn(self.impact), ndigits=1)
 
     @property
     def vulnerability_vector(self):
@@ -51,8 +54,6 @@ class CommonVulnerabilityScore:
         for v in vv:
             vstr.append(str(self.metrics[v]))
         return '/'.join(vstr)
-
-
 
     @property
     def temporal_score(self):
@@ -71,11 +72,8 @@ class CommonVulnerabilityScore:
         return min(10.0, result)
 
     @property
-
     def adjusted_base(self):
-        score = (0.6*self.adjusted_impact + 0.4*self.exploitability - 1.5)
-        score *= self.fcn(self.adjusted_impact)
-        return round(score, ndigits=1)
+        return round(self.base_fcn(self.adjusted_impact), ndigits=1)
 
     @property
     def adjusted_temporal(self):
@@ -90,6 +88,7 @@ class CommonVulnerabilityScore:
         score = self.adjusted_temporal + (10.0 - self.adjusted_temporal)*float(self.metrics['CDP'])
         score *= float(self.metrics['TD'])
         return round(score, ndigits=1)
+
 
 if __name__ == "__main__":
     import doctest
