@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 #
 """Metrics used by CVSS."""
-
+from collections import OrderedDict
 from metric_value import MetricValue
 
 def set_base_metrics(lmetrics, selected):
@@ -112,7 +112,7 @@ class Metric:
     >>> from metric_value import MetricValue
     >>> values = ["Authentication", [ ('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
                                        ('Single', 'S', 2.12, 'The vulnerability requires...'), ], \
-                  1 \
+                  'S' \
                  ]
     >>> m = Metric(*values)
     >>> m.name
@@ -122,8 +122,8 @@ class Metric:
     >>> m.index = 4
     Traceback (most recent call last):
     ...
-    AssertionError: must be in range [0, 2[
-    >>> m.index = 1
+    AssertionError
+    >>> m.index = 'S'
     >>> m.selected
     MetricValue('Single','S',2.12,'The vulnerability requires...')
     >>> print(m.selected)
@@ -133,18 +133,21 @@ class Metric:
     >>> print(m)
     S
     >>> repr(m)
-    "Metric('Authentication',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],1)"
+    "Metric('Authentication',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
     """
-    def __init__(self, name, metric_values, index = 0):
+    def __init__(self, name, metric_values, index = None):
         self.__name = name
         vals = []
         for x in metric_values:
-            vals.append(MetricValue(*x))
-        self.__values = tuple(vals)
+            m = MetricValue(*x)
+            vals.append((m.value, m))
+        self.__values = OrderedDict(vals)
+        if index == None:
+            self.index = vals[0][0]
         self.index = index
 
     def __repr__(self):
-        return ("{0}('{1}',{2},{3})".format(self.__class__.__name__,
+        return ("{0}('{1}',{2},'{3}')".format(self.__class__.__name__,
                                                   self.name,
                                                   self.values,
                                                   self.index))
@@ -163,7 +166,7 @@ class Metric:
 
     @property
     def values(self):
-        return list(self.__values)
+        return list(self.__values.values())
 
     @property
     def index(self):
@@ -171,8 +174,7 @@ class Metric:
 
     @index.setter
     def index(self, index):
-        L = len(self.__values)
-        assert 0 <= index < L, "must be in range [{0}, {1}[".format(0,L)
+        assert index in self.__values.keys()
         self.__index = index
 
     @property
