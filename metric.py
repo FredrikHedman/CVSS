@@ -110,6 +110,20 @@ def cvs_factory(cls, selected = None):
 class Metric:
     """
     >>> from metric_value import MetricValue
+    >>> values = ["Authentication", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ], 'X' ]
+    >>> m = Metric(*values)
+    Traceback (most recent call last):
+    ...
+    AssertionError: Not a valid key
+    >>> values = ["Authentication", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ]]
+    >>> m = Metric(*values)
+    >>> m.index
+    'M'
+    >>> values = ["Authentication", [ ], 'S' ]
+    >>> m = Metric(*values)
+    Traceback (most recent call last):
+    ...
+    AssertionError: At least one MetricValue needed.
     >>> values = ["Authentication", [ ('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
                                        ('Single', 'S', 2.12, 'The vulnerability requires...'), ], \
                   'S' \
@@ -122,12 +136,14 @@ class Metric:
     >>> m.index = 4
     Traceback (most recent call last):
     ...
-    AssertionError
+    AssertionError: Not a valid key
     >>> m.index = 'S'
     >>> m.selected
     MetricValue('Single','S',2.12,'The vulnerability requires...')
     >>> print(m.selected)
     S
+    >>> float(m.selected)
+    2.12
     >>> float(m)
     2.12
     >>> print(m)
@@ -136,15 +152,20 @@ class Metric:
     "Metric('Authentication',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
     """
     def __init__(self, name, metric_values, index = None):
+        assert len(metric_values), 'At least one MetricValue needed.'
         self.__name = name
+        # Create the key-value pairs. Use the MetricValue as the key. 
         vals = []
         for x in metric_values:
             m = MetricValue(*x)
             vals.append((m.value, m))
         self.__values = OrderedDict(vals)
+        # Use the first key available.
         if index == None:
             self.index = vals[0][0]
-        self.index = index
+        else:
+            assert index in self.__values.keys(), 'Not a valid key'
+            self.index = index
 
     def __repr__(self):
         return ("{0}('{1}',{2},'{3}')".format(self.__class__.__name__,
@@ -174,7 +195,7 @@ class Metric:
 
     @index.setter
     def index(self, index):
-        assert index in self.__values.keys()
+        assert index in self.__values.keys(), "Not a valid key"
         self.__index = index
 
     @property
