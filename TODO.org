@@ -3,7 +3,7 @@
 Should use the template pattern for the different scores and behave
 like a dict that has a fixed set of keys with a Metric value.  How
 should these keys be initialized and where?  DRY.
-** Metric
+** metric_refactor_1
 A Metric has a name, a string value and a float value and can can be
 in one of several different states.  These states are set when the
 Metric is constructed.  Once initilized, different states can be

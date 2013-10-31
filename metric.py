@@ -139,10 +139,7 @@ class Metric:
         self.__name = name
         vals = []
         for x in metric_values:
-            if isinstance(x, MetricValue):
-                assert x == None
-            else:
-                vals.append(MetricValue(*x))
+            vals.append(MetricValue(*x))
         self.__values = tuple(vals)
         self.index = index
 
