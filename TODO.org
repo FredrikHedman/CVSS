@@ -1,3 +1,20 @@
+* 2013-10-31
+** CommonVulnerabilityScore
+Should use the template pattern for the different scores and behave
+like a dict that has a fixed set of keys with a Metric value.  How
+should these keys be initialized and where?  DRY.
+** Metric
+A Metric has a name, a string value and a float value and can can be
+in one of several different states.  These states are set when the
+Metric is constructed.  Once initilized, different states can be
+selected but otherwise the Metric can not be changed.
+
+Change so that indexing is done by a string key that is one of the
+allowed values.  It is not robust to have the order of intialization
+to controlling how we set the value.  Use OrdereDict?
+
+
+**
 * 2013-10-30
 ** Need to decide on clearer way to store Metrics and their values.
 Done, for now.
