@@ -90,6 +90,24 @@ def environmental_metrics():
     ]
     return ENVIRONMENTAL_METRICS
 
+def metric_short_names():
+    # Use  metric short names in the different algorithms.
+    mapping = (("Access Vector", "AV"),
+               ("Access Complexity", "AC"),
+               ("Authentication", "Au"),
+               ("Confidentiality Impact", "C"),
+               ("Integrity Impact", "I"),
+               ("Availability Impact", "A"),
+               ("Exploitability", "E"),
+               ("Remediation Level", "RL"),
+               ("Report Confidence", "RC"),
+               ("Collateral Damage Potential", "CDP"),
+               ("Target Distribution", "TD"),
+               ("Confidentiality Requirement", "CR"),
+               ("Integrity Requirement", "IR"),
+               ("Availability Requirement", "AR"))
+    return mapping
+
 def add_padding(to_length, selected):
     if selected == None:
         selected =  []
@@ -115,23 +133,7 @@ def cvs_factory(cls, selected = None):
 
 class CommonVulnerabilityScore:
     def __init__(self, metrics_seq):
-        # A mapping from metric names to their short names used to
-        # access them in the different algorithms.
-        mapping = (("Access Vector", "AV"),
-                   ("Access Complexity", "AC"),
-                   ("Authentication", "Au"),
-                   ("Confidentiality Impact", "C"),
-                   ("Integrity Impact", "I"),
-                   ("Availability Impact", "A"),
-                   ("Exploitability", "E"),
-                   ("Remediation Level", "RL"),
-                   ("Report Confidence", "RC"),
-                   ("Collateral Damage Potential", "CDP"),
-                   ("Target Distribution", "TD"),
-                   ("Confidentiality Requirement", "CR"),
-                   ("Integrity Requirement", "IR"),
-                   ("Availability Requirement", "AR"))
-        short_name = dict(mapping)
+        short_name = dict(metric_short_names())
         self.metrics = {}
         for m in metrics_seq:
             self.metrics[short_name[m.name]] = m
