@@ -1,3 +1,14 @@
+* 2013-11-01
+** metric_refactor_2
+*** cvs_factory and helper functions should be simpler
+Magic number should be removed.  Helpers do too much.  Let them just
+encapsulate the values. Pad selected and loop using zip an enumerate.
+*** Keep initial data in helper functions.
+Change factory to refelct this. Done. Tested.
+*** Refactor cvs_factory
+    No good calling pop on selected.  Extracted helper functions.
+    Moved cvs_factory and helper functions to cvss.py
+
 * 2013-10-31
 ** CommonVulnerabilityScore
 Should use the template pattern for the different scores and behave

@@ -22,7 +22,7 @@
         ----------------------------------------------------
 
 >>> from cvss import CommonVulnerabilityScore
->>> from metric import cvs_factory
+>>> from cvss import cvs_factory
 >>> cvs = cvs_factory(CommonVulnerabilityScore)
 >>> cvs.impact
 0.0

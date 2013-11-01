@@ -26,7 +26,7 @@ The base vector for this vulnerability is: AV:N/AC:L/Au:N/C:N/I:N/A:C.
                                                     == (7.8)
         ----------------------------------------------------
 
->>> from metric import cvs_factory
+>>> from cvss import cvs_factory
 >>> from cvss import CommonVulnerabilityScore
 >>>
 >>> selected = ['N', 'L', 'N', 'N', 'N', 'C']
