@@ -4,39 +4,38 @@
 from collections import OrderedDict
 from metric_value import MetricValue
 
-def set_base_metrics(lmetrics, selected):
-    base_metrics = [
-    ["Access Vector",
-     [("Local", "L", 0.395, "Local access"),
-      ("Adjecent Network", "A", 0.646, "Adjacent network access"),
-      ("Network", "N", 1.0, "Network access") ]],
-    ["Access Complexity",
-     [("High", "H", 0.35, "Specialized access conditions exist"),
-       ("Medium", "M", 0.61, "The access conditions are somewhat specialized"),
-       ("Low", "L", 0.71, "No specialized access exist") ]],
-    ["Authentication",
-     [("Multiple", "M", 0.45, "Authenticate two or more times"),
-       ("Single", "S", 0.56, "Logged into the system"),
-       ("None", "N", 0.704, "Authentication not required") ]],
-    ["Confidentiality Impact",
-     [("None", "N", 0.0, "No impact"),
-       ("Partial", "P", 0.275, "Considerable disclosure"),
-       ("Complete", "C", 0.660, "Total inforamtion disclosure") ]],
-    ["Integrity Impact",
-     [("None", "N", 0.0, "No impact"),
-       ("Partial", "P", 0.275, "Possible to modify some system files or information"),
-       ("Complete", "C", 0.660, "Total compromise of system integrity") ]],
-    ["Availability Impact",
-     [("None", "N", 0.0, "No impact"),
-      ("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability"),
-      ("Complete", "C", 0.660, "Total shutdown of the affected resource") ]],
+def set_base_metrics():
+    BASE_METRICS = [
+        ["Access Vector",
+         [("Local", "L", 0.395, "Local access"),
+          ("Adjecent Network", "A", 0.646, "Adjacent network access"),
+          ("Network", "N", 1.0, "Network access") ]],
+        ["Access Complexity",
+         [("High", "H", 0.35, "Specialized access conditions exist"),
+          ("Medium", "M", 0.61, "The access conditions are somewhat specialized"),
+          ("Low", "L", 0.71, "No specialized access exist") ]],
+        ["Authentication",
+         [("Multiple", "M", 0.45, "Authenticate two or more times"),
+          ("Single", "S", 0.56, "Logged into the system"),
+          ("None", "N", 0.704, "Authentication not required") ]],
+        ["Confidentiality Impact",
+         [("None", "N", 0.0, "No impact"),
+          ("Partial", "P", 0.275, "Considerable disclosure"),
+          ("Complete", "C", 0.660, "Total inforamtion disclosure") ]],
+        ["Integrity Impact",
+         [("None", "N", 0.0, "No impact"),
+          ("Partial", "P", 0.275, "Possible to modify some system files or information"),
+          ("Complete", "C", 0.660, "Total compromise of system integrity") ]],
+        ["Availability Impact",
+         [("None", "N", 0.0, "No impact"),
+          ("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability"),
+          ("Complete", "C", 0.660, "Total shutdown of the affected resource") ]],
     ]
-    for mm in base_metrics:
-        lmetrics.append(Metric(*mm, index = selected[0]))
-        selected.pop(0)
+    return BASE_METRICS
 
-def set_temporal_metrics(lmetrics, selected):
-    temporal_metrics = [
+
+def set_temporal_metrics():
+    TEMPORAL_METRICS = [
     ["Exploitability",
      [("Unproven", "U", 0.85, "No exploit code is available"),
       ("Proof-of-Concept", "POC", 0.9, "Proof-of-concept exploit code exists"),
@@ -55,12 +54,10 @@ def set_temporal_metrics(lmetrics, selected):
       ("Confirmed", "C", 1.0, "Acknowledged by the vendor or author"),
       ("Not Defined", "ND", 1.0, "Skip this metric") ]],
     ]
-    for mm in temporal_metrics:
-        lmetrics.append(Metric(*mm, index = selected[0]))
-        selected.pop(0)
+    return TEMPORAL_METRICS
 
-def set_environmental_metrics(lmetrics, selected):
-    environmental_metrics = [
+def set_environmental_metrics():
+    ENVIRONMENTAL_METRICS = [
     ["Collateral Damage Potential",
      [("None", "N", 0.0, "No potential for loss of life"),
       ("Low", "L", 0.1, "Potential for slight physical or property damage"),
@@ -90,20 +87,21 @@ def set_environmental_metrics(lmetrics, selected):
       ("High", "H", 1.51, "Catastrophic adverse effect"),
       ("Not Defined", "ND", 1.0, "Skip this metric") ]],
     ]
-    for mm in environmental_metrics:
-        lmetrics.append(Metric(*mm, index = selected[0]))
-        selected.pop(0)
+    return ENVIRONMENTAL_METRICS
 
 def cvs_factory(cls, selected = None):
-    lmetrics = []
     if selected == None:
         selected = (6+3+5) * [None]
     else:
         padding = (6+3+5) - len(selected)
-        selected.extend(padding * [None])
-    set_base_metrics(lmetrics, selected)
-    set_temporal_metrics(lmetrics, selected)
-    set_environmental_metrics(lmetrics, selected)
+        if padding: selected.extend(padding * [None])
+    L = set_base_metrics()
+    L.extend(set_temporal_metrics())
+    L.extend(set_environmental_metrics())
+    lmetrics = []
+    for mm in L:
+        lmetrics.append(Metric(*mm, index = selected[0]))
+        selected.pop(0)
     return cls(lmetrics)
 
 
