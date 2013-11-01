@@ -21,7 +21,7 @@
                                                    == (10.0)
         ----------------------------------------------------
 
->>> from metric import cvs_factory
+>>> from cvss import cvs_factory
 >>> from cvss import CommonVulnerabilityScore
 >>>
 >>> selected = ['N', 'L', 'N', 'C', 'C', 'C']

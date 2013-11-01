@@ -19,7 +19,7 @@
         BaseScore =((0.6*10)+(0.4*1.9)1.5)*1.176
                                                   ==   (6.2)
         ----------------------------------------------------
->>> from metric import cvs_factory
+>>> from cvss import cvs_factory
 >>> from cvss import CommonVulnerabilityScore
 >>>
 >>> selected = ['L', 'H', 'N', 'C', 'C', 'C']
