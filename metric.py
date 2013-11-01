@@ -3,21 +3,21 @@
 """Metrics used by CVSS.
 
 >>> from metric_value import MetricValue
->>> values = ["Authentication", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ], 'X' ]
+>>> values = ["Authentication", "Au", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ], 'X' ]
 >>> m = Metric(*values)
 Traceback (most recent call last):
 ...
 AssertionError: Not a valid key
->>> values = ["Authentication", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ]]
+>>> values = ["Authentication", "Au", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ]]
 >>> m = Metric(*values)
 >>> m.index
 'M'
->>> values = ["Authentication", [ ], 'S' ]
+>>> values = ["Authentication", "Au", [ ], 'S' ]
 >>> m = Metric(*values)
 Traceback (most recent call last):
 ...
 AssertionError: At least one MetricValue needed.
->>> values = ["Authentication", [ ('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
+>>> values = ["Authentication", "Au", [ ('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
                                    ('Single', 'S', 2.12, 'The vulnerability requires...'), ], \
               'S' \
              ]
@@ -42,16 +42,17 @@ S
 >>> print(m)
 S
 >>> repr(m)
-"Metric('Authentication',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
+"Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
 """
 from collections import OrderedDict
 from metric_value import MetricValue
 
 
 class Metric:
-    def __init__(self, name, metric_values, index = None):
+    def __init__(self, name, short_name, metric_values, index = None):
         assert len(metric_values), 'At least one MetricValue needed.'
         self.__name = name
+        self.__short_name = short_name
         # Create the key-value pairs. Use the MetricValue as the key.
         vals = []
         for x in metric_values:
@@ -66,8 +67,9 @@ class Metric:
             self.index = index
 
     def __repr__(self):
-        return ("{0}('{1}',{2},'{3}')".format(self.__class__.__name__,
+        return ("{0}('{1}','{2}',{3},'{4}')".format(self.__class__.__name__,
                                                   self.name,
+                                                  self.short_name,
                                                   self.values,
                                                   self.index))
 
@@ -82,6 +84,10 @@ class Metric:
     @property
     def name(self):
         return self.__name
+
+    @property
+    def short_name(self):
+        return self.__short_name
 
     @property
     def values(self):
