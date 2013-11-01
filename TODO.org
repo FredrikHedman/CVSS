@@ -5,6 +5,7 @@
    constructed.
 
     Metric changed. CommonVulnerabilityScore changed.  No more DRY.
+    Added short_name in input data with Metric.short_name solved this.
     Tested. Done.
 
 ** metric_refactor_2
