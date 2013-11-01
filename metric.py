@@ -98,9 +98,9 @@ def set_environmental_metrics(lmetrics, selected):
 def cvs_factory(cls, selected = None):
     lmetrics = []
     if selected == None:
-        selected = (6+3+5) * [0]
+        selected = (6+3+5) * [None]
     else:
-        selected.extend((6+3+5) * [0])
+        selected.extend((6+3+5) * [None])
     set_base_metrics(lmetrics, selected)
     set_temporal_metrics(lmetrics, selected)
     set_environmental_metrics(lmetrics, selected)
