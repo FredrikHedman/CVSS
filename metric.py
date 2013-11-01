@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 #
 """Metrics used by CVSS."""
-
+from collections import OrderedDict
 from metric_value import MetricValue
 
 def set_base_metrics(lmetrics, selected):
@@ -31,10 +31,9 @@ def set_base_metrics(lmetrics, selected):
       ("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability"),
       ("Complete", "C", 0.660, "Total shutdown of the affected resource") ]],
     ]
-    for i, mm in enumerate(base_metrics):
+    for mm in base_metrics:
         lmetrics.append(Metric(*mm, index = selected[0]))
         selected.pop(0)
-
 
 def set_temporal_metrics(lmetrics, selected):
     temporal_metrics = [
@@ -56,7 +55,7 @@ def set_temporal_metrics(lmetrics, selected):
       ("Confirmed", "C", 1.0, "Acknowledged by the vendor or author"),
       ("Not Defined", "ND", 1.0, "Skip this metric") ]],
     ]
-    for i, mm in enumerate(temporal_metrics):
+    for mm in temporal_metrics:
         lmetrics.append(Metric(*mm, index = selected[0]))
         selected.pop(0)
 
@@ -91,16 +90,17 @@ def set_environmental_metrics(lmetrics, selected):
       ("High", "H", 1.51, "Catastrophic adverse effect"),
       ("Not Defined", "ND", 1.0, "Skip this metric") ]],
     ]
-    for i, mm in enumerate(environmental_metrics):
+    for mm in environmental_metrics:
         lmetrics.append(Metric(*mm, index = selected[0]))
         selected.pop(0)
 
 def cvs_factory(cls, selected = None):
     lmetrics = []
     if selected == None:
-        selected = (6+3+5) * [0]
+        selected = (6+3+5) * [None]
     else:
-        selected.extend((6+3+5) * [0])
+        padding = (6+3+5) - len(selected)
+        selected.extend(padding * [None])
     set_base_metrics(lmetrics, selected)
     set_temporal_metrics(lmetrics, selected)
     set_environmental_metrics(lmetrics, selected)
@@ -110,9 +110,23 @@ def cvs_factory(cls, selected = None):
 class Metric:
     """
     >>> from metric_value import MetricValue
+    >>> values = ["Authentication", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ], 'X' ]
+    >>> m = Metric(*values)
+    Traceback (most recent call last):
+    ...
+    AssertionError: Not a valid key
+    >>> values = ["Authentication", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ]]
+    >>> m = Metric(*values)
+    >>> m.index
+    'M'
+    >>> values = ["Authentication", [ ], 'S' ]
+    >>> m = Metric(*values)
+    Traceback (most recent call last):
+    ...
+    AssertionError: At least one MetricValue needed.
     >>> values = ["Authentication", [ ('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
                                        ('Single', 'S', 2.12, 'The vulnerability requires...'), ], \
-                  1 \
+                  'S' \
                  ]
     >>> m = Metric(*values)
     >>> m.name
@@ -122,32 +136,39 @@ class Metric:
     >>> m.index = 4
     Traceback (most recent call last):
     ...
-    AssertionError: must be in range [0, 2[
-    >>> m.index = 1
+    AssertionError: Not a valid key
+    >>> m.index = 'S'
     >>> m.selected
     MetricValue('Single','S',2.12,'The vulnerability requires...')
     >>> print(m.selected)
     S
+    >>> float(m.selected)
+    2.12
     >>> float(m)
     2.12
     >>> print(m)
     S
     >>> repr(m)
-    "Metric('Authentication',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],1)"
+    "Metric('Authentication',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
     """
-    def __init__(self, name, metric_values, index = 0):
+    def __init__(self, name, metric_values, index = None):
+        assert len(metric_values), 'At least one MetricValue needed.'
         self.__name = name
+        # Create the key-value pairs. Use the MetricValue as the key. 
         vals = []
         for x in metric_values:
-            if isinstance(x, MetricValue):
-                assert x == None
-            else:
-                vals.append(MetricValue(*x))
-        self.__values = tuple(vals)
-        self.index = index
+            m = MetricValue(*x)
+            vals.append((m.value, m))
+        self.__values = OrderedDict(vals)
+        # Use the first key available.
+        if index == None:
+            self.index = vals[0][0]
+        else:
+            assert index in self.__values.keys(), 'Not a valid key'
+            self.index = index
 
     def __repr__(self):
-        return ("{0}('{1}',{2},{3})".format(self.__class__.__name__,
+        return ("{0}('{1}',{2},'{3}')".format(self.__class__.__name__,
                                                   self.name,
                                                   self.values,
                                                   self.index))
@@ -166,7 +187,7 @@ class Metric:
 
     @property
     def values(self):
-        return list(self.__values)
+        return list(self.__values.values())
 
     @property
     def index(self):
@@ -174,8 +195,7 @@ class Metric:
 
     @index.setter
     def index(self, index):
-        L = len(self.__values)
-        assert 0 <= index < L, "must be in range [{0}, {1}[".format(0,L)
+        assert index in self.__values.keys(), "Not a valid key"
         self.__index = index
 
     @property
