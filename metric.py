@@ -90,17 +90,22 @@ def set_environmental_metrics():
     return ENVIRONMENTAL_METRICS
 
 def cvs_factory(cls, selected = None):
-    if selected == None:
-        selected = (6+3+5) * [None]
-    else:
-        padding = (6+3+5) - len(selected)
-        if padding: selected.extend(padding * [None])
     L = set_base_metrics()
     L.extend(set_temporal_metrics())
     L.extend(set_environmental_metrics())
+    #
+    if selected == None:
+        selected = len(L) * [None]
+    else:
+        padding = len(L) - len(selected)
+        if padding: selected.extend(padding * [None])
+    #
     lmetrics = []
     for mm in L:
-        lmetrics.append(Metric(*mm, index = selected[0]))
+        idx = selected
+        if selected:
+            idx = selected[0]
+        lmetrics.append(Metric(*mm, index = idx))
         selected.pop(0)
     return cls(lmetrics)
 
