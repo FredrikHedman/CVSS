@@ -141,10 +141,7 @@ class CommonVulnerabilityScore:
 
     @property
     def environmental_score(self):
-        score = self.adjusted_temporal_score + (10.0 -
-                self.adjusted_temporal_score)*float(self['CDP'])
-        score *= float(self['TD'])
-        return round(score, ndigits=1)
+        return round(self.environmental_fcn(self.adjusted_temporal_score), ndigits=1)
 
     @property
     def base_vulnerability_vector(self):
@@ -213,6 +210,12 @@ class CommonVulnerabilityScore:
         score *= float(self['E'])
         score *= float(self['RL'])
         score *= float(self['RC'])
+        return score
+
+    def environmental_fcn(self, adjusted_temporal_score):
+        score = adjusted_temporal_score
+        score += (10.0 - adjusted_temporal_score)*float(self['CDP'])
+        score *= float(self['TD'])
         return score
 
 
