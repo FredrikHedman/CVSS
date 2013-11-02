@@ -1,8 +1,10 @@
 * 2013-11-02
 ** cvss_refactor_3
-*** Template and Strategy
+*** Template patterna
    The CommonVulnerabilityScore should be the base and the cvssv210
    should be the concrete class.
+
+   Done.  Changed names and added version property. Tested.
 
 ** cvss_refactor_2
 *** Add function to make addressing with short names possible.
