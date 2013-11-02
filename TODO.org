@@ -3,7 +3,7 @@
 *** Add function to make addressing with short names possible.
     Make it private.  Tested. Done.
 *** Extract formulas using template pattern
-    Start by extracint a base class.
+    Start by extracing a base class.
 
 * 2013-11-01
 

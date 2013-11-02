@@ -7,7 +7,7 @@ Basic tests
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 >>> print(round(cvs.exploitability, 1))
 10.0
->>> print(cvs.fcn(1.2))
+>>> print(cvs._fcn(1.2))
 1.176
 >>> print(cvs.base_score)
 7.8
