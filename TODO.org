@@ -1,10 +1,14 @@
 * 2013-11-02
+** cvss_refactor_3
+*** Template and Strategy
+   The CommonVulnerabilityScore should be the base and the cvssv210
+   should be the concrete class.
+
 ** cvss_refactor_2
 *** Add function to make addressing with short names possible.
     Make it private.  Tested. Done.
-*** Extract formulas using template pattern
-    Start by extracing a base class.
-
+*** Extract formulas into a separate class
+    Tested. Done.
 * 2013-11-01
 
 ** cvss_refactor_1
