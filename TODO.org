@@ -1,4 +1,12 @@
+* 2013-11-02
+** cvss_refactor_2
+   Add function to make addressing with short names possible.  Make it
+   private.  Tested. Done.
+
 * 2013-11-01
+** cvss_refactor_3
+   Extract formulas using template patterins.
+
 ** cvss_refactor_1
    DRY when it it comes to initial metric values and metric short
    names.  As the metrics are prepared the mapping could be

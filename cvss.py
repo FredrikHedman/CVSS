@@ -115,10 +115,13 @@ def cvs_factory(cls, selected = None):
 
 class CommonVulnerabilityScore:
     def __init__(self, metrics_seq):
-        self.metrics = {}
+        self.__metrics = {}
         for m in metrics_seq:
-            self.metrics[m.short_name] = m
-        assert len(self.metrics) == len(metrics_seq), 'Metric short name collision'
+            self.__metrics[m.short_name] = m
+        assert len(self.__metrics) == len(metrics_seq), 'Metric short name collision'
+
+    def __getitem__(self, idx):
+        return self.__metrics[idx]
 
     @property
     def base_score(self):
@@ -139,8 +142,8 @@ class CommonVulnerabilityScore:
     @property
     def environmental_score(self):
         score = self.adjusted_temporal_score + (10.0 -
-                self.adjusted_temporal_score)*float(self.metrics['CDP'])
-        score *= float(self.metrics['TD'])
+                self.adjusted_temporal_score)*float(self['CDP'])
+        score *= float(self['TD'])
         return round(score, ndigits=1)
 
     @property
@@ -148,7 +151,7 @@ class CommonVulnerabilityScore:
         vv = ['AV', 'AC', 'Au', 'C', 'I', 'A']
         vstr = []
         for v in vv:
-            vstr.append("{0}:{1}".format(v, str(self.metrics[v])))
+            vstr.append("{0}:{1}".format(v, str(self[v])))
         return '/'.join(vstr)
 
     @property
@@ -156,7 +159,7 @@ class CommonVulnerabilityScore:
         vv = ['E', 'RL', 'RC']
         vstr = []
         for v in vv:
-            vstr.append("{0}:{1}".format(v, str(self.metrics[v])))
+            vstr.append("{0}:{1}".format(v, str(self[v])))
         return '/'.join(vstr)
 
     @property
@@ -164,29 +167,29 @@ class CommonVulnerabilityScore:
         vv = ['CDP', 'TD', 'CR', 'IR', 'AR']
         vstr = []
         for v in vv:
-            vstr.append("{0}:{1}".format(v, str(self.metrics[v])))
+            vstr.append("{0}:{1}".format(v, str(self[v])))
         return '/'.join(vstr)
 
     @property
     def exploitability(self):
         res = 20.0
-        res *= float(self.metrics['AV'])
-        res *= float(self.metrics['AC'])
-        res *= float(self.metrics['Au'])
+        res *= float(self['AV'])
+        res *= float(self['AC'])
+        res *= float(self['Au'])
         return res
 
     @property
     def impact(self):
-        ConfImpact = float(self.metrics['C'])
-        IntegImpact = float(self.metrics['I'])
-        AvailImpact = float(self.metrics['A'])
+        ConfImpact = float(self['C'])
+        IntegImpact = float(self['I'])
+        AvailImpact = float(self['A'])
         return self.impact_fcn(ConfImpact, IntegImpact, AvailImpact)
 
     @property
     def adjusted_impact(self):
-        ConfImpact = float(self.metrics['C']) * float(self.metrics['CR'])
-        IntegImpact = float(self.metrics['I']) * float(self.metrics['IR'])
-        AvailImpact = float(self.metrics['A']) * float(self.metrics['AR'])
+        ConfImpact = float(self['C']) * float(self['CR'])
+        IntegImpact = float(self['I']) * float(self['IR'])
+        AvailImpact = float(self['A']) * float(self['AR'])
         result = self.impact_fcn(ConfImpact, IntegImpact, AvailImpact)
         return min(10.0, result)
 
@@ -207,9 +210,9 @@ class CommonVulnerabilityScore:
         return score
 
     def temporal_fcn(self, score):
-        score *= float(self.metrics['E'])
-        score *= float(self.metrics['RL'])
-        score *= float(self.metrics['RC'])
+        score *= float(self['E'])
+        score *= float(self['RL'])
+        score *= float(self['RC'])
         return score
 
 
