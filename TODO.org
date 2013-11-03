@@ -1,4 +1,12 @@
 * 2013-11-02
+** Command line interafce (cli)
+   Create a parser for the available metrics.  The output should be a
+   sequence of selected values that are ordered in the same way as the
+   available metrics.
+*** Reorganize source files, the main program should reside in cvss.py
+
+***
+* 2013-11-02
 ** cvss_refactor_3
 *** Template patterna
    The CommonVulnerabilityScore should be the base and the cvssv210
