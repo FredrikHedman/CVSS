@@ -5,13 +5,14 @@
 This class is an abstract interface.  To create a concrete class
 inhert from this class and implement the follwoing methods:
 
-   * version :  CVSS version string
+   * version : CVSS version string
    * base_fcn(impact) : Base Score
    * temporal_fcn(base_score) : Temporal Score
    * environmental_fcn(adjusted_temporal_score) :  Environmental Score
    * impact : float
    * adjusted_impact : float
    * exploitability : float
+   * base_metrics : list of base metrics
    * base_vector : string
    * temporal_vector : string
    * environmental_vector : string
@@ -53,6 +54,9 @@ class CVSS:
     @property
     def exploitability(self):
         return float()
+
+    def base_metrics(self):
+        return None
 
     @property
     def base_vulnerability_vector(self):

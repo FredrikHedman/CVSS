@@ -4,7 +4,9 @@
    sequence of selected values that are ordered in the same way as the
    available metrics.
 *** Reorganize source files, the main program should reside in cvss.py
-
+    Tested. Done.
+*** A cli with 14 is a bit much.  Do the interactive version first.
+    
 ***
 * 2013-11-02
 ** cvss_refactor_3

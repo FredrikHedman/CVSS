@@ -15,6 +15,8 @@ class CommonVulnerabilityScore(CVSS):
     def __getitem__(self, idx):
         return self.__metrics[idx]
 
+    def base_metrics(self):
+        return list
     @property
     def version(self):
         return "2.10"
@@ -69,6 +71,11 @@ class CommonVulnerabilityScore(CVSS):
         if impact == 0:
             val = 0.0
         return val
+
+    def base_metrics(self):
+        vv = ['AV', 'AC', 'Au', 'C', 'I', 'A']
+        ll = [self[v] for v in vv]
+        return ll
 
     @property
     def base_vector(self):

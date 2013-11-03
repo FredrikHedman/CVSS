@@ -114,6 +114,61 @@ def cvs_factory(cls, selected = None):
     lmetrics = prepare_metrics(L, selected)
     return cls(lmetrics)
 
+def select_metric_value(m):
+    m = Metric(*m)
+    default_metric_value = m.index
+    print(10*'+', m.name, m.short_name, 10*'+')
+    while True:
+        for v in m.values:
+            print(v, v.description)
+        idx = input('Select one [{0}]: '.format(default_metric_value))
+
+        if not idx:
+           idx = default_metric_value
+        print('Selected metric value ###|', idx, '|###')
+
+        try:
+            m.index = idx
+        except AssertionError:
+            print('Not valid')
+        else:
+            return m.index
+
+def base_display(cvs):
+    H = ["BASE METRIC", "EVALUATION", "SCORE"]
+    F = ["FORMULA", "BASE SCORE"]
+    W0 = 25
+    S1 = (W0*2 + len(H[1])) * '*'
+
+    print(S1)
+    print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
+    print(S1)
+
+    ml = cvs.base_metrics()
+    for m in ml:
+        print('{0:<{3}}{2:<{3}}{1}'.format(m.name,
+                                           m.selected.number,
+                                           m.selected.metric, W0))
+    print(S1)
+    print('{0:<{2}}{1}'.format(F[0], F[1], 2*W0))
+    print(S1)
+
+    print('{0:<{2}}{1}'.format('Impact =', round(cvs.impact,2), 2*W0))
+    print('{0:<{2}}{1}'.format('Exploitability =', round(cvs.exploitability, 2), 2*W0))
+    print('{0:<{2}}{1}'.format('Base Score =', cvs.base_score, 2*W0))
+    print('Base Vulnerability Vector: {0}'.format(cvs.base_vulnerability_vector))
+
+    print(S1)
+
+
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+    selected = []
+    L = base_metrics()
+    for m in L:
+        mm = select_metric_value(m)
+        selected.append(mm)
+
+    cvs = cvs_factory(CommonVulnerabilityScore, selected)
+
+    base_display(cvs)
+
