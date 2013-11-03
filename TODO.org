@@ -1,20 +1,61 @@
+* 2013-11-02
+** cvss_refactor_3
+*** Template patterna
+   The CommonVulnerabilityScore should be the base and the cvssv210
+   should be the concrete class.
+
+   Done.  Changed names and added version property. Tested.
+
+** cvss_refactor_2
+*** Add function to make addressing with short names possible.
+    Make it private.  Tested. Done.
+*** Extract formulas into a separate class
+    Tested. Done.
+* 2013-11-01
+
+** cvss_refactor_1
+   DRY when it it comes to initial metric values and metric short
+   names.  As the metrics are prepared the mapping could be
+   constructed.
+
+    Metric changed. CommonVulnerabilityScore changed.  No more DRY.
+    Added short_name in input data with Metric.short_name solved this.
+    Tested. Done.
+
+** metric_refactor_2
+*** cvs_factory and helper functions should be simpler
+Magic number should be removed.  Helpers do too much.  Let them just
+encapsulate the values. Pad selected and loop using zip an enumerate.
+*** Keep initial data in helper functions.
+Change factory to refelct this. Done. Tested.
+*** Refactor cvs_factory
+    No good calling pop on selected.  Extracted helper functions.
+    Moved cvs_factory and helper functions to cvss.py
+*** Refactor CommonVulnerabilityScore ctor
+    Moved the mapping to a helper function.
 * 2013-10-31
 ** CommonVulnerabilityScore
 Should use the template pattern for the different scores and behave
 like a dict that has a fixed set of keys with a Metric value.  How
 should these keys be initialized and where?  DRY.
-** Metric
+** metric_refactor_1
 A Metric has a name, a string value and a float value and can can be
 in one of several different states.  These states are set when the
 Metric is constructed.  Once initilized, different states can be
 selected but otherwise the Metric can not be changed.
-
+*** Indexing use string key
 Change so that indexing is done by a string key that is one of the
 allowed values.  It is not robust to have the order of intialization
-to controlling how we set the value.  Use OrdereDict?
+controlling how we set the value.  Use OrdereDict?
 
+Tested. Done.
 
 **
+** metric_refactor_2
+*** cvs_factory and helper functions should be simpler
+Magic number should be removed.  Helpers do too much.  Let them just
+encapsulate the values. Pad selected and loop using zip an enumerate.
+
 * 2013-10-30
 ** Need to decide on clearer way to store Metrics and their values.
 Done, for now.

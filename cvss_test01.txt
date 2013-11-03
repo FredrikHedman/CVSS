@@ -26,10 +26,10 @@ The base vector for this vulnerability is: AV:N/AC:L/Au:N/C:N/I:N/A:C.
                                                     == (7.8)
         ----------------------------------------------------
 
->>> from metric import cvs_factory
+>>> from cvss import cvs_factory
 >>> from cvss import CommonVulnerabilityScore
 >>>
->>> selected = [2, 2, 2, 0, 0, 2]
+>>> selected = ['N', 'L', 'N', 'N', 'N', 'C']
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 >>> print(round(cvs.impact, 1))
 6.9
@@ -60,7 +60,7 @@ Add som more metrics and reproduce the following score.
         round(7.8 * 0.95 * 0.87 * 1.00)             == (6.4)
         ----------------------------------------------------
 
->>> selected = [2, 2, 2, 0, 0, 2, 2, 0, 2]
+>>> selected = ['N', 'L', 'N', 'N', 'N', 'C', 'F', 'OF', 'C']
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 >>> print(round(cvs.impact, 1))
 6.9
@@ -97,7 +97,7 @@ AV:N/AC:L/Au:N/C:N/I:N/A:C
                                              == (0.00 - 9.2)
         ----------------------------------------------------
 
->>> selected = [2, 2, 2, 0, 0, 2, 2, 0, 2, 4, 3, 1, 1, 2]
+>>> selected = ['N', 'L', 'N', 'N', 'N', 'C', 'F', 'OF', 'C', 'H', 'H', 'M', 'M', 'H']
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 >>> print(round(cvs.impact, 1))
 6.9

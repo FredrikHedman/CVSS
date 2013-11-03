@@ -21,10 +21,10 @@
                                                    == (10.0)
         ----------------------------------------------------
 
->>> from metric import cvs_factory
+>>> from cvss import cvs_factory
 >>> from cvss import CommonVulnerabilityScore
 >>>
->>> selected = [2, 2, 2, 2, 2, 2]
+>>> selected = ['N', 'L', 'N', 'C', 'C', 'C']
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 
 >>> print(round(cvs.impact, 1))
@@ -48,7 +48,7 @@ AV:N/AC:L/Au:N/C:C/I:C/A:C
         round(10.0 * 0.95 * 0.87 * 1.00) ==            (8.3)
         ----------------------------------------------------
 
->>> selected = [2, 2, 2, 2, 2, 2, 2, 0, 2]
+>>> selected = ['N', 'L', 'N', 'C', 'C', 'C', 'F', 'OF', 'C']
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 >>> print(cvs.temporal_score)
 8.3
@@ -73,7 +73,8 @@ AV:N/AC:L/Au:N/C:C/I:C/A:C
                          ==                     (0.00 - 9.0)
         ----------------------------------------------------
 
->>> selected = [2, 2, 2, 2, 2, 2, 2, 0, 2, 4, 3, 1, 1, 0]
+>>> selected = ['N', 'L', 'N', 'C', 'C', 'C', 'F', 'OF', 'C', 'H', 'H', 'M', 'M', 'L']
+
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)
 >>> print(round(cvs.adjusted_impact, 1))
 9.6
