@@ -136,7 +136,7 @@ def select_metric_value(m):
 
 def display_score(cvs, H, F, ML, FD, VEC):
     W0 = 30
-    S1 = (W0*2 + len(H[2])) * '*'
+    S1 = (W0*2 + len(H[2])) * '='
     # Header data
     print(S1)
     print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
@@ -155,7 +155,7 @@ def display_score(cvs, H, F, ML, FD, VEC):
     # Footer data
     for d in FD:
         print('{0:<{2}}{1:>5.2f}'.format(d[0] + ' =', d[1], 2*W0))
-    print('Vulnerability Vector: {0}'.format(VEC))
+    print('{1} Vulnerability Vector: {0}'.format(VEC[1], VEC[0]))
     print(S1)
 
 
@@ -186,13 +186,13 @@ if __name__ == "__main__":
                  [ ('Impact', cvs.impact),
                    ('Exploitability', cvs.exploitability),
                    ('Base Score', cvs.base_score) ],
-                  cvs.base_vulnerability_vector)
+                  ('Base', cvs.base_vulnerability_vector))
     display_score(cvs,
                  ["TEMPORAL METRIC", "EVALUATION", "SCORE"],
                  ["FORMULA", "TEMPORAL SCORE"],
                  cvs.temporal_metrics(),
                   [ ('Temporal Score', cvs.temporal_score) ],
-                 cvs.temporal_vulnerability_vector)
+                 ('Temporal', cvs.temporal_vulnerability_vector))
     display_score(cvs,
                   ["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
                   ["FORMULA", "ENIRONMENTAL SCORE"],
@@ -200,7 +200,7 @@ if __name__ == "__main__":
                   [ ('Adjusted Impact', cvs.adjusted_impact),
                     ('Adjusted Base', cvs.adjusted_base_score),
                     ('Adjusted Temporal', cvs.adjusted_temporal_score),
-                    ('Enironmental Score', cvs.environmental_score) ],
-                  cvs.environmental_vulnerability_vector)
+                    ('Environmental Score', cvs.environmental_score) ],
+                  ('Environmental', cvs.environmental_vulnerability_vector))
 
 
