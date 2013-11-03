@@ -134,28 +134,35 @@ def select_metric_value(m):
         else:
             return m.index
 
-def display_score(cvs, H, F, ML, FD, VEC):
+def display_score(H, F, ML, FD, VEC):
+    def display_header(H):
+        print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
+    def display_metrics(ML):
+        for m in ML:
+            print('{0:<{3}}{1:<{3}}{2:>{4}.2f}'.format(m.name,
+                                                       m.selected.metric,
+                                                       m.selected.number,
+                                                       W0, W1))
+    def display_footer(F):
+        W2 = len(S1) - len(F[1])
+        print('{0:<{2}}{1}'.format(F[0], F[1], W2))
+    def display_footer_data(FD, VEC):
+        for d in FD:
+            print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2*W0, W1))
+        print('{1} Vulnerability Vector: {0}'.format(VEC[1], VEC[0]))
+    #
     W0 = 30
-    S1 = (W0*2 + len(H[2])) * '='
-    # Header data
+    W1 = len(H[2])
+    S1 = (W0*2 + W1) * '='
+    #
     print(S1)
-    print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
+    display_header(H)
     print(S1)
-    # Metrics data
-    for m in ML:
-        print('{0:<{3}}{1:<{3}}{2:>5.2f}'.format(m.name,
-                                           m.selected.metric,
-                                           m.selected.number,
-                                                 W0))
-    # Footer
+    display_metrics(ML)
     print(S1)
-    W2 = len(S1) - len(F[1])
-    print('{0:<{2}}{1}'.format(F[0], F[1], W2))
+    display_footer(F)
     print(S1)
-    # Footer data
-    for d in FD:
-        print('{0:<{2}}{1:>5.2f}'.format(d[0] + ' =', d[1], 2*W0))
-    print('{1} Vulnerability Vector: {0}'.format(VEC[1], VEC[0]))
+    display_footer_data(FD, VEC)
     print(S1)
 
 
@@ -179,22 +186,21 @@ if __name__ == "__main__":
 
     cvs = cvs_factory(CommonVulnerabilityScore, selected)
 
-    display_score(cvs,
-                 ["BASE METRIC", "EVALUATION", "SCORE"],
-                 ["FORMULA", "BASE SCORE"],
-                 cvs.base_metrics(),
-                 [ ('Impact', cvs.impact),
-                   ('Exploitability', cvs.exploitability),
-                   ('Base Score', cvs.base_score) ],
+    display_score(["BASE METRIC", "EVALUATION", "SCORE"],
+                  ["FORMULA", "BASE SCORE"],
+                  cvs.base_metrics(),
+                  [ ('Impact', cvs.impact),
+                    ('Exploitability', cvs.exploitability),
+                    ('Base Score', cvs.base_score) ],
                   ('Base', cvs.base_vulnerability_vector))
-    display_score(cvs,
-                 ["TEMPORAL METRIC", "EVALUATION", "SCORE"],
-                 ["FORMULA", "TEMPORAL SCORE"],
-                 cvs.temporal_metrics(),
+
+    display_score(["TEMPORAL METRIC", "EVALUATION", "SCORE"],
+                  ["FORMULA", "TEMPORAL SCORE"],
+                  cvs.temporal_metrics(),
                   [ ('Temporal Score', cvs.temporal_score) ],
-                 ('Temporal', cvs.temporal_vulnerability_vector))
-    display_score(cvs,
-                  ["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
+                  ('Temporal', cvs.temporal_vulnerability_vector))
+
+    display_score(["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
                   ["FORMULA", "ENIRONMENTAL SCORE"],
                   cvs.environmental_metrics(),
                   [ ('Adjusted Impact', cvs.adjusted_impact),
@@ -202,5 +208,6 @@ if __name__ == "__main__":
                     ('Adjusted Temporal', cvs.adjusted_temporal_score),
                     ('Environmental Score', cvs.environmental_score) ],
                   ('Environmental', cvs.environmental_vulnerability_vector))
+
 
 

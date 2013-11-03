@@ -6,8 +6,9 @@
 *** Reorganize source files, the main program should reside in cvss.py
     Tested. Done.
 *** A cli with 14 is a bit much.  Do the interactive version first.
-    
-***
+    Interactive implemented.  Tested. Done.
+*** Create a public project on github.
+    Done.
 * 2013-11-02
 ** cvss_refactor_3
 *** Template patterna
