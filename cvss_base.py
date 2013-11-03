@@ -13,6 +13,8 @@ inhert from this class and implement the follwoing methods:
    * adjusted_impact : float
    * exploitability : float
    * base_metrics : list of base metrics
+   * temporal_metrics : list of temporal metrics
+   * environmental_metrics : list of environmental metrics
    * base_vector : string
    * temporal_vector : string
    * environmental_vector : string
@@ -56,6 +58,12 @@ class CVSS:
         return float()
 
     def base_metrics(self):
+        return None
+
+    def temporal_metrics(self):
+        return None
+
+    def environmental_metrics(self):
         return None
 
     @property

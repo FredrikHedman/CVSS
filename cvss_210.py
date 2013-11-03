@@ -85,6 +85,11 @@ class CommonVulnerabilityScore(CVSS):
             vstr.append("{0}:{1}".format(v, str(self[v])))
         return '/'.join(vstr)
 
+    def temporal_metrics(self):
+        vv = ['E', 'RL', 'RC']
+        ll = [self[v] for v in vv]
+        return ll
+
     @property
     def temporal_vector(self):
         vv = ['E', 'RL', 'RC']
@@ -92,6 +97,11 @@ class CommonVulnerabilityScore(CVSS):
         for v in vv:
             vstr.append("{0}:{1}".format(v, str(self[v])))
         return '/'.join(vstr)
+
+    def environmental_metrics(self):
+        vv = ['CDP', 'TD', 'CR', 'IR', 'AR']
+        ll = [self[v] for v in vv]
+        return ll
 
     @property
     def environmental_vector(self):
