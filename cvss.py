@@ -138,7 +138,7 @@ def base_display(cvs):
     H = ["BASE METRIC", "EVALUATION", "SCORE"]
     F = ["FORMULA", "BASE SCORE"]
     W0 = 30
-    S1 = (W0*2 + len(H[1])) * '*'
+    S1 = (W0*2 + len(H[2])) * '*'
 
     print(S1)
     print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
@@ -146,16 +146,18 @@ def base_display(cvs):
 
     ml = cvs.base_metrics()
     for m in ml:
-        print('{0:<{3}}{2:<{3}}{1:>6.3f}'.format(m.name,
+        print('{0:<{3}}{1:<{3}}{2:>5.2f}'.format(m.name,
+                                           m.selected.metric,
                                            m.selected.number,
-                                           m.selected.metric, W0))
+                                                 W0))
     print(S1)
-    print('{0:<{2}}{1}'.format(F[0], F[1], 2*W0))
+    W2 = len(S1) - len(F[1])
+    print('{0:<{2}}{1}'.format(F[0], F[1], W2))
     print(S1)
 
-    print('{0:<{2}}{1}'.format('Impact =', round(cvs.impact,2), 2*W0))
-    print('{0:<{2}}{1}'.format('Exploitability =', round(cvs.exploitability, 2), 2*W0))
-    print('{0:<{2}}{1}'.format('Base Score =', cvs.base_score, 2*W0))
+    print('{0:<{2}}{1:>5.2f}'.format('Impact =', round(cvs.impact,2), 2*W0))
+    print('{0:<{2}}{1:>5.2f}'.format('Exploitability =', round(cvs.exploitability, 2), 2*W0))
+    print('{0:<{2}}{1:>5.2f}'.format('Base Score =', cvs.base_score, 2*W0))
     print('Base Vulnerability Vector: {0}'.format(cvs.base_vulnerability_vector))
 
     print(S1)
@@ -165,7 +167,7 @@ def temporal_display(cvs):
     H = ["TEMPORAL METRIC", "EVALUATION", "SCORE"]
     F = ["FORMULA", "TEMPORAL SCORE"]
     W0 = 30
-    S1 = (W0*2 + len(H[1])) * '*'
+    S1 = (W0*2 + len(H[2])) * '*'
 
     print(S1)
     print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
@@ -173,16 +175,17 @@ def temporal_display(cvs):
 
     ml = cvs.temporal_metrics()
     for m in ml:
-        print('{0:<{3}}{2:<{3}}{1:>6.3f}'.format(m.name,
+        print('{0:<{3}}{1:<{3}}{2:>5.2f}'.format(m.name,
+                                           m.selected.metric,
                                            m.selected.number,
-                                           m.selected.metric, W0))
+                                           W0))
 
     print(S1)
     W2 = len(S1) - len(F[1])
     print('{0:<{2}}{1}'.format(F[0], F[1], W2))
     print(S1)
 
-    print('{0:<{2}}{1}'.format('Temporal Score =', cvs.temporal_score, 2*W0))
+    print('{0:<{2}}{1:>5.2f}'.format('Temporal Score =', cvs.temporal_score, 2*W0))
     print('Temporal Vulnerability Vector: {0}'.format(cvs.temporal_vulnerability_vector))
 
     print(S1)
@@ -192,7 +195,7 @@ def environmental_display(cvs):
     H = ["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"]
     F = ["FORMULA", "ENIRONMENTAL SCORE"]
     W0 = 30
-    S1 = (W0*2 + len(H[1])) * '*'
+    S1 = (W0*2 + len(H[2])) * '*'
 
     print(S1)
     print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
@@ -200,18 +203,19 @@ def environmental_display(cvs):
 
     ml = cvs.environmental_metrics()
     for m in ml:
-        print('{0:<{3}}{2:<{3}}{1:>6.3f}'.format(m.name,
-                                           m.selected.number,
-                                           m.selected.metric, W0))
+        print('{0:<{3}}{1:<{3}}{2:>5.2f}'.format(m.name,
+                                                m.selected.metric,
+                                                m.selected.number,
+                                                W0))
     print(S1)
     W2 = len(S1) - len(F[1])
     print('{0:<{2}}{1}'.format(F[0], F[1], W2))
     print(S1)
 
-    print('{0:<{2}}{1}'.format('Adjusted Impact =', cvs.adjusted_impact, 2*W0))
-    print('{0:<{2}}{1}'.format('Adjusted Base =', cvs.adjusted_base_score, 2*W0))
-    print('{0:<{2}}{1}'.format('Adjusted Temporal =', cvs.adjusted_temporal_score, 2*W0))
-    print('{0:<{2}}{1}'.format('Enironmental Score =', cvs.environmental_score, 2*W0))
+    print('{0:<{2}}{1:>5.2f}'.format('Adjusted Impact =', cvs.adjusted_impact, 2*W0))
+    print('{0:<{2}}{1:>5.2f}'.format('Adjusted Base =', cvs.adjusted_base_score, 2*W0))
+    print('{0:<{2}}{1:>5.2f}'.format('Adjusted Temporal =', cvs.adjusted_temporal_score, 2*W0))
+    print('{0:<{2}}{1:>5.2f}'.format('Enironmental Score =', cvs.environmental_score, 2*W0))
     print('Enironmental Vulnerability Vector: {0}'.format(cvs.environmental_vulnerability_vector))
 
     print(S1)
