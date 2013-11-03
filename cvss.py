@@ -4,6 +4,8 @@
 Calculate CVSS metrics based on a list of Metrics.
 """
 from metric import Metric
+from cvss_base import CVSS
+from cvss_210 import CommonVulnerabilityScore
 
 def base_metrics():
     BASE_METRICS = [
@@ -112,143 +114,100 @@ def cvs_factory(cls, selected = None):
     lmetrics = prepare_metrics(L, selected)
     return cls(lmetrics)
 
+def select_metric_value(m):
+    m = Metric(*m)
+    default_metric_value = m.index
+    print(10*'+', m.name, m.short_name, 10*'+')
+    while True:
+        for v in m.values:
+            print(v, v.description)
+        idx = input('Select one [{0}]: '.format(default_metric_value))
 
-class CVSS:
-    @property
-    def version(self):
-        return None
+        if not idx:
+           idx = default_metric_value
+        print('Selected metric value ###|', idx, '|###')
 
-    @property
-    def base_score(self):
-        return round(self.base_fcn(self.impact), ndigits=1)
+        try:
+            m.index = idx
+        except AssertionError:
+            print('Not valid')
+        else:
+            return m.index
 
-    @property
-    def adjusted_base_score(self):
-        return round(self.base_fcn(self.adjusted_impact), ndigits=1)
-
-    @property
-    def temporal_score(self):
-        return round(self.temporal_fcn(self.base_score), ndigits=1)
-
-    @property
-    def adjusted_temporal_score(self):
-        return round(self.temporal_fcn(self.adjusted_base_score), ndigits=1)
-
-    @property
-    def environmental_score(self):
-        return round(self.environmental_fcn(self.adjusted_temporal_score), ndigits=1)
-
-    @property
-    def impact(self):
-        return None
-
-    @property
-    def exploitability(self):
-        return None
-
-    @property
-    def base_vulnerability_vector(self):
-        return self.base_vector
-
-    @property
-    def temporal_vulnerability_vector(self):
-        return self.temporal_vector
-
-    @property
-    def environmental_vulnerability_vector(self):
-        return self.environmental_vector
-
-
-class CommonVulnerabilityScore(CVSS):
-    def __init__(self, metrics_seq):
-        self.__metrics = {}
-        for m in metrics_seq:
-            self.__metrics[m.short_name] = m
-        assert len(self.__metrics) == len(metrics_seq), 'Metric short name collision'
-
-    def __getitem__(self, idx):
-        return self.__metrics[idx]
-
-    @property
-    def version(self):
-        return "2.10"
-
-    @property
-    def base_vector(self):
-        vv = ['AV', 'AC', 'Au', 'C', 'I', 'A']
-        vstr = []
-        for v in vv:
-            vstr.append("{0}:{1}".format(v, str(self[v])))
-        return '/'.join(vstr)
-
-    @property
-    def temporal_vector(self):
-        vv = ['E', 'RL', 'RC']
-        vstr = []
-        for v in vv:
-            vstr.append("{0}:{1}".format(v, str(self[v])))
-        return '/'.join(vstr)
-
-    @property
-    def environmental_vector(self):
-        vv = ['CDP', 'TD', 'CR', 'IR', 'AR']
-        vstr = []
-        for v in vv:
-            vstr.append("{0}:{1}".format(v, str(self[v])))
-        return '/'.join(vstr)
-
-    @property
-    def exploitability(self):
-        res = 20.0
-        res *= float(self['AV'])
-        res *= float(self['AC'])
-        res *= float(self['Au'])
-        return res
-
-    @property
-    def impact(self):
-        ConfImpact = float(self['C'])
-        IntegImpact = float(self['I'])
-        AvailImpact = float(self['A'])
-        return self.impact_fcn(ConfImpact, IntegImpact, AvailImpact)
-
-    @property
-    def adjusted_impact(self):
-        ConfImpact = float(self['C']) * float(self['CR'])
-        IntegImpact = float(self['I']) * float(self['IR'])
-        AvailImpact = float(self['A']) * float(self['AR'])
-        result = self.impact_fcn(ConfImpact, IntegImpact, AvailImpact)
-        return min(10.0, result)
-
-    def impact_fcn(self, conf_impact, integ_impact, avail_impact):
-        result = 1 - (1-conf_impact)*(1-integ_impact)*(1-avail_impact)
-        result *= 10.41
-        return result
-
-    def fcn(self, impact):
-        val = 1.176
-        if impact == 0:
-            val = 0.0
-        return val
-
-    def base_fcn(self, impact):
-        score = (0.6*impact + 0.4*self.exploitability - 1.5)
-        score *= self.fcn(impact)
-        return score
-
-    def temporal_fcn(self, score):
-        score *= float(self['E'])
-        score *= float(self['RL'])
-        score *= float(self['RC'])
-        return score
-
-    def environmental_fcn(self, adjusted_temporal_score):
-        score = adjusted_temporal_score
-        score += (10.0 - adjusted_temporal_score)*float(self['CDP'])
-        score *= float(self['TD'])
-        return score
+def display_score(H, F, ML, FD, VEC):
+    def display_header(H):
+        print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
+    def display_metrics(ML):
+        for m in ML:
+            print('{0:<{3}}{1:<{3}}{2:>{4}.2f}'.format(m.name,
+                                                       m.selected.metric,
+                                                       m.selected.number,
+                                                       W0, W1))
+    def display_footer(F):
+        W2 = len(S1) - len(F[1])
+        print('{0:<{2}}{1}'.format(F[0], F[1], W2))
+    def display_footer_data(FD, VEC):
+        for d in FD:
+            print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2*W0, W1))
+        print('{1} Vulnerability Vector: {0}'.format(VEC[1], VEC[0]))
+    #
+    W0 = 30
+    W1 = len(H[2])
+    S1 = (W0*2 + W1) * '='
+    #
+    print(S1)
+    display_header(H)
+    print(S1)
+    display_metrics(ML)
+    print(S1)
+    display_footer(F)
+    print(S1)
+    display_footer_data(FD, VEC)
+    print(S1)
 
 
 if __name__ == "__main__":
-    import doctest
-    doctest.testmod()
+    selected = []
+
+    L = base_metrics()
+    for m in L:
+        mm = select_metric_value(m)
+        selected.append(mm)
+
+    L = temporal_metrics()
+    for m in L:
+        mm = select_metric_value(m)
+        selected.append(mm)
+
+    L = environmental_metrics()
+    for m in L:
+        mm = select_metric_value(m)
+        selected.append(mm)
+
+    cvs = cvs_factory(CommonVulnerabilityScore, selected)
+
+    display_score(["BASE METRIC", "EVALUATION", "SCORE"],
+                  ["FORMULA", "BASE SCORE"],
+                  cvs.base_metrics(),
+                  [ ('Impact', cvs.impact),
+                    ('Exploitability', cvs.exploitability),
+                    ('Base Score', cvs.base_score) ],
+                  ('Base', cvs.base_vulnerability_vector))
+
+    display_score(["TEMPORAL METRIC", "EVALUATION", "SCORE"],
+                  ["FORMULA", "TEMPORAL SCORE"],
+                  cvs.temporal_metrics(),
+                  [ ('Temporal Score', cvs.temporal_score) ],
+                  ('Temporal', cvs.temporal_vulnerability_vector))
+
+    display_score(["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
+                  ["FORMULA", "ENIRONMENTAL SCORE"],
+                  cvs.environmental_metrics(),
+                  [ ('Adjusted Impact', cvs.adjusted_impact),
+                    ('Adjusted Base', cvs.adjusted_base_score),
+                    ('Adjusted Temporal', cvs.adjusted_temporal_score),
+                    ('Environmental Score', cvs.environmental_score) ],
+                  ('Environmental', cvs.environmental_vulnerability_vector))
+
+
+
