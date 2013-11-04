@@ -4,7 +4,7 @@ CVSS calculator for CVSS version 2.10
 
 # Version
 
-1.0
+1.11
 
 # Developers
 
@@ -31,3 +31,9 @@ These are all based on CVSS examples using doctest.  No output is
 expected.
 
     $ python3 cvss_examples.py
+
+You can also run all the examples with
+
+    $ ./run_tests.sh
+
+No output expected.
