@@ -1,5 +1,9 @@
 #! /usr/bin/env python3
 #
+# Author: Fredrik Hedman <fredrik.hedman@noruna.se>
+# Version: 0.2
+# LICENSE: MIT LICENSE
+#
 """Metrics used by CVSS.
 
 >>> from metric_value import MetricValue

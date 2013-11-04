@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 #
+# Author: Fredrik Hedman <fredrik.hedman@noruna.se>
+# Version: 0.2
+# LICENSE: MIT LICENSE
+#
 """Base class for CVSS metrics.
 
 This class is an abstract interface.  To create a concrete class
