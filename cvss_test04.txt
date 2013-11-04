@@ -1,25 +1,23 @@
 =====================================
  Test using default cvs from factory
 =====================================
-        ----------------------------------------------------
-        BASE METRIC                 EVALUATION         SCORE
-        ----------------------------------------------------
-        Access Vector               [Local]           (0.395)
-        Access Complexity           [High]            (0.35)
-        Authentication              [Multiple]        (0.45)
-        Confidentiality Impact      [None]            (0.0)
-        Integrity Impact            [None]            (0.0)
-        Availability Impact         [None]            (0.0)
-        ----------------------------------------------------
-        FORMULA                                   BASE SCORE
-        ----------------------------------------------------
-        Impact = 10.41*(1-(1-0)*(1-0)*(1-0) == 0
-        Exploitability (* 20 0.395 0.35 0.45) 1.24425
-
-        f(Impact) = 0
-        BaseScore =((0.6*0)+(0.4*1.124425)1.5)*0
-                                                  ==   (0)
-        ----------------------------------------------------
+    =================================================================
+    BASE METRIC                   EVALUATION                    SCORE
+    =================================================================
+    Access Vector                 Local                          0.40
+    Access Complexity             High                           0.35
+    Authentication                None                           0.70
+    Confidentiality Impact        None                           0.00
+    Integrity Impact              None                           0.00
+    Availability Impact           None                           0.00
+    =================================================================
+    FORMULA                                                BASE SCORE
+    =================================================================
+    Impact =                                                     0.00
+    Exploitability =                                             1.95
+    Base Score =                                                -0.00
+    Base Vulnerability Vector: AV:L/AC:H/Au:N/C:N/I:N/A:N
+    =================================================================
 
 >>> from cvss import CommonVulnerabilityScore
 >>> from cvss import cvs_factory
@@ -27,10 +25,13 @@
 >>> cvs.impact
 0.0
 >>> cvs.exploitability
-1.24425
+1.94656
 >>> cvs.base_score
 -0.0
 >>> cvs.temporal_score
 -0.0
 >>> cvs.environmental_score
 0.0
+>>> cvs.base_vulnerability_vector
+'AV:L/AC:H/Au:N/C:N/I:N/A:N'
+
