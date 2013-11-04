@@ -1,3 +1,7 @@
+# Author: Fredrik Hedman <fredrik.hedman@noruna.se>
+# Version: 0.2
+# LICENSE: MIT LICENSE
+#
 import doctest
 doctest.testfile("cvss_test00.txt")
 doctest.testfile("cvss_test01.txt")
