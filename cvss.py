@@ -125,10 +125,11 @@ def select_metric_value(m):
     while True:
         for v in m.values:
             print(v, v.description)
-        idx = input('Select one [{0}]: '.format(default_metric_value))
+        idx = input('Select one [{0}]: '.format(default_metric_value)).upper()
 
         if not idx:
            idx = default_metric_value
+
         print('Selected metric value ###|', idx, '|###')
 
         try:
