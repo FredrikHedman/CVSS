@@ -121,7 +121,7 @@ def cvs_factory(cls, selected = None):
 def select_metric_value(m):
     m = Metric(*m)
     default_metric_value = m.index
-    print(10*'+', m.name, m.short_name, 10*'+')
+    print('\n' + 10*'+', m.name, m.short_name, 10*'+')
     while True:
         for v in m.values:
             print(v, v.description)
