@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# Version: 1.11
+# Version: 1.12
 # LICENSE: MIT LICENSE
 #
 """
@@ -121,7 +121,7 @@ def cvs_factory(cls, selected = None):
 def select_metric_value(m):
     m = Metric(*m)
     default_metric_value = m.index
-    print(10*'+', m.name, m.short_name, 10*'+')
+    print("\n{0} {1} {2} {0}".format(10 * "+", m.name, m.short_name))
     while True:
         for v in m.values:
             print(v, v.description)
