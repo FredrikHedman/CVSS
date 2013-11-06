@@ -1,12 +1,27 @@
 #!/usr/bin/env python3
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# Version: 1.12
 # LICENSE: MIT LICENSE
 #
 """
 Calculate CVSS metrics based on a list of Metrics.
+
+Usage:
+  {PGM} (-i | --interactive) [-v | --verbose] 
+  {PGM} (-h | --help | --version)
+
+Options:
+  -h --help         show this help message and exit
+  --version         show version and exit
+  -v --verbose      print verbose results
+  -i --interactive  select metric values interactively
+
 """
+VERSION="1.13"
+
+import sys
+from os.path import basename
+from docopt import docopt
 from metric import Metric
 from cvss_base import CVSS
 from cvss_210 import CommonVulnerabilityScore
@@ -119,6 +134,15 @@ def cvs_factory(cls, selected = None):
     return cls(lmetrics)
 
 def select_metric_value(m):
+    """Interactive selection of a metric value
+
+    Input:
+       m : list of values that can be unpacked into valid
+           parameters for constructing a Metric
+    Return:
+       a valid index for the Metric
+
+    """
     m = Metric(*m)
     default_metric_value = m.index
     print("\n{0} {1} {2} {0}".format(10 * "+", m.name, m.short_name))
@@ -170,8 +194,7 @@ def display_score(H, F, ML, FD, VEC):
     display_footer_data(FD, VEC)
     print(S1)
 
-
-if __name__ == "__main__":
+def read_and_set_metrics():
     selected = []
 
     L = base_metrics()
@@ -189,8 +212,10 @@ if __name__ == "__main__":
         mm = select_metric_value(m)
         selected.append(mm)
 
-    cvs = cvs_factory(CommonVulnerabilityScore, selected)
+    return selected
 
+
+def generate_verbose_output(cvs):
     display_score(["BASE METRIC", "EVALUATION", "SCORE"],
                   ["FORMULA", "BASE SCORE"],
                   cvs.base_metrics(),
@@ -215,4 +240,35 @@ if __name__ == "__main__":
                   ('Environmental', cvs.environmental_vulnerability_vector))
 
 
+def generate_output(cvs):
+    list_of_scores = [
+        ('Base Score',
+         cvs.base_score, cvs.base_vulnerability_vector),
+        ('Temporal Score',
+         cvs.temporal_score, cvs.temporal_vulnerability_vector),
+        ('Environmental Score',
+         cvs.environmental_score, cvs.environmental_vulnerability_vector),
+    ]
+    divider = "{0}{1}{0}".format("\n", 72 * "+")
+    print(divider)
+    for score in list_of_scores:
+        print("{0[0]} {0[2]} --> {0[1]}".format(score))
+    print()
 
+def cmd_line_syntax(str):
+    return __doc__.format(PGM=basename(sys.argv[0]))
+
+if __name__ == "__main__":
+
+    command_lines_arguments = docopt(cmd_line_syntax(__doc__), version=VERSION)
+
+    if command_lines_arguments["--interactive"]:
+        selected = read_and_set_metrics()
+        cvs = cvs_factory(CommonVulnerabilityScore, selected)
+    else:
+        cvs = cvs_factory(CommonVulnerabilityScore)
+
+    if command_lines_arguments["--verbose"]:
+        generate_verbose_output(cvs)
+    else:
+        generate_output(cvs)
