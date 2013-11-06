@@ -253,8 +253,7 @@ def generate_output(cvs):
     print(divider)
     for score in list_of_scores:
         print("{0[0]} {0[2]} --> {0[1]}".format(score))
-        print(divider)
-
+    print()
 
 def cmd_line_syntax(str):
     return __doc__.format(PGM=basename(sys.argv[0]))
