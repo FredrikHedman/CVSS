@@ -17,7 +17,7 @@ Options:
   -i --interactive  select metric values interactively
 
 """
-VERSION="1.12"
+VERSION="1.13"
 
 import sys
 from os.path import basename

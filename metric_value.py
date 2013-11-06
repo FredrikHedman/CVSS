@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# Version: 1.12
+# Version: 1.13
 # LICENSE: MIT LICENSE
 #
 """Metrics values used by CVSS."""
