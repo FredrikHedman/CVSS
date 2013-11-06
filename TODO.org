@@ -1,8 +1,11 @@
 * 2013-11-06
 ** Refactor using cmd and docopt (cmd_and_docopt)
 *** Extract functions from main program
-*** Start using docopt
-Add -v --verbose to print 
+    Tested. DONE.
+*** Start using docopt for basic command line control
+    Add -v --verbose to print tables.  Default is to print scores and vectors.
+    Tested. DONE.
+
 *** Start using cmd
     Convert the main-loop to use cmd.Cmd when interactive.  Print and
     vector as data is completed.
