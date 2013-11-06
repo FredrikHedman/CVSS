@@ -119,6 +119,15 @@ def cvs_factory(cls, selected = None):
     return cls(lmetrics)
 
 def select_metric_value(m):
+    """Interactive selection of a metric value
+
+    Input:
+       m : list of values that can be unpacked into valid
+           parameters for constructing a Metric
+    Return:
+       a valid index for the Metric
+
+    """
     m = Metric(*m)
     default_metric_value = m.index
     print("\n{0} {1} {2} {0}".format(10 * "+", m.name, m.short_name))
@@ -170,8 +179,7 @@ def display_score(H, F, ML, FD, VEC):
     display_footer_data(FD, VEC)
     print(S1)
 
-
-if __name__ == "__main__":
+def read_and_set_metrics():
     selected = []
 
     L = base_metrics()
@@ -189,8 +197,10 @@ if __name__ == "__main__":
         mm = select_metric_value(m)
         selected.append(mm)
 
-    cvs = cvs_factory(CommonVulnerabilityScore, selected)
+    return selected
 
+
+def generate_output(cvs):
     display_score(["BASE METRIC", "EVALUATION", "SCORE"],
                   ["FORMULA", "BASE SCORE"],
                   cvs.base_metrics(),
@@ -213,6 +223,12 @@ if __name__ == "__main__":
                     ('Adjusted Temporal', cvs.adjusted_temporal_score),
                     ('Environmental Score', cvs.environmental_score) ],
                   ('Environmental', cvs.environmental_vulnerability_vector))
+
+
+if __name__ == "__main__":
+    selected = read_and_set_metrics()
+    cvs = cvs_factory(CommonVulnerabilityScore, selected)
+    generate_output(cvs)
 
 
 
