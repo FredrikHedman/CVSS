@@ -19,8 +19,6 @@ class CommonVulnerabilityScore(CVSS):
     def __getitem__(self, idx):
         return self.__metrics[idx]
 
-    def base_metrics(self):
-        return list
     @property
     def version(self):
         return "2.10"
