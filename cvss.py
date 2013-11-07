@@ -235,7 +235,9 @@ def generate_verbose_output(cvs, clarg):
                       ('Environmental', cvs.environmental_vulnerability_vector))
 
 def generate_output(cvs, clarg):
-    show = [clarg["--base"], clarg["--temporal"], clarg["--environmental"]]
+    show = [clarg["--base"] or clarg["--all"],
+            clarg["--temporal"] or clarg["--all"],
+            clarg["--environmental"] or clarg["--all"]]
     list_of_scores = [
         ('Base Score',
          cvs.base_score, cvs.base_vulnerability_vector),
@@ -272,7 +274,7 @@ if __name__ == "__main__":
             selected = read_and_set(environmental_metrics(), selected)
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
     elif clarg["--vulnerability"]:
-        clarg["--base"] = True
+        clarg["--all"] = True
         cvs = cvs_factory(CommonVulnerabilityScore)
         vector = clarg["--vulnerability"].split('/')
         for v in vector:
