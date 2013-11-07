@@ -7,14 +7,19 @@
 Calculate CVSS metrics based on a list of Metrics.
 
 Usage:
-  {PGM} (-i | --interactive) [-v | --verbose] 
+  {PGM} (-i | --interactive) [-v | --verbose] [-a | --all]
+  {PGM} (-i | --interactive) [-v | --verbose] [-b | --base [ -t | --temporal [-e | --environmental] ] ]
   {PGM} (-h | --help | --version)
 
 Options:
-  -h --help         show this help message and exit
-  --version         show version and exit
-  -v --verbose      print verbose results
-  -i --interactive  select metric values interactively
+  -i --interactive      select metric values interactively
+  -a --all              ask for all metrics
+  -b --base             ask for base metrics
+  -t --temporal         ask for temporal metrics
+  -e --environmental    ask for environmental metrics
+  -v --verbose          print verbose results
+  -h --help             show this help message and exit
+  --version             show version and exit
 
 """
 VERSION="1.13.1"
@@ -194,54 +199,40 @@ def display_score(H, F, ML, FD, VEC):
     display_footer_data(FD, VEC)
     print(S1)
 
-def read_and_set_metrics():
-    selected = []
-
-    L = base_metrics()
+def read_and_set(L, selected):
     for m in L:
         mm = select_metric_value(m)
         selected.append(mm)
-
-    L = temporal_metrics()
-    for m in L:
-        mm = select_metric_value(m)
-        selected.append(mm)
-
-    L = environmental_metrics()
-    for m in L:
-        mm = select_metric_value(m)
-        selected.append(mm)
-
     return selected
 
+def generate_verbose_output(cvs, clarg):
+    show = [clarg["--base"], clarg["--temporal"], clarg["--environmental"]]
+    if show[0] or clarg["--all"]:
+        display_score(["BASE METRIC", "EVALUATION", "SCORE"],
+                      ["FORMULA", "BASE SCORE"],
+                      cvs.base_metrics(),
+                      [ ('Impact', cvs.impact),
+                        ('Exploitability', cvs.exploitability),
+                        ('Base Score', cvs.base_score) ],
+                      ('Base', cvs.base_vulnerability_vector))
+    if show[1] or clarg["--all"]:
+        display_score(["TEMPORAL METRIC", "EVALUATION", "SCORE"],
+                      ["FORMULA", "TEMPORAL SCORE"],
+                      cvs.temporal_metrics(),
+                      [ ('Temporal Score', cvs.temporal_score) ],
+                      ('Temporal', cvs.temporal_vulnerability_vector))
+    if show[2] or clarg["--all"]:
+        display_score(["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
+                      ["FORMULA", "ENIRONMENTAL SCORE"],
+                      cvs.environmental_metrics(),
+                      [ ('Adjusted Impact', cvs.adjusted_impact),
+                        ('Adjusted Base', cvs.adjusted_base_score),
+                        ('Adjusted Temporal', cvs.adjusted_temporal_score),
+                        ('Environmental Score', cvs.environmental_score) ],
+                      ('Environmental', cvs.environmental_vulnerability_vector))
 
-def generate_verbose_output(cvs):
-    display_score(["BASE METRIC", "EVALUATION", "SCORE"],
-                  ["FORMULA", "BASE SCORE"],
-                  cvs.base_metrics(),
-                  [ ('Impact', cvs.impact),
-                    ('Exploitability', cvs.exploitability),
-                    ('Base Score', cvs.base_score) ],
-                  ('Base', cvs.base_vulnerability_vector))
-
-    display_score(["TEMPORAL METRIC", "EVALUATION", "SCORE"],
-                  ["FORMULA", "TEMPORAL SCORE"],
-                  cvs.temporal_metrics(),
-                  [ ('Temporal Score', cvs.temporal_score) ],
-                  ('Temporal', cvs.temporal_vulnerability_vector))
-
-    display_score(["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
-                  ["FORMULA", "ENIRONMENTAL SCORE"],
-                  cvs.environmental_metrics(),
-                  [ ('Adjusted Impact', cvs.adjusted_impact),
-                    ('Adjusted Base', cvs.adjusted_base_score),
-                    ('Adjusted Temporal', cvs.adjusted_temporal_score),
-                    ('Environmental Score', cvs.environmental_score) ],
-                  ('Environmental', cvs.environmental_vulnerability_vector))
-
-
-def generate_output(cvs, cla):
-    choices = [cla["--base"], cla["--temporal"], cla["--environmental"]]
+def generate_output(cvs, clarg):
+    show = [clarg["--base"], clarg["--temporal"], clarg["--environmental"]]
     list_of_scores = [
         ('Base Score',
          cvs.base_score, cvs.base_vulnerability_vector),
@@ -250,11 +241,10 @@ def generate_output(cvs, cla):
         ('Environmental Score',
          cvs.environmental_score, cvs.environmental_vulnerability_vector),
     ]
-
     divider = "{0}{1}{0}".format("\n", 72 * "+")
     print(divider)
-    for ok, score in zip(choices,list_of_scores):
-        if ok:
+    for s, score in zip(show, list_of_scores):
+        if s:
             print("{0[0]} {0[2]} --> {0[1]}".format(score))
     print()
 
@@ -263,15 +253,25 @@ def cmd_line_syntax(str):
 
 if __name__ == "__main__":
 
-    command_lines_arguments = docopt(cmd_line_syntax(__doc__), version=VERSION)
+    clarg = docopt(cmd_line_syntax(__doc__), version=VERSION)
 
-    if command_lines_arguments["--interactive"]:
-        selected = read_and_set_metrics()
+    if clarg["--interactive"]:
+        selected = []
+        if clarg["--base"]:
+            selected = read_and_set(base_metrics(), selected)
+        if clarg["--temporal"]:
+            selected = read_and_set(temporal_metrics(), selected)
+        if clarg["--environmental"]:
+            selected = read_and_set(environmental_metrics(), selected)
+        if clarg["--all"]:
+            selected = read_and_set(base_metrics(), selected)
+            selected = read_and_set(temporal_metrics(), selected)
+            selected = read_and_set(environmental_metrics(), selected)
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
     else:
         cvs = cvs_factory(CommonVulnerabilityScore)
 
-    if command_lines_arguments["--verbose"]:
-        generate_verbose_output(cvs)
+    if clarg["--verbose"]:
+        generate_verbose_output(cvs, clarg)
     else:
-        generate_output(cvs, cla)
+        generate_output(cvs, clarg)
