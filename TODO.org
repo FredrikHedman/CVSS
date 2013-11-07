@@ -7,7 +7,9 @@
 *** Parse vectors and calculate scores
    Score.  Use default values when none available.
 
-   
+   Extract score_from function.
+** parse a vector interactively and return a score
+   when complete otherwise allow for interactive input
 ** Start using cmd
     Convert the main-loop to use cmd.Cmd when interactive.  Print and
     vector as data is completed.
@@ -25,8 +27,6 @@
 ** rst output
    Generate verbose output in a RST format.
 ** plain text output
-** parse a vector and return a score
-   when complete otherwise allow for interactive input
 * 2013-11-06
 ** Refactor using cmd and docopt (cmd_and_docopt)
 *** Extract functions from main program

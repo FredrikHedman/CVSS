@@ -256,6 +256,26 @@ def generate_output(cvs, clarg):
 def cmd_line_syntax(str):
     return __doc__.format(PGM=basename(sys.argv[0]))
 
+def score_from(vulnerability_vector):
+    cvs = cvs_factory(CommonVulnerabilityScore)
+    for v in vulnerability_vector:
+        try:
+            idx,value = v.split(':')
+            metric_ref = cvs[idx]
+            metric_ref.index = value
+        except AssertionError as e:
+            opts = [str(m) for m in metric_ref.values]
+            msg = "using default metric value: "
+            print("{0}, {1} {2}".format(e, msg, metric_ref.index))
+            print("{0} ({1}) one of: {2})".format(metric_ref.name,
+                                                  metric_ref.short_name,
+                                                  opts))
+        except (KeyError, ValueError) as e:
+            print('Error: invalid vulnerability vector.')
+            print('Hint: {}'.format(e))
+            sys.exit(1)
+    return cvs
+
 if __name__ == "__main__":
 
     clarg = docopt(cmd_line_syntax(__doc__), version=VERSION)
@@ -275,20 +295,7 @@ if __name__ == "__main__":
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
     elif clarg["--vulnerability"]:
         clarg["--all"] = True
-        cvs = cvs_factory(CommonVulnerabilityScore)
-        vector = clarg["--vulnerability"].split('/')
-        for v in vector:
-            idx,value = v.split(':')
-            try:
-                metric_ref = cvs[idx]
-                metric_ref.index = value
-            except AssertionError as e:
-                opts = [str(m) for m in metric_ref.values]
-                msg = "using default metric value: "
-                print("{0}, {1} {2}".format(e, msg, metric_ref.index))
-                print("{0} ({1}) one of: {2})".format(metric_ref.name,
-                                                      metric_ref.short_name,
-                                                      opts))
+        cvs = score_from(clarg["--vulnerability"].split('/'))
     else:
         cvs = cvs_factory(CommonVulnerabilityScore)
 
