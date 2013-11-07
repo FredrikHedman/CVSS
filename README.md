@@ -12,8 +12,8 @@ Fredrik Hedman
 
 # Installation
 
-  $ git clone https://github.com/FredrikHedman/CVSS.git
-  $ sudo pip3 install -r requirements.txt
+    $ git clone https://github.com/FredrikHedman/CVSS.git
+    $ sudo pip3 install -r requirements.txt
 
 # Howto
 
