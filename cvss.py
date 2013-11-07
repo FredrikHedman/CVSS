@@ -240,7 +240,8 @@ def generate_verbose_output(cvs):
                   ('Environmental', cvs.environmental_vulnerability_vector))
 
 
-def generate_output(cvs):
+def generate_output(cvs, cla):
+    choices = [cla["--base"], cla["--temporal"], cla["--environmental"]]
     list_of_scores = [
         ('Base Score',
          cvs.base_score, cvs.base_vulnerability_vector),
@@ -249,10 +250,12 @@ def generate_output(cvs):
         ('Environmental Score',
          cvs.environmental_score, cvs.environmental_vulnerability_vector),
     ]
+
     divider = "{0}{1}{0}".format("\n", 72 * "+")
     print(divider)
-    for score in list_of_scores:
-        print("{0[0]} {0[2]} --> {0[1]}".format(score))
+    for ok, score in zip(choices,list_of_scores):
+        if ok:
+            print("{0[0]} {0[2]} --> {0[1]}".format(score))
     print()
 
 def cmd_line_syntax(str):
@@ -271,4 +274,4 @@ if __name__ == "__main__":
     if command_lines_arguments["--verbose"]:
         generate_verbose_output(cvs)
     else:
-        generate_output(cvs)
+        generate_output(cvs, cla)

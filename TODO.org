@@ -1,11 +1,8 @@
-* 2013-11-06
-** Refactor using cmd and docopt (cmd_and_docopt)
-*** Extract functions from main program
-    Tested. DONE.
-*** Start using docopt for basic command line control
-    Add -v --verbose to print tables.  Default is to print scores and vectors.
-    Tested. DONE.
-
+* 2013-11-07
+** Refactor using cmd and docopt
+*** Refactor cli (cli2)
+    Simplify!  Not selected.  No output.!  Not quite working when when
+    no interactive set.
 *** Start using cmd
     Convert the main-loop to use cmd.Cmd when interactive.  Print and
     vector as data is completed.
@@ -29,6 +26,16 @@
 ** plain text output
 ** parse a vector and return a score
    when complete otherwise allow for interactive input
+* 2013-11-06
+** Refactor using cmd and docopt (cmd_and_docopt)
+*** Extract functions from main program
+    Tested. DONE.
+*** Start using docopt for basic command line control
+    Add -v --verbose to print tables.  Default is to print scores and vectors.
+    Tested. DONE.
+
+*** Add more command line options
+    Tested. DONE.
 * 2013-11-02
 ** Command line interafce (cli)
    Create a parser for the available metrics.  The output should be a
