@@ -46,9 +46,9 @@ this up and running for the first time take the following steps:
   * Create your own virtual environment and activate it
 
         $ pyvenv-3.3 ~/tmp/venv
-        $ source venv/bin/activate 
+        $ source venv/bin/activate
         (venv) $ deactive          # does what is says...
-        $ source venv/bin/activate 
+        $ source venv/bin/activate
 
   * Install pip in your virtual environment
 
@@ -59,11 +59,10 @@ this up and running for the first time take the following steps:
         (venv) $ python get-pip.py                # install pip
         (venv) $ pip install --upgrade setuptools # just to be sure
 
-   * Verify that pip and ilk are installed in your venv
+  * Verify that pip and ilk are installed in your venv.  Yous should
+    see python, pip and easy_install listed with
 
-        (venv) ls ~/tmp/venv/bin
-        activate        easy_install-3.3    pip-3.3         python          python3.3
-        easy_install    pip         pydoc           python3
+        (venv) ls -l ~/tmp/venv/bin/{p,e}*
 
   * Finally install the required packages and do a quick test
 
