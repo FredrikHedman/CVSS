@@ -10,6 +10,11 @@ CVSS calculator for CVSS version 2.10
 
 Fredrik Hedman
 
+# Installation
+
+  $ git clone https://github.com/FredrikHedman/CVSS.git
+  $ sudo pip3 install -r requirements.txt
+
 # Howto
 
 Calculate the score by running the program and answering the questions:
@@ -42,7 +47,7 @@ The tests are all doctests.  No output is expected.
      $ python3 metric.py
      $ python3 metric_value.py
 
-* Examples
+# Examples
 
 These are all based on CVSS examples using doctest.  No output is
 expected.
