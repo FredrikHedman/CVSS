@@ -12,11 +12,12 @@ Fredrik Hedman
 
 # Howto
 
-
-
 Calculate the score by running the program and answering the questions:
 
-    $ python3 cvss.py
+    $ python3.3 cvss.py
+    Usage:
+      cvss.py (-i | --interactive) [-v | --verbose]
+      cvss.py (-h | --help | --version)
 
 # Unit Tests 
 
