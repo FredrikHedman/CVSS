@@ -9,17 +9,20 @@ Calculate CVSS metrics based on a list of Metrics.
 Usage:
   {PGM} (-i | --interactive) [-v | --verbose] [-a | --all]
   {PGM} (-i | --interactive) [-v | --verbose] [-b | --base [ -t | --temporal [-e | --environmental] ] ]
+  {PGM} [-v | --verbose] --vulnerability <vector>
   {PGM} (-h | --help | --version)
 
 Options:
-  -i --interactive      select metric values interactively
-  -a --all              ask for all metrics
-  -b --base             ask for base metrics
-  -t --temporal         ask for temporal metrics
-  -e --environmental    ask for environmental metrics
-  -v --verbose          print verbose results
-  -h --help             show this help message and exit
-  --version             show version and exit
+  -i --interactive          select metric values interactively
+  -a --all                  ask for all metrics
+  -b --base                 ask for base metrics
+  -t --temporal             ask for temporal metrics
+  -e --environmental        ask for environmental metrics
+  --vulnerability <vector>  calculate score from vector
+
+  -v --verbose              print verbose results
+  -h --help                 show this help message and exit
+  --version                 show version and exit
 
 """
 VERSION="1.13.1"
@@ -268,6 +271,22 @@ if __name__ == "__main__":
             selected = read_and_set(temporal_metrics(), selected)
             selected = read_and_set(environmental_metrics(), selected)
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
+    elif clarg["--vulnerability"]:
+        clarg["--base"] = True
+        cvs = cvs_factory(CommonVulnerabilityScore)
+        vector = clarg["--vulnerability"].split('/')
+        for v in vector:
+            idx,value = v.split(':')
+            try:
+                metric_ref = cvs[idx]
+                metric_ref.index = value
+            except AssertionError as e:
+                opts = [str(m) for m in metric_ref.values]
+                msg = "using default metric value: "
+                print("{0}, {1} {2}".format(e, msg, metric_ref.index))
+                print("{0} ({1}) one of: {2})".format(metric_ref.name,
+                                                      metric_ref.short_name,
+                                                      opts))
     else:
         cvs = cvs_factory(CommonVulnerabilityScore)
 

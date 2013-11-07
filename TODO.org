@@ -1,9 +1,14 @@
 * 2013-11-07
 ** Refactor using cmd and docopt
 *** Refactor cli (cli2)
-    Simplify!  Not selected.  No output.!  Not quite working when when
-    no interactive set.
-*** Start using cmd
+    Simplify!  Tested. DONE.
+*** Normalize output
+   Print scores and vectors.  Tested. DONE.
+*** Parse vectors and calculate scores
+   Score.  Use default values when none available.
+
+   
+** Start using cmd
     Convert the main-loop to use cmd.Cmd when interactive.  Print and
     vector as data is completed.
 
@@ -17,10 +22,6 @@
     temporal_parameters args
     environmental_parameters
       check args use acceptable ones and loop over remaining
-** Parse vectors and calculate scores
-   Score ore error.  Use default values when no available.
-** Normalize output
-   Print scores and vectors.
 ** rst output
    Generate verbose output in a RST format.
 ** plain text output
