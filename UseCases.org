@@ -1,0 +1,115 @@
+* Use Cases
+** A first-time user wants to take cvss.py out for a spin.
+*** As a User
+ 1. The user invokes the program via the commandline.
+ 2. The program responds with the help synopsis.
+*** How to test
+    TBD
+
+
+** Calculate a CVSS Base score for a discovered vulnerability
+*** As a User
+ 1. The user invokes the program via the commandline.
+ 2. It is immediately obvious from the output of the program what
+    command line options to specify.
+ 3. The user specifies the command line parameters for a Base score
+    calculation.
+ 4. The program asks questions for the Base score calculation. No more,
+    no less.
+ 5. The program responds with
+    1. How it interpreted the user's input
+    2. The Base score for the vulnerability
+    3. The CVSS string.
+*** How to test
+    TBD
+
+
+** Calculate CVSS Temporal and Environmental scores
+   for a known vulneratiblity, for which the CVSS Base string can be
+   found in a vulnerability database.
+*** As a User
+ 1. The user invokes the program via the commandline.
+ 2. It is immediately obvious from the output of the program what
+    command line options to specify.
+ 3. The user specifies the known CVSS string and command line parameters
+    for Temporal and/or Environmental score calculation.
+ 4. The program asks for the Temporal and Environmental input. No more,
+    no less.
+ 5. The progam responds with
+    1. How it interpreted the user's input
+    2. The Base, Temporal, Environmental and Overall scores
+    3. The CVSS string
+*** How to test
+    TBD
+
+
+** Calculate Base score from CVSS Base string
+*** As a User
+ A user wants to calculate the Base score for a vulnerability, for which
+ there already exists a CVSS Base string
+
+ 1. The user invokes the program via the commandline.
+ 2. It is immediately obvious from the output of the program what command line options to specify.
+ 3. The user specifies the command line paramteras and the CVSS Base string
+ 4. The program responds with
+    1. How it interpreted the user's input
+    2. The Base score for the vulnerability
+    3. The CVSS string.
+*** How to test
+    TBD
+
+
+** A user specifies an erroneous CVSS string
+*** As a User
+ 1. The user invokes the program via the commandline.
+ 2. It is immediately obvious from the output of the program what command line options to specify.
+ 3. The user specifies the command line paramteras and the erroneous CVSS string
+ 4. The program responds with
+    1. How it interpreted the data
+    2. ... indicating what it did and did not interpret correctly.
+ 5. The user understands, based on the output, what part of the CVSS String is incorrectly specified.
+*** How to test
+    TBD
+
+
+
+** An Emacs user wants to generate a properly formatted CVSS string
+An Emacs user wants to generate a properly formatted CVSS string, and
+associated scores, for insertion into a document. The user wants the
+inserted text to be properly formatted.
+*** As a User
+ 1. The user invokes an Emacs function for calculating either Base or
+    Base + Temporal and Environmental scores.
+ 2. Emacs asks the relevant questions.
+ 3. A properly formatted output, for the specific mode of the current
+    buffer in Emacs, is inserted at the insertion point.
+*** How to test
+    TBD
+
+
+** [?] An Emacs user wants to modify the way the inserted text is generated.
+*** Status
+    Clairification needed.
+*** As a User
+ 1. The user modifies a mode-template file, using specific syntax to
+    specify substitution fields and boilerplate text, headings and so
+    forth.
+*** How to test
+    TBD
+
+
+** [?] Support for a a new Emacs mode
+An Emacs user wants to add support for a mode for which the noble
+programmers of CVSS could not foresee the usage of.
+*** Status
+    Clairification needed.
+*** As a User 
+ 1. The user adds a mode-template file, using a file naming scheme, so
+    that the correct template is chosen for the "new" mode.
+ 2. The user modifies the mode-template file, using specific syntax to
+    specify substitution fields and boilerplate text, headings and so
+    forth.
+*** How to test
+    TBD
+
+
