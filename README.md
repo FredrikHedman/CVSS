@@ -12,8 +12,55 @@ Fredrik Hedman
 
 # Installation
 
-    $ git clone https://github.com/FredrikHedman/CVSS.git
     $ sudo pip3 install -r requirements.txt
+
+# Installation
+
+To avoid installing 3rd party code directly we recommend the use of
+[virtual environments](http://docs.python.org/3/library/venv.html#module-venv).
+As of [Python version 3.3](http://docs.python.org/3/whatsnew/3.3.html)
+virtual environments are part of the standard distribution.  Virtual
+environments simplify the creation of separate Python setups, allows
+sharing the system-wide base install as well as enabling private
+site-packages.  This means that using virtual environments we can
+avoid the need to install packages in the system-wide site-packages.
+To get this up and running for the first time take the following
+steps:
+
+  * Create your own virtual environment and activate it
+
+        $ pyvenv-3.3 --system-site-packages ~/tmp/venv
+        $ source venv/bin/activate
+        (venv) $ deactive          # does what is says...
+        $ source venv/bin/activate
+
+  * Install pip in your virtual environment
+
+        (venv) $ cd ~/tmp/venv
+        (venv) $ wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
+        (venv) $ wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
+        (venv) $ python ez_setup.py               # install setuptools for use by pip
+        (venv) $ python get-pip.py                # install pip
+        (venv) $ pip install --upgrade setuptools # just to be sure
+
+  * Verify that pip and ilk are installed in your venv.  Yous should
+    see python, pip and easy_install listed with
+
+        (venv) ls -l ~/tmp/venv/bin/{p,e}*
+
+  * Finally download and install the required packages and do a quick test
+
+        (venv) $ git clone https://github.com/FredrikHedman/CVSS.git
+        (venv) $ cd CVSS
+        (venv) $ pip install -r requirements.txt
+        (venv) $ ./cvss.py -h                     # will list the help message
+
+Note that this virtual environment does not have to be prepped every
+time there is a new version.  Only when and if the requirements.txt
+changes. Exit from the sub-shell environment by
+
+        (venv) $ deactive          # does what is says...
+
 
 # Howto
 
@@ -39,45 +86,6 @@ Calculate the score by running the program and answering the questions:
         -v --verbose              print verbose results
         -h --help                 show this help message and exit
         --version                 show version and exit
-
-# Installation
-
-To avoid installing 3rd party code directly we use
-[virtual environments](http://docs.python.org/3/library/venv.html#module-venv)
-that is now included in python as of
-[version 3.3](http://docs.python.org/3/whatsnew/3.3.html).  To get
-this up and running for the first time take the following steps:
-
-  * Create your own virtual environment and activate it
-
-        $ pyvenv-3.3 ~/tmp/venv
-        $ source venv/bin/activate
-        (venv) $ deactive          # does what is says...
-        $ source venv/bin/activate
-
-  * Install pip in your virtual environment
-
-        (venv) $ cd ~/tmp/venv
-        (venv) $ wget https://bitbucket.org/pypa/setuptools/raw/bootstrap/ez_setup.py
-        (venv) $ wget https://raw.github.com/pypa/pip/master/contrib/get-pip.py
-        (venv) $ python ez_setup.py               # install setuptools for use by pip
-        (venv) $ python get-pip.py                # install pip
-        (venv) $ pip install --upgrade setuptools # just to be sure
-
-  * Verify that pip and ilk are installed in your venv.  Yous should
-    see python, pip and easy_install listed with
-
-        (venv) ls -l ~/tmp/venv/bin/{p,e}*
-
-  * Finally install the required packages and do a quick test
-
-        (venv) $ cd CVSSScore
-        (venv) $ pip install -r requirements.txt
-        (venv) $ ./cvss.py -h                     # will list the help message
-
-Note that this virtual environment does not have to be prepped every
-time there is a new version.  Only when and if the requirements.txt
-changes.
 
 # Unit Tests 
 
