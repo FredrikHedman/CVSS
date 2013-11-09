@@ -12,10 +12,6 @@ Fredrik Hedman
 
 # Installation
 
-    $ sudo pip3 install -r requirements.txt
-
-# Installation
-
 To avoid installing 3rd party code directly we recommend the use of
 [virtual environments](http://docs.python.org/3/library/venv.html#module-venv).
 As of [Python version 3.3](http://docs.python.org/3/whatsnew/3.3.html)
@@ -27,6 +23,8 @@ avoid the need to install packages in the system-wide site-packages.
 To get this up and running for the first time take the following
 steps:
 
+  * Make sure you have at least version 3.3 of Python installed
+  
   * Create your own virtual environment and activate it
 
         $ pyvenv-3.3 --system-site-packages ~/tmp/venv
