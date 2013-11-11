@@ -1,0 +1,5 @@
+Usage:
+  cvss.py [-v] [-a] -i
+  cvss.py [-v] [--base [--temporal [--environmental]]] -i
+  cvss.py [-v] --vulnerability <vector>
+  cvss.py (--help | --version)

@@ -1,0 +1,40 @@
+
+++++++++++ Access Vector AV ++++++++++
+L Local access
+A Adjacent network access
+N Network access
+Select one [L]: Selected metric value ###| A |###
+
+++++++++++ Access Complexity AC ++++++++++
+H Specialized access conditions exist
+M The access conditions are somewhat specialized
+L No specialized access exist
+Select one [H]: Selected metric value ###| M |###
+
+++++++++++ Authentication Au ++++++++++
+N Authentication not required
+M Authenticate two or more times
+S Logged into the system
+Select one [N]: Selected metric value ###| M |###
+
+++++++++++ Confidentiality Impact C ++++++++++
+N No impact
+P Considerable disclosure
+C Total inforamtion disclosure
+Select one [N]: Selected metric value ###| P |###
+
+++++++++++ Integrity Impact I ++++++++++
+N No impact
+P Possible to modify some system files or information
+C Total compromise of system integrity
+Select one [N]: Selected metric value ###| P |###
+
+++++++++++ Availability Impact A ++++++++++
+N No impact
+P Reduced performance or interruptions in resource availability
+C Total shutdown of the affected resource
+Select one [N]: Selected metric value ###| P |###
+
+Base Score = 4.5
+Base Vulnerability Vector = AV:A/AC:M/Au:M/C:P/I:P/A:P
+
