@@ -1,13 +1,21 @@
 * Use Cases
-** A first-time user wants to take cvss.py out for a spin.
+** Testing
+Run all tests with
+
+    $ ./test_uc.sh
+
+** [UC01] A first-time user wants to take cvss.py out for a spin.
 *** As a User
  1. The user invokes the program via the commandline.
  2. The program responds with the help synopsis.
 *** How to test
-    TBD
+Execute
 
+    $ ./test_uc01.sh
 
-** Calculate a CVSS Base score for a discovered vulnerability
+and expect no output.
+
+** [UC02] Calculate a CVSS Base score for a discovered vulnerability
 *** As a User
  1. The user invokes the program via the commandline.
  2. It is immediately obvious from the output of the program what
@@ -21,7 +29,11 @@
     2. The Base score for the vulnerability
     3. The CVSS string.
 *** How to test
-    TBD
+Execute
+
+    $ ./test_uc02.sh
+
+and expect no output.
 
 
 ** Calculate CVSS Temporal and Environmental scores
