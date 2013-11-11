@@ -247,7 +247,7 @@ def generate_output(cvs, clarg):
          cvs.environmental_score, cvs.environmental_vulnerability_vector),
     ]
     divider = "{0}{1}{0}".format("\n", 72 * "+")
-    print(divider)
+    print()
     for s, score in zip(show, list_of_scores):
         if s:
             print("{0[0]} Score = {0[1]}\n{0[0]} Vulnerability Vector = {0[2]}".format(score))
