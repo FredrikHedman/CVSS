@@ -7,10 +7,10 @@
 Calculate CVSS metrics based on a list of Metrics.
 
 Usage:
-  {PGM} (-i | --interactive) [-v | --verbose] [-a | --all]
-  {PGM} (-i | --interactive) [-v | --verbose] [-b | --base [ -t | --temporal [-e | --environmental] ] ]
-  {PGM} [-v | --verbose] --vulnerability <vector>
-  {PGM} (-h | --help | --version)
+  {PGM} [-v] [-a] -i
+  {PGM} [-v] [--base [--temporal [--environmental]]] -i
+  {PGM} [-v] --vulnerability <vector>
+  {PGM} (--help | --version)
 
 Options:
   -i --interactive          select metric values interactively
@@ -239,18 +239,18 @@ def generate_output(cvs, clarg):
             clarg["--temporal"] or clarg["--all"],
             clarg["--environmental"] or clarg["--all"]]
     list_of_scores = [
-        ('Base Score',
+        ('Base',
          cvs.base_score, cvs.base_vulnerability_vector),
-        ('Temporal Score',
+        ('Temporal',
          cvs.temporal_score, cvs.temporal_vulnerability_vector),
-        ('Environmental Score',
+        ('Environmental',
          cvs.environmental_score, cvs.environmental_vulnerability_vector),
     ]
     divider = "{0}{1}{0}".format("\n", 72 * "+")
     print(divider)
     for s, score in zip(show, list_of_scores):
         if s:
-            print("{0[0]} {0[2]} --> {0[1]}".format(score))
+            print("{0[0]} Score = {0[1]}\n{0[0]} Vulnerability Vector = {0[2]}".format(score))
     print()
 
 def cmd_line_syntax(str):

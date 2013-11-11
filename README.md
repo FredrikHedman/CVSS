@@ -23,8 +23,8 @@ avoid the need to install packages in the system-wide site-packages.
 To get this up and running for the first time take the following
 steps:
 
-  * Make sure you have at least version 3.3 of Python installed
-  
+  * Make sure you have at least version 3.3 of Python installed.
+
   * Create your own virtual environment and activate it
 
         $ pyvenv-3.3 --system-site-packages ~/tmp/venv
@@ -65,25 +65,25 @@ changes. Exit from the sub-shell environment by
 Calculate the score by running the program and answering the questions:
 
     $ python3.3 cvss.py --help
-      Calculate CVSS metrics based on a list of Metrics.
+    Calculate CVSS metrics based on a list of Metrics.
 
-      Usage:
-        cvss.py (-i | --interactive) [-v | --verbose] [-a | --all]
-        cvss.py (-i | --interactive) [-v | --verbose] [-b | --base [ -t | --temporal [-e | --environmental] ] ]
-        cvss.py [-v | --verbose] --vulnerability <vector>
-        cvss.py (-h | --help | --version)
+    Usage:
+      cvss.py [-v] [-a] -i
+      cvss.py [-v] [--base [--temporal [--environmental]]] -i
+      cvss.py [-v] --vulnerability <vector>
+      cvss.py (--help | --version)
 
-      Options:
-        -i --interactive          select metric values interactively
-        -a --all                  ask for all metrics
-        -b --base                 ask for base metrics
-        -t --temporal             ask for temporal metrics
-        -e --environmental        ask for environmental metrics
-        --vulnerability <vector>  calculate score from vector
+    Options:
+      -i --interactive          select metric values interactively
+      -a --all                  ask for all metrics
+      -b --base                 ask for base metrics
+      -t --temporal             ask for temporal metrics
+      -e --environmental        ask for environmental metrics
+      --vulnerability <vector>  calculate score from vector
 
-        -v --verbose              print verbose results
-        -h --help                 show this help message and exit
-        --version                 show version and exit
+      -v --verbose              print verbose results
+      -h --help                 show this help message and exit
+      --version                 show version and exit
 
 # Unit Tests 
 
