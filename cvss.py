@@ -354,9 +354,6 @@ if __name__ == "__main__":
             selected = read_and_set(base_metrics(), selected)
             selected = read_and_set(temporal_metrics(), selected)
             selected = read_and_set(environmental_metrics(), selected)
-
-        print(selected)
-
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
     elif clarg["--vulnerability"]:
         clarg["--all"] = True
