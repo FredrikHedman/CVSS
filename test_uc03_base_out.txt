@@ -1,0 +1,4 @@
+
+Base Score = -0.0
+Base Vulnerability Vector = AV:L/AC:H/Au:N/C:N/I:N/A:N
+

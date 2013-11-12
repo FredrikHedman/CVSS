@@ -1,0 +1,29 @@
+
+++++++++++ Exploitability E ++++++++++
+ND Skip this metric
+U No exploit code is available
+POC Proof-of-concept exploit code exists
+F Functional exploit code is available
+H Exploitable by functional mobile autonomous code
+Select one [ND]: Selected metric value ###| POC |###
+
+++++++++++ Remediation Level RL ++++++++++
+ND Skip this metric
+OF Complete vendor solution is available
+TF Official but temporary fix available
+W Unofficial, non-vendor solution available
+U No solution available or it is impossible to apply
+Select one [ND]: Selected metric value ###| TF |###
+
+++++++++++ Report Confidence RC ++++++++++
+ND Skip this metric
+UC Single unconfirmed source
+UR Multiple non-official sources
+C Acknowledged by the vendor or author
+Select one [ND]: Selected metric value ###| UC |###
+
+Base Score = 7.0
+Base Vulnerability Vector = AV:A/AC:M/Au:S/C:C/I:P/A:C
+Temporal Score = 5.1
+Temporal Vulnerability Vector = E:POC/RL:TF/RC:UC
+
