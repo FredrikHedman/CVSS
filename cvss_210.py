@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# Version: 1.14
+# Version: 1.15
 # LICENSE: MIT LICENSE
 #
 """
