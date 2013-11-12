@@ -1,4 +1,4 @@
-#!/bin/bash -v
+#!/bin/bash
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
 # Version: 1.14
