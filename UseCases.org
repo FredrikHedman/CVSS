@@ -66,31 +66,43 @@ Execute
 and expect no output.
 
 
-** Calculate Base score from CVSS Base string
+** [UC04] Calculate Base score from CVSS Base string
 *** As a User
  1. The user invokes the program via the commandline.
- 2. It is immediately obvious from the output of the program what command line options to specify.
- 3. The user specifies the command line parameters and the CVSS Base string
+ 2. It is immediately obvious from the output of the program what
+    command line options to specify.
+ 3. The user specifies the command line parameters and the CVSS Base
+    string
  4. The program responds with
     1. How it interpreted the user's input
     2. The Base score for the vulnerability
     3. The CVSS string.
 *** How to test
-    TBD
+Execute
+
+    $ ./test_uc04.sh
+
+and expect no output.
 
 
-** A user specifies an erroneous CVSS string
+** [UC05] A user specifies an erroneous CVSS string
 *** As a User
  1. The user invokes the program via the commandline.
- 2. It is immediately obvious from the output of the program what command line options to specify.
- 3. The user specifies the command line paramteras and the erroneous CVSS string
+ 2. It is immediately obvious from the output of the program what
+    command line options to specify.
+ 3. The user specifies the command line paramteras and the erroneous
+    CVSS string
  4. The program responds with
     1. How it interpreted the data
     2. ... indicating what it did and did not interpret correctly.
- 5. The user understands, based on the output, what part of the CVSS String is incorrectly specified.
+ 5. The user understands, based on the output, what part of the CVSS
+    String is incorrectly specified.
 *** How to test
-    TBD
+Execute
 
+    $ ./test_uc05.sh
+
+and expect no output.
 
 
 ** An Emacs user wants to generate a properly formatted CVSS string
