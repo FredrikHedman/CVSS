@@ -4,6 +4,8 @@ Run all tests with
 
     $ ./test_uc.sh
 
+This will show the individial tests as they are excuted.
+
 ** [UC01] A first-time user wants to take cvss.py out for a spin.
 *** As a User
  1. The user invokes the program via the commandline.
@@ -14,6 +16,7 @@ Execute
     $ ./test_uc01.sh
 
 and expect no output.
+
 
 ** [UC02] Calculate a CVSS Base score for a discovered vulnerability
 *** As a User
@@ -36,9 +39,13 @@ Execute
 and expect no output.
 
 
-** Calculate CVSS Temporal and Environmental scores
-   for a known vulneratiblity, for which the CVSS Base string can be
+** [?UC03] Calculate CVSS Temporal and Environmental scores
+   for a known vulnerability, for which the CVSS Base string can be
    found in a vulnerability database.
+*** Status
+    Clairification needed.  The actions and the heading of this UC do
+    not quite agree. How should the interaction with the database
+    work? Need another UC?
 *** As a User
  1. The user invokes the program via the commandline.
  2. It is immediately obvious from the output of the program what
@@ -52,17 +59,18 @@ and expect no output.
     2. The Base, Temporal, Environmental and Overall scores
     3. The CVSS string
 *** How to test
-    TBD
+Execute
+
+    $ ./test_uc03.sh
+
+and expect no output.
 
 
 ** Calculate Base score from CVSS Base string
 *** As a User
- A user wants to calculate the Base score for a vulnerability, for which
- there already exists a CVSS Base string
-
  1. The user invokes the program via the commandline.
  2. It is immediately obvious from the output of the program what command line options to specify.
- 3. The user specifies the command line paramteras and the CVSS Base string
+ 3. The user specifies the command line parameters and the CVSS Base string
  4. The program responds with
     1. How it interpreted the user's input
     2. The Base score for the vulnerability

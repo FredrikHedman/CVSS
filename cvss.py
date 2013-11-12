@@ -7,8 +7,10 @@
 Calculate CVSS metrics based on a list of Metrics.
 
 Usage:
-  {PGM} [-v] [-a] -i
-  {PGM} [-v] [--base [--temporal [--environmental]]] -i
+  {PGM} [-v] --interactive --all
+  {PGM} [-v] --interactive [--temporal] --base [<vector>]
+  {PGM} [-v] --interactive [--environmental] --temporal --base [<vector>]
+  {PGM} [-v] --base <vector>
   {PGM} [-v] --vulnerability <vector>
   {PGM} (--help | --version)
 
@@ -18,6 +20,7 @@ Options:
   -b --base                 ask for base metrics
   -t --temporal             ask for temporal metrics
   -e --environmental        ask for environmental metrics
+  <vector>                  base vulnerability vector
   --vulnerability <vector>  calculate score from vector
 
   -v --verbose              print verbose results
@@ -33,6 +36,99 @@ from docopt import docopt
 from metric import Metric
 from cvss_base import CVSS
 from cvss_210 import CommonVulnerabilityScore
+
+class InvalidBaseVector(Exception): pass
+
+class VulnerabilityVector:
+    def __init__(self, vulnerability_string, metric_seq):
+        self.vulnerability_string = vulnerability_string
+        self.metric_seq = metric_seq
+        self.base_metric_index_set = { idx[1] for idx in metric_seq }
+        self.base_metric_index_order = [ idx[1] for idx in metric_seq ]
+
+    def valid(self):
+        """Validate a vulnerability string.
+
+        Each element of the vector is a key-value pair where the key is a
+        Metric and the value is the value of MetricValue.  Check that each
+        key-value pair is valid.  The key should be one in the set of
+        valid Metrics and the value of the key-value pair should also
+        be valid.
+
+        """
+        vulnerability_vector = self.vulnerability_string.split('/')
+        cvs = cvs_factory(CommonVulnerabilityScore)
+
+        for v in vulnerability_vector:
+            try:
+                idx,value = v.split(':')
+                if idx not in self.base_metric_index_set:
+                    raise InvalidBaseVector("{0} not a base metric".format(idx))
+                metric_ref = cvs[idx]
+                metric_ref.index = value
+            except AssertionError as e:
+                opts = [str(m) for m in metric_ref.values]
+                print("{0} {1}:{2}".format(e, idx, value))
+                print("{0} ({1}) one of: {2})".format(metric_ref.name,
+                                                      metric_ref.short_name,
+                                                      opts))
+                sys.exit(1)
+            except (KeyError, ValueError, InvalidBaseVector) as e:
+                print('Error: invalid vulnerability vector.')
+                print('Hint: {}'.format(e))
+                sys.exit(1)
+        return self
+
+    def complete(self):
+        """Ensure vulnerability string is complete.
+
+        In addition to being a valid vulnerability string, the number
+        of elements and the order of elements should correspond to the
+        expected order represented by the metric_seq.
+
+        """
+        self.valid()
+        try:
+            vulnerability_vector = self.vulnerability_string.split('/')
+            self._valid_length(vulnerability_vector)
+            self._valid_order(vulnerability_vector)
+        except (KeyError, ValueError, InvalidBaseVector) as e:
+            print('Error: invalid vulnerability vector.')
+            print('Hint: {}'.format(e))
+            sys.exit(1)
+        return self
+
+    def _valid_length(self, vec):
+        if len(self.base_metric_index_set) != len(vec):
+            msg = "{0} not enough elements in vector".format(vec)
+            raise InvalidBaseVector(msg)
+        return True
+
+    def _valid_order(self, vec):
+        for ii, v in enumerate(vec):
+            idx, value = v.split(':')
+            if idx != self.base_metric_index_order[ii]:
+                msg = "{0} duplicate elements or" \
+                      " incorrect ordering in vector".format(vec)
+                raise InvalidBaseVector(msg)
+        return True
+
+    def metric_values(self):
+        vulnerability_vector = self.vulnerability_string.split('/')
+        selected = []
+        for v in vulnerability_vector:
+            idx,value = v.split(':')
+            selected.append(value)
+        return selected
+
+
+
+def all_metrics():
+    L = [] 
+    L.extend(base_metrics())
+    L.extend(temporal_metrics())
+    L.extend(environmental_metrics())
+    return L
 
 def base_metrics():
     BASE_METRICS = [
@@ -256,25 +352,7 @@ def generate_output(cvs, clarg):
 def cmd_line_syntax(str):
     return __doc__.format(PGM=basename(sys.argv[0]))
 
-def score_from(vulnerability_vector):
-    cvs = cvs_factory(CommonVulnerabilityScore)
-    for v in vulnerability_vector:
-        try:
-            idx,value = v.split(':')
-            metric_ref = cvs[idx]
-            metric_ref.index = value
-        except AssertionError as e:
-            opts = [str(m) for m in metric_ref.values]
-            msg = "using default metric value: "
-            print("{0}, {1} {2}".format(e, msg, metric_ref.index))
-            print("{0} ({1}) one of: {2})".format(metric_ref.name,
-                                                  metric_ref.short_name,
-                                                  opts))
-        except (KeyError, ValueError) as e:
-            print('Error: invalid vulnerability vector.')
-            print('Hint: {}'.format(e))
-            sys.exit(1)
-    return cvs
+
 
 if __name__ == "__main__":
 
@@ -283,21 +361,33 @@ if __name__ == "__main__":
     if clarg["--interactive"]:
         selected = []
         if clarg["--base"]:
-            selected = read_and_set(base_metrics(), selected)
+            if clarg["<vector>"]:
+                vvec = VulnerabilityVector(clarg["<vector>"], base_metrics())
+                selected.extend(vvec.valid().complete().metric_values())
+            else:
+                selected = read_and_set(base_metrics(), selected)
         if clarg["--temporal"]:
             selected = read_and_set(temporal_metrics(), selected)
-        if clarg["--environmental"]:
+        if clarg["--temporal"] and clarg["--environmental"] :
             selected = read_and_set(environmental_metrics(), selected)
         if clarg["--all"]:
             selected = read_and_set(base_metrics(), selected)
             selected = read_and_set(temporal_metrics(), selected)
             selected = read_and_set(environmental_metrics(), selected)
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
+    elif clarg["--base"]:
+        vvec = VulnerabilityVector(clarg["<vector>"], base_metrics())
+        cvs = cvs_factory(CommonVulnerabilityScore,
+                          vvec.valid().complete().metric_values())
+
     elif clarg["--vulnerability"]:
         clarg["--all"] = True
-        cvs = score_from(clarg["--vulnerability"].split('/'))
+        vvec = VulnerabilityVector(clarg["--vulnerability"], all_metrics())
+        cvs = cvs_factory(CommonVulnerabilityScore,
+                         vvec.valid().metric_values())
     else:
-        cvs = cvs_factory(CommonVulnerabilityScore)
+        print('You need to use --help ...')
+        sys.exit(1)
 
     if clarg["--verbose"]:
         generate_verbose_output(cvs, clarg)
