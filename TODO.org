@@ -1,6 +1,8 @@
 * 2013-11-12
 ** base_metrics() and ilk functions should be classes
 ** vulnerability_vector could also be a class
+Done.
+
 * 2013-11-09
 ** UseCases incoporated.
 ** Installation instructions updated.

@@ -69,12 +69,11 @@ Calculate the score by running the program and answering the questions:
 
     Usage:
       cvss.py [-v] --interactive --all
-      cvss.py [-v] --base [<vector>]
       cvss.py [-v] --interactive [--temporal] --base [<vector>]
       cvss.py [-v] --interactive [--environmental] --temporal --base [<vector>]
+      cvss.py [-v] --base <vector>
       cvss.py [-v] --vulnerability <vector>
       cvss.py (--help | --version)
-
 
     Options:
       -i --interactive          select metric values interactively
@@ -82,6 +81,7 @@ Calculate the score by running the program and answering the questions:
       -b --base                 ask for base metrics
       -t --temporal             ask for temporal metrics
       -e --environmental        ask for environmental metrics
+      <vector>                  base vulnerability vector
       --vulnerability <vector>  calculate score from vector
 
       -v --verbose              print verbose results
@@ -106,4 +106,13 @@ You can also run all the examples with
 
     $ ./run_tests.sh
 
-No output expected.
+No output expected.  Use case tests  can be run with
+
+    $ ./test_uc.sh
+
+giving nout output.  Finally, running all tests gives
+
+    $ ./run_all_tests.sh 
+    + ./test_uc.sh
+    + ./run_tests.sh
+
