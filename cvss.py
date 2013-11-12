@@ -8,6 +8,7 @@ Calculate CVSS metrics based on a list of Metrics.
 
 Usage:
   {PGM} [-v] --interactive --all
+  {PGM} [-v] --base [<vector>]
   {PGM} [-v] --interactive [--temporal] --base [<vector>]
   {PGM} [-v] --interactive [--environmental] --temporal --base [<vector>]
   {PGM} [-v] --vulnerability <vector>
@@ -313,8 +314,7 @@ def valid_base_vector(vulnerability_vector):
             metric_ref.index = value
         except AssertionError as e:
             opts = [str(m) for m in metric_ref.values]
-            msg = "using default metric value: "
-            print("{0}, {1} {2}".format(e, msg, metric_ref.index))
+            print("{0} {1}:{2}".format(e, idx, value))
             print("{0} ({1}) one of: {2})".format(metric_ref.name,
                                                   metric_ref.short_name,
                                                   opts))
