@@ -15,6 +15,9 @@ $PGM -ib $s 2>&1 | diff test_uc03_bad_value_out.txt -
 # Not enough keys
 s=AV:A/AC:M/Au:M/C:P/I:P
 $PGM -ib $s 2>&1 | diff test_uc03_not_enough_keys_out.txt -
+# Duplicate keys
+s=AV:A/AV:A/Au:S/C:C/I:P/A:C
+$PGM --base $s  2>&1 | diff test_uc03_base_dup_out.txt -
 # Inccorect order
 s=AV:A/A:P/AC:M/Au:M/C:P/I:P
 $PGM -ib $s 2>&1 | diff test_uc03_bad_order_out.txt -

@@ -8,9 +8,9 @@ Calculate CVSS metrics based on a list of Metrics.
 
 Usage:
   {PGM} [-v] --interactive --all
-  {PGM} [-v] --base [<vector>]
   {PGM} [-v] --interactive [--temporal] --base [<vector>]
   {PGM} [-v] --interactive [--environmental] --temporal --base [<vector>]
+  {PGM} [-v] --base <vector>
   {PGM} [-v] --vulnerability <vector>
   {PGM} (--help | --version)
 
@@ -260,6 +260,7 @@ def cmd_line_syntax(str):
     return __doc__.format(PGM=basename(sys.argv[0]))
 
 def score_from(vulnerability_vector):
+    vulnerability_vector = vulnerability_vector.split('/')
     cvs = cvs_factory(CommonVulnerabilityScore)
     for v in vulnerability_vector:
         try:
@@ -273,6 +274,7 @@ def score_from(vulnerability_vector):
             print("{0} ({1}) one of: {2})".format(metric_ref.name,
                                                   metric_ref.short_name,
                                                   opts))
+            sys.exit(1)
         except (KeyError, ValueError) as e:
             print('Error: invalid vulnerability vector.')
             print('Hint: {}'.format(e))
@@ -280,27 +282,42 @@ def score_from(vulnerability_vector):
     return cvs
 
 def extract_from(vulnerability_vector, selected):
+    vulnerability_vector = vulnerability_vector.split('/')
     for v in vulnerability_vector:
         idx,value = v.split(':')
         selected.append(value)
     return selected
 
 def valid_base_vector(vulnerability_vector):
+    """Validate a base vulnerability vector.
+
+    The number of elements and the order of elements should correspond
+    to the expected order represented by base_metrics().
+
+    Each element of the vector is a key-value pair where the key is a
+    Metric and the value is the value of MetricValue.  Check that each
+    key-value pair is valid.  The key should be one in the set of
+    valid Base Metrics and the value of the key-value pair should also
+    be valid.
+
+    """
     class InvalidBaseVector(Exception): pass
     def check_number_of_elements(vec):
         if len(base_metric_index_set) != len(vec):
             msg = "{0} not enough elements in base vector".format(vec)
             raise InvalidBaseVector(msg)
         return True
-
     def check_order_of_elements(vec):
         for ii, v in enumerate(vec):
             idx, value = v.split(':')
             if idx != base_metric_index_order[ii]:
-                msg = "{0} incorrect ordering of base vector".format(vec)
+                msg = "{0} duplicate elements or" \
+                      " incorrect ordering in vector".format(vec)
                 raise InvalidBaseVector(msg)
         return True
 
+
+    vulnerability_vector = vulnerability_vector.split('/')
     cvs = cvs_factory(CommonVulnerabilityScore)
     base_metric_index_set = { idx[1] for idx in base_metrics() }
     base_metric_index_order = [ idx[1] for idx in base_metrics() ]
@@ -340,8 +357,8 @@ if __name__ == "__main__":
         selected = []
         if clarg["--base"]:
             if clarg["<vector>"]:
-                if valid_base_vector(clarg["<vector>"].split("/")):
-                    selected = extract_from(clarg["<vector>"].split("/"), selected)
+                if valid_base_vector(clarg["<vector>"]):
+                    selected = extract_from(clarg["<vector>"], selected)
                 else:
                     sys.exit(1)
             else:
@@ -355,11 +372,19 @@ if __name__ == "__main__":
             selected = read_and_set(temporal_metrics(), selected)
             selected = read_and_set(environmental_metrics(), selected)
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
+    elif clarg["--base"]:
+        selected = []
+        if valid_base_vector(clarg["<vector>"]):
+            selected = extract_from(clarg["<vector>"], selected)
+        else:
+            sys.exit(1)
+        cvs = cvs_factory(CommonVulnerabilityScore, selected)
     elif clarg["--vulnerability"]:
         clarg["--all"] = True
-        cvs = score_from(clarg["--vulnerability"].split('/'))
+        cvs = score_from(clarg["--vulnerability"])
     else:
-        cvs = cvs_factory(CommonVulnerabilityScore)
+        print('Should call --help')
+        sys.exit(1)
 
     if clarg["--verbose"]:
         generate_verbose_output(cvs, clarg)
