@@ -1,13 +1,14 @@
-* 2013-11-07
-** Refactor using cmd and docopt
-*** Refactor cli (cli2)
-    Simplify!  Tested. DONE.
-*** Normalize output
-   Print scores and vectors.  Tested. DONE.
-*** Parse vectors and calculate scores
-   Score.  Use default values when none available.
+* 2013-11-12
+** base_metrics() and ilk functions should be classes
+** vulnerability_vector could also be a class
+* 2013-11-09
+** UseCases incoporated.
+** Installation instructions updated.
 
-   Extract score_from function.
+* 2013-11-08
+Next step?  Would like to have better interactive features.  Use cmd?
+
+Less code in main program.  Should read more easily.
 ** parse a vector interactively and return a score
    when complete otherwise allow for interactive input
 ** Start using cmd
@@ -27,6 +28,16 @@
 ** rst output
    Generate verbose output in a RST format.
 ** plain text output
+* 2013-11-07
+** Refactor using cmd and docopt
+*** Refactor cli (cli2)
+    Simplify!  Tested. DONE.
+*** Normalize output
+   Print scores and vectors.  Tested. DONE.
+*** Parse vectors and calculate scores
+   Score.  Use default values when none available.
+
+   Extract score_from function.  Tested,  DONE.
 * 2013-11-06
 ** Refactor using cmd and docopt (cmd_and_docopt)
 *** Extract functions from main program

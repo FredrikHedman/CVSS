@@ -1,0 +1,2 @@
+Error: invalid vulnerability vector.
+Hint: a not a base metric

@@ -1,0 +1,2 @@
+Not a valid key A:X
+Availability Impact (A) one of: ['N', 'P', 'C'])

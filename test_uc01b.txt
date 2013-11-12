@@ -1,0 +1,22 @@
+Calculate CVSS metrics based on a list of Metrics.
+
+Usage:
+  cvss.py [-v] --interactive --all
+  cvss.py [-v] --interactive [--temporal] --base [<vector>]
+  cvss.py [-v] --interactive [--environmental] --temporal --base [<vector>]
+  cvss.py [-v] --base <vector>
+  cvss.py [-v] --vulnerability <vector>
+  cvss.py (--help | --version)
+
+Options:
+  -i --interactive          select metric values interactively
+  -a --all                  ask for all metrics
+  -b --base                 ask for base metrics
+  -t --temporal             ask for temporal metrics
+  -e --environmental        ask for environmental metrics
+  <vector>                  base vulnerability vector
+  --vulnerability <vector>  calculate score from vector
+
+  -v --verbose              print verbose results
+  -h --help                 show this help message and exit
+  --version                 show version and exit
