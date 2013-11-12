@@ -2,6 +2,7 @@ Calculate CVSS metrics based on a list of Metrics.
 
 Usage:
   cvss.py [-v] --interactive --all
+  cvss.py [-v] --base [<vector>]
   cvss.py [-v] --interactive [--temporal] --base [<vector>]
   cvss.py [-v] --interactive [--environmental] --temporal --base [<vector>]
   cvss.py [-v] --vulnerability <vector>

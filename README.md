@@ -68,10 +68,13 @@ Calculate the score by running the program and answering the questions:
     Calculate CVSS metrics based on a list of Metrics.
 
     Usage:
-      cvss.py [-v] [-a] -i
-      cvss.py [-v] [--base [--temporal [--environmental]]] -i
+      cvss.py [-v] --interactive --all
+      cvss.py [-v] --base [<vector>]
+      cvss.py [-v] --interactive [--temporal] --base [<vector>]
+      cvss.py [-v] --interactive [--environmental] --temporal --base [<vector>]
       cvss.py [-v] --vulnerability <vector>
       cvss.py (--help | --version)
+
 
     Options:
       -i --interactive          select metric values interactively
