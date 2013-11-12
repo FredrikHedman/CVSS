@@ -7,8 +7,9 @@
 Calculate CVSS metrics based on a list of Metrics.
 
 Usage:
-  {PGM} [-v] [-a] -i
-  {PGM} [-v] [--base [--temporal [--environmental]]] -i
+  {PGM} [-v] --interactive --all
+  {PGM} [-v] --interactive [--temporal] --base [<vector>]
+  {PGM} [-v] --interactive [--environmental] --temporal --base [<vector>]
   {PGM} [-v] --vulnerability <vector>
   {PGM} (--help | --version)
 
@@ -18,6 +19,7 @@ Options:
   -b --base                 ask for base metrics
   -t --temporal             ask for temporal metrics
   -e --environmental        ask for environmental metrics
+  <vector>                  base vulnerability vector
   --vulnerability <vector>  calculate score from vector
 
   -v --verbose              print verbose results
@@ -276,6 +278,60 @@ def score_from(vulnerability_vector):
             sys.exit(1)
     return cvs
 
+def extract_from(vulnerability_vector, selected):
+    for v in vulnerability_vector:
+        idx,value = v.split(':')
+        selected.append(value)
+    return selected
+
+def valid_base_vector(vulnerability_vector):
+    class InvalidBaseVector(Exception): pass
+    def check_number_of_elements(vec):
+        if len(base_metric_index_set) != len(vec):
+            msg = "{0} not enough elements in base vector".format(vec)
+            raise InvalidBaseVector(msg)
+        return True
+
+    def check_order_of_elements(vec):
+        for ii, v in enumerate(vec):
+            idx, value = v.split(':')
+            if idx != base_metric_index_order[ii]:
+                msg = "{0} incorrect ordering of base vector".format(vec)
+                raise InvalidBaseVector(msg)
+        return True
+
+    cvs = cvs_factory(CommonVulnerabilityScore)
+    base_metric_index_set = { idx[1] for idx in base_metrics() }
+    base_metric_index_order = [ idx[1] for idx in base_metrics() ]
+
+    for v in vulnerability_vector:
+        try:
+            idx,value = v.split(':')
+            if idx not in base_metric_index_set:
+                raise InvalidBaseVector("{0} not a base metric".format(idx))
+            metric_ref = cvs[idx]
+            metric_ref.index = value
+        except AssertionError as e:
+            opts = [str(m) for m in metric_ref.values]
+            msg = "using default metric value: "
+            print("{0}, {1} {2}".format(e, msg, metric_ref.index))
+            print("{0} ({1}) one of: {2})".format(metric_ref.name,
+                                                  metric_ref.short_name,
+                                                  opts))
+            return False
+        except (KeyError, ValueError, InvalidBaseVector) as e:
+            print('Error: invalid vulnerability vector.')
+            print('Hint: {}'.format(e))
+            return False
+    try:
+        check_number_of_elements(vulnerability_vector)
+        check_order_of_elements(vulnerability_vector)
+    except (KeyError, ValueError, InvalidBaseVector) as e:
+        print('Error: invalid vulnerability vector.')
+        print('Hint: {}'.format(e))
+        return False
+    return True
+
 if __name__ == "__main__":
 
     clarg = docopt(cmd_line_syntax(__doc__), version=VERSION)
@@ -283,15 +339,24 @@ if __name__ == "__main__":
     if clarg["--interactive"]:
         selected = []
         if clarg["--base"]:
-            selected = read_and_set(base_metrics(), selected)
+            if clarg["<vector>"]:
+                if valid_base_vector(clarg["<vector>"].split("/")):
+                    selected = extract_from(clarg["<vector>"].split("/"), selected)
+                else:
+                    sys.exit(1)
+            else:
+                selected = read_and_set(base_metrics(), selected)
         if clarg["--temporal"]:
             selected = read_and_set(temporal_metrics(), selected)
-        if clarg["--environmental"]:
+        if clarg["--temporal"] and clarg["--environmental"] :
             selected = read_and_set(environmental_metrics(), selected)
         if clarg["--all"]:
             selected = read_and_set(base_metrics(), selected)
             selected = read_and_set(temporal_metrics(), selected)
             selected = read_and_set(environmental_metrics(), selected)
+
+        print(selected)
+
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
     elif clarg["--vulnerability"]:
         clarg["--all"] = True

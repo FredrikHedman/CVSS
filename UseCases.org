@@ -36,8 +36,8 @@ Execute
 and expect no output.
 
 
-** Calculate CVSS Temporal and Environmental scores
-   for a known vulneratiblity, for which the CVSS Base string can be
+** [UC03] Calculate CVSS Temporal and Environmental scores
+   for a known vulnerability, for which the CVSS Base string can be
    found in a vulnerability database.
 *** As a User
  1. The user invokes the program via the commandline.
@@ -52,7 +52,8 @@ and expect no output.
     2. The Base, Temporal, Environmental and Overall scores
     3. The CVSS string
 *** How to test
-    TBD
+
+    Test for valid and complete CVSS base string.  
 
 
 ** Calculate Base score from CVSS Base string
