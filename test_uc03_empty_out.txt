@@ -1,0 +1,2 @@
+Error in parsing vulnerability vector a:b//c:d
+Hint: need more than 1 value to unpack
