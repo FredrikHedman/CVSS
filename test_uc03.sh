@@ -8,7 +8,13 @@
 #
 PGM=./cvss.py
 # Bad key
-$PGM -ib 'a:b/c:d/' 2>&1 | diff test_uc03_bad_key_out.txt -
+$PGM -ib 'a:b/c:d' 2>&1 | diff test_uc03_bad_key_out.txt -
+# Empty key
+$PGM -ib 'a:b/:d' 2>&1 | diff test_uc03_bad_key_out.txt -
+# Empty value
+$PGM -ib 'a:/c:d' 2>&1 | diff test_uc03_bad_key_out.txt -
+# Empty component
+$PGM -ib 'a:b//c:d' 2>&1 | diff test_uc03_empty_out.txt -
 # Incorrect value
 s=AV:A/AC:M/Au:M/C:P/I:P/A:X
 $PGM -ib $s 2>&1 | diff test_uc03_bad_value_out.txt -
