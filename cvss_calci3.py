@@ -7,18 +7,23 @@ and tests are based on the examples shown in this document.
 """
 import argparse
 
+
 def cvss(parser):
     args = parser.parse_args()
     return args
 
+
 def calculate_cvss_score(ibias):
-    return (0,0)
+    return (0, 0)
+
 
 def calculate_risk(tscore):
     return None
 
+
 def calculate_vector(ibias):
     return "foo/bar"
+
 
 def present_results(score, risk_factor, basescore_vector):
     print(score, risk_factor, basescore_vector)
