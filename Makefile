@@ -4,3 +4,6 @@ help:
 
 test:
 	./run_all_tests.sh
+
+clean:
+	/bin/rm -f *~ tests/*~
