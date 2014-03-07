@@ -28,7 +28,7 @@ Options:
   --version                 show version and exit
 
 """
-VERSION = "1.15"
+VERSION = "1.16"
 
 import sys
 from os.path import basename

@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# Version: 1.1
+# VERSION: 1.16
 # LICENSE: MIT LICENSE
 #
 PYTHON=python3
