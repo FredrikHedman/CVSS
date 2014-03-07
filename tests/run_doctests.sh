@@ -7,6 +7,9 @@
 PYTHON=python3.3
 $PYTHON metric_value.py
 $PYTHON metric.py
-$PYTHON cvss_examples.py
+$PYTHON cvss_210.py
+$PYTHON vulnerability.py
+$PYTHON test_vulnerability.py
+$PYTHON examples/cvss_examples.py
 
 
