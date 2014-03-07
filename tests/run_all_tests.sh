@@ -6,5 +6,5 @@
 #
 # Run all tests.
 #
-./test_uc.sh
-./run_doctests.sh
+./tests/test_uc.sh
+./tests/run_doctests.sh
