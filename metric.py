@@ -53,7 +53,7 @@ from metric_value import MetricValue
 
 
 class Metric:
-    def __init__(self, name, short_name, metric_values, index = None):
+    def __init__(self, name, short_name, metric_values, index=None):
         assert len(metric_values), 'At least one MetricValue needed.'
         self.__name = name
         self.__short_name = short_name
@@ -64,7 +64,7 @@ class Metric:
             vals.append((m.value, m))
         self.__values = OrderedDict(vals)
         # Use the first key available.
-        if index == None:
+        if index is None:
             self.index = vals[0][0]
         else:
             assert index in self.__values.keys(), 'Not a valid key'
@@ -72,10 +72,10 @@ class Metric:
 
     def __repr__(self):
         return ("{0}('{1}','{2}',{3},'{4}')".format(self.__class__.__name__,
-                                                  self.name,
-                                                  self.short_name,
-                                                  self.values,
-                                                  self.index))
+                                                    self.name,
+                                                    self.short_name,
+                                                    self.values,
+                                                    self.index))
 
     def __str__(self):
         "Use selected MetricValue as a string"
@@ -114,4 +114,3 @@ class Metric:
 if __name__ == "__main__":
     import doctest
     doctest.testmod()
-

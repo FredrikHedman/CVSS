@@ -6,6 +6,7 @@
 #
 """Metrics values used by CVSS."""
 
+
 class MetricValue:
     """A Metric can have several different MetricValues.  Once created the
     MetricValue can not be changed.
@@ -54,10 +55,10 @@ class MetricValue:
 
     def __repr__(self):
         return ("{0}('{1}','{2}',{3},'{4}')".format(self.__class__.__name__,
-                                              self.metric,
-                                              self.value,
-                                              self.number,
-                                              self.description))
+                                                    self.metric,
+                                                    self.value,
+                                                    self.number,
+                                                    self.description))
 
     def __str__(self):
         return self.value
