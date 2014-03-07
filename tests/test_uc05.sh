@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# Version: 1.15
+# VERSION: 1.16
 # LICENSE: MIT LICENSE
 #
 # Tests for UC05  (for now, same as for UC03)
