@@ -1,2 +1,0 @@
-Error: invalid vulnerability vector.
-Hint: ['AV:A', 'AV:A', 'Au:S', 'C:C', 'I:P', 'A:C'] duplicate elements or incorrect ordering in vector

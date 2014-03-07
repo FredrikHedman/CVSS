@@ -1,5 +1,5 @@
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# Version: 1.15
+# VERSION: 1.16
 # LICENSE: MIT LICENSE
 #
 import doctest

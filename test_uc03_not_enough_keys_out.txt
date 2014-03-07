@@ -1,2 +1,0 @@
-Error: invalid vulnerability vector.
-Hint: ['AV:A', 'AC:M', 'Au:M', 'C:P', 'I:P'] not enough elements in vector

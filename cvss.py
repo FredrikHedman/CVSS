@@ -28,7 +28,7 @@ Options:
   --version                 show version and exit
 
 """
-VERSION="1.15"
+VERSION = "1.16"
 
 import sys
 from os.path import basename
@@ -37,98 +37,16 @@ from metric import Metric
 from cvss_base import CVSS
 from cvss_210 import CommonVulnerabilityScore
 
-class InvalidBaseVector(Exception): pass
-
-class VulnerabilityVector:
-    def __init__(self, vulnerability_string, metric_seq):
-        self.vulnerability_string = vulnerability_string
-        self.metric_seq = metric_seq
-        self.base_metric_index_set = { idx[1] for idx in metric_seq }
-        self.base_metric_index_order = [ idx[1] for idx in metric_seq ]
-
-    def valid(self):
-        """Validate a vulnerability string.
-
-        Each element of the vector is a key-value pair where the key is a
-        Metric and the value is the value of MetricValue.  Check that each
-        key-value pair is valid.  The key should be one in the set of
-        valid Metrics and the value of the key-value pair should also
-        be valid.
-
-        """
-        vulnerability_vector = self.vulnerability_string.split('/')
-        cvs = cvs_factory(CommonVulnerabilityScore)
-
-        for v in vulnerability_vector:
-            try:
-                idx,value = v.split(':')
-                if idx not in self.base_metric_index_set:
-                    raise InvalidBaseVector("{0} not a base metric".format(idx))
-                metric_ref = cvs[idx]
-                metric_ref.index = value
-            except AssertionError as e:
-                opts = [str(m) for m in metric_ref.values]
-                print("{0} {1}:{2}".format(e, idx, value))
-                print("{0} ({1}) one of: {2})".format(metric_ref.name,
-                                                      metric_ref.short_name,
-                                                      opts))
-                sys.exit(1)
-            except (KeyError, ValueError, InvalidBaseVector) as e:
-                print('Error: invalid vulnerability vector.')
-                print('Hint: {}'.format(e))
-                sys.exit(1)
-        return self
-
-    def complete(self):
-        """Ensure vulnerability string is complete.
-
-        In addition to being a valid vulnerability string, the number
-        of elements and the order of elements should correspond to the
-        expected order represented by the metric_seq.
-
-        """
-        self.valid()
-        try:
-            vulnerability_vector = self.vulnerability_string.split('/')
-            self._valid_length(vulnerability_vector)
-            self._valid_order(vulnerability_vector)
-        except (KeyError, ValueError, InvalidBaseVector) as e:
-            print('Error: invalid vulnerability vector.')
-            print('Hint: {}'.format(e))
-            sys.exit(1)
-        return self
-
-    def _valid_length(self, vec):
-        if len(self.base_metric_index_set) != len(vec):
-            msg = "{0} not enough elements in vector".format(vec)
-            raise InvalidBaseVector(msg)
-        return True
-
-    def _valid_order(self, vec):
-        for ii, v in enumerate(vec):
-            idx, value = v.split(':')
-            if idx != self.base_metric_index_order[ii]:
-                msg = "{0} duplicate elements or" \
-                      " incorrect ordering in vector".format(vec)
-                raise InvalidBaseVector(msg)
-        return True
-
-    def metric_values(self):
-        vulnerability_vector = self.vulnerability_string.split('/')
-        selected = []
-        for v in vulnerability_vector:
-            idx,value = v.split(':')
-            selected.append(value)
-        return selected
-
-
+from vulnerability import InvalidBaseVector
+from vulnerability import VulnerabilityVector
 
 def all_metrics():
-    L = [] 
+    L = []
     L.extend(base_metrics())
     L.extend(temporal_metrics())
     L.extend(environmental_metrics())
     return L
+
 
 def base_metrics():
     BASE_METRICS = [
@@ -162,80 +80,85 @@ def base_metrics():
 
 def temporal_metrics():
     TEMPORAL_METRICS = [
-    ["Exploitability", "E",
-     [ ("Not Defined", "ND", 1.0, "Skip this metric"),
-       ("Unproven", "U", 0.85, "No exploit code is available"),
-       ("Proof-of-Concept", "POC", 0.9, "Proof-of-concept exploit code exists"),
-       ("Functional", "F", 0.95, "Functional exploit code is available"),
-       ("High", "H", 1.0, "Exploitable by functional mobile autonomous code"), ]],
-    ["Remediation Level", "RL",
-     [ ("Not Defined", "ND", 1.0, "Skip this metric"),
-       ("Official Fix", "OF", 0.87, "Complete vendor solution is available"),
-       ("Temporary Fix", "TF", 0.90, "Official but temporary fix available"),
-       ("Workaround", "W", 0.95, "Unofficial, non-vendor solution available"),
-       ("Unavailable", "U", 1.0, "No solution available or it is impossible to apply"), ]],
-    ["Report Confidence", "RC",
-     [ ("Not Defined", "ND", 1.0, "Skip this metric"),
-       ("Unconfirmed", "UC", 0.90, "Single unconfirmed source"),
-       ("Uncorroborated", "UR", 0.95, "Multiple non-official sources"),
-       ("Confirmed", "C", 1.0, "Acknowledged by the vendor or author"), ]],
+        ["Exploitability", "E",
+         [("Not Defined", "ND", 1.0, "Skip this metric"),
+          ("Unproven", "U", 0.85, "No exploit code is available"),
+          ("Proof-of-Concept", "POC", 0.9, "Proof-of-concept exploit code exists"),
+          ("Functional", "F", 0.95, "Functional exploit code is available"),
+          ("High", "H", 1.0, "Exploitable by functional mobile autonomous code"), ]],
+        ["Remediation Level", "RL",
+         [("Not Defined", "ND", 1.0, "Skip this metric"),
+          ("Official Fix", "OF", 0.87, "Complete vendor solution is available"),
+          ("Temporary Fix", "TF", 0.90, "Official but temporary fix available"),
+          ("Workaround", "W", 0.95, "Unofficial, non-vendor solution available"),
+          ("Unavailable", "U", 1.0, "No solution available or it is impossible to apply"), ]],
+        ["Report Confidence", "RC",
+         [("Not Defined", "ND", 1.0, "Skip this metric"),
+          ("Unconfirmed", "UC", 0.90, "Single unconfirmed source"),
+          ("Uncorroborated", "UR", 0.95, "Multiple non-official sources"),
+          ("Confirmed", "C", 1.0, "Acknowledged by the vendor or author"), ]],
     ]
     return TEMPORAL_METRICS
 
+
 def environmental_metrics():
     ENVIRONMENTAL_METRICS = [
-    ["Collateral Damage Potential", "CDP",
-     [ ("Not Defined", "ND", 0.0, "Skip this metric"),
-       ("None", "N", 0.0, "No potential for loss of life"),
-       ("Low", "L", 0.1, "Potential for slight physical or property damage"),
-       ("Low-Medium", "LM", 0.3, "Moderate physical or property damage"),
-       ("Medium-High", "MH", 0.4, "Significant physical or property damage or loss"),
-       ("High", "H", 0.5, "Catastrophic physical or property damage and loss"), ]],
-    ["Target Distribution", "TD",
-     [ ("Not Defined", "ND", 1.0, "Skip this metric"),
-       ("None", "N", 0.0, "No target systems exist"),
-       ("Low", "L", 0.25, "Targets exist on a small scale inside the environment"),
-       ("Medium", "M", 0.75, "Targets exist on a medium scale"),
-       ("High", "H", 1.0, "Targets exist on a considerable scale"), ]],
-    ["Confidentiality Requirement", "CR",
-     [ ("Not Defined", "ND", 1.0, "Skip this metric"),
-       ("Low", "L", 0.5, "Limited adverse effect"),
-       ("Medium", "M", 1.0, "Serious adverse effect"),
-       ("High", "H", 1.51, "Catastrophic adverse effect"), ]],
-    ["Integrity Requirement", "IR",
-     [ ("Not Defined", "ND", 1.0, "Skip this metric"),
-       ("Low", "L", 0.5, "Limited adverse effect"),
-       ("Medium", "M", 1.0, "Serious adverse effect"),
-       ("High", "H", 1.51, "Catastrophic adverse effect"), ]],
-    ["Availability Requirement", "AR",
-     [ ("Not Defined", "ND", 1.0, "Skip this metric"),
-       ("Low", "L", 0.5, "Limited adverse effect"),
-       ("Medium", "M", 1.0, "Serious adverse effect"),
-       ("High", "H", 1.51, "Catastrophic adverse effect"), ]],
+        ["Collateral Damage Potential", "CDP",
+         [("Not Defined", "ND", 0.0, "Skip this metric"),
+          ("None", "N", 0.0, "No potential for loss of life"),
+          ("Low", "L", 0.1, "Potential for slight physical or property damage"),
+          ("Low-Medium", "LM", 0.3, "Moderate physical or property damage"),
+          ("Medium-High", "MH", 0.4, "Significant physical or property damage or loss"),
+          ("High", "H", 0.5, "Catastrophic physical or property damage and loss"), ]],
+        ["Target Distribution", "TD",
+         [("Not Defined", "ND", 1.0, "Skip this metric"),
+          ("None", "N", 0.0, "No target systems exist"),
+          ("Low", "L", 0.25, "Targets exist on a small scale inside the environment"),
+          ("Medium", "M", 0.75, "Targets exist on a medium scale"),
+          ("High", "H", 1.0, "Targets exist on a considerable scale"), ]],
+        ["Confidentiality Requirement", "CR",
+         [("Not Defined", "ND", 1.0, "Skip this metric"),
+          ("Low", "L", 0.5, "Limited adverse effect"),
+          ("Medium", "M", 1.0, "Serious adverse effect"),
+          ("High", "H", 1.51, "Catastrophic adverse effect"), ]],
+        ["Integrity Requirement", "IR",
+         [("Not Defined", "ND", 1.0, "Skip this metric"),
+          ("Low", "L", 0.5, "Limited adverse effect"),
+          ("Medium", "M", 1.0, "Serious adverse effect"),
+          ("High", "H", 1.51, "Catastrophic adverse effect"), ]],
+        ["Availability Requirement", "AR",
+         [("Not Defined", "ND", 1.0, "Skip this metric"),
+          ("Low", "L", 0.5, "Limited adverse effect"),
+          ("Medium", "M", 1.0, "Serious adverse effect"),
+          ("High", "H", 1.51, "Catastrophic adverse effect"), ]],
     ]
     return ENVIRONMENTAL_METRICS
 
+
 def add_padding(to_length, selected):
-    if selected == None:
-        selected =  []
+    if selected is None:
+        selected = []
     padding = to_length - len(selected)
     if padding:
         selected.extend(padding * [None])
     return selected
 
+
 def prepare_metrics(L, selected):
     lmetrics = []
     for ii, mm in enumerate(L):
-        lmetrics.append(Metric(*mm, index = selected[ii]))
+        lmetrics.append(Metric(*mm, index=selected[ii]))
     return lmetrics
 
-def cvs_factory(cls, selected = None):
+
+def cvs_factory(cls, selected=None):
     L = base_metrics()
     L.extend(temporal_metrics())
     L.extend(environmental_metrics())
     selected = add_padding(len(L), selected)
     lmetrics = prepare_metrics(L, selected)
     return cls(lmetrics)
+
 
 def select_metric_value(m):
     """Interactive selection of a metric value
@@ -256,7 +179,7 @@ def select_metric_value(m):
         idx = input('Select one [{0}]: '.format(default_metric_value)).upper()
 
         if not idx:
-           idx = default_metric_value
+            idx = default_metric_value
 
         print('Selected metric value ###|', idx, '|###')
 
@@ -267,18 +190,22 @@ def select_metric_value(m):
         else:
             return m.index
 
+
 def display_score(H, F, ML, FD, VEC):
     def display_header(H):
         print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
+
     def display_metrics(ML):
         for m in ML:
             print('{0:<{3}}{1:<{3}}{2:>{4}.2f}'.format(m.name,
                                                        m.selected.metric,
                                                        m.selected.number,
                                                        W0, W1))
+
     def display_footer(F):
         W2 = len(S1) - len(F[1])
         print('{0:<{2}}{1}'.format(F[0], F[1], W2))
+
     def display_footer_data(FD, VEC):
         for d in FD:
             print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2*W0, W1))
@@ -298,11 +225,13 @@ def display_score(H, F, ML, FD, VEC):
     display_footer_data(FD, VEC)
     print(S1)
 
+
 def read_and_set(L, selected):
     for m in L:
         mm = select_metric_value(m)
         selected.append(mm)
     return selected
+
 
 def generate_verbose_output(cvs, clarg):
     show = [clarg["--base"], clarg["--temporal"], clarg["--environmental"]]
@@ -310,25 +239,26 @@ def generate_verbose_output(cvs, clarg):
         display_score(["BASE METRIC", "EVALUATION", "SCORE"],
                       ["FORMULA", "BASE SCORE"],
                       cvs.base_metrics(),
-                      [ ('Impact', cvs.impact),
-                        ('Exploitability', cvs.exploitability),
-                        ('Base Score', cvs.base_score) ],
+                      [('Impact', cvs.impact),
+                       ('Exploitability', cvs.exploitability),
+                       ('Base Score', cvs.base_score)],
                       ('Base', cvs.base_vulnerability_vector))
     if show[1] or clarg["--all"]:
         display_score(["TEMPORAL METRIC", "EVALUATION", "SCORE"],
                       ["FORMULA", "TEMPORAL SCORE"],
                       cvs.temporal_metrics(),
-                      [ ('Temporal Score', cvs.temporal_score) ],
+                      [('Temporal Score', cvs.temporal_score)],
                       ('Temporal', cvs.temporal_vulnerability_vector))
     if show[2] or clarg["--all"]:
         display_score(["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
                       ["FORMULA", "ENIRONMENTAL SCORE"],
                       cvs.environmental_metrics(),
-                      [ ('Adjusted Impact', cvs.adjusted_impact),
-                        ('Adjusted Base', cvs.adjusted_base_score),
-                        ('Adjusted Temporal', cvs.adjusted_temporal_score),
-                        ('Environmental Score', cvs.environmental_score) ],
+                      [('Adjusted Impact', cvs.adjusted_impact),
+                       ('Adjusted Base', cvs.adjusted_base_score),
+                       ('Adjusted Temporal', cvs.adjusted_temporal_score),
+                       ('Environmental Score', cvs.environmental_score)],
                       ('Environmental', cvs.environmental_vulnerability_vector))
+
 
 def generate_output(cvs, clarg):
     show = [clarg["--base"] or clarg["--all"],
@@ -349,26 +279,28 @@ def generate_output(cvs, clarg):
             print("{0[0]} Score = {0[1]}\n{0[0]} Vulnerability Vector = {0[2]}".format(score))
     print()
 
+
 def cmd_line_syntax(str):
     return __doc__.format(PGM=basename(sys.argv[0]))
 
 
-
 if __name__ == "__main__":
-
     clarg = docopt(cmd_line_syntax(__doc__), version=VERSION)
 
     if clarg["--interactive"]:
         selected = []
         if clarg["--base"]:
             if clarg["<vector>"]:
-                vvec = VulnerabilityVector(clarg["<vector>"], base_metrics())
-                selected.extend(vvec.valid().complete().metric_values())
+                try:
+                    vvec = VulnerabilityVector(clarg["<vector>"])
+                    selected.extend(vvec.valid().complete().metric_values())
+                except Exception as e:
+                    sys.exit(1)
             else:
                 selected = read_and_set(base_metrics(), selected)
         if clarg["--temporal"]:
             selected = read_and_set(temporal_metrics(), selected)
-        if clarg["--temporal"] and clarg["--environmental"] :
+        if clarg["--temporal"] and clarg["--environmental"]:
             selected = read_and_set(environmental_metrics(), selected)
         if clarg["--all"]:
             selected = read_and_set(base_metrics(), selected)
@@ -376,15 +308,17 @@ if __name__ == "__main__":
             selected = read_and_set(environmental_metrics(), selected)
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
     elif clarg["--base"]:
-        vvec = VulnerabilityVector(clarg["<vector>"], base_metrics())
-        cvs = cvs_factory(CommonVulnerabilityScore,
-                          vvec.valid().complete().metric_values())
-
+        try:
+            vvec = VulnerabilityVector(clarg["<vector>"])
+            cvs = cvs_factory(CommonVulnerabilityScore,
+                              vvec.valid().complete().metric_values())
+        except Exception as e:
+            sys.exit(1)
     elif clarg["--vulnerability"]:
         clarg["--all"] = True
-        vvec = VulnerabilityVector(clarg["--vulnerability"], all_metrics())
+        vvec = VulnerabilityVector(clarg["--vulnerability"])
         cvs = cvs_factory(CommonVulnerabilityScore,
-                         vvec.valid().metric_values())
+                          vvec.valid().metric_values())
     else:
         print('You need to use --help ...')
         sys.exit(1)

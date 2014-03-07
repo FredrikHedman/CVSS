@@ -1,7 +1,44 @@
+* <2014-03-07 Fri>
+** Should transform this to a packgage with cvss.py
+as the main program.  The examples should no longer need soft links to
+run. and it should be possible to package cvss.py as a stand alone program.
+** test_vulnerability.py och vulnerability.md should move to tests
+** README.md needs to be updated to refelct new structure
+** Scripts in tests need to be refactored
+In particular the should be made more location independent.
+
+** General clean-up and restructuring
+** Commit the changes that were made in november.
+* 2013-11-14
+** Extract VulnerabilityVector from cvss.py
+Break the dependency on cvss_210 used for checking.
+
+Tested. DONE.
+
+* 2013-11-12
+With the command line interface stablized, focus should now shift to
+ensure that the code better reflects the problem domain.  A
+vulnerability vector and the corresponding score algorithm are the
+central items.  Interactive input of a vector and output in different
+formats should use these abstractions.
+
+So, the vulnerability is the container and the
+CommonVulnerabilityScore is the algorithm that caculates the score
+given a vulnerability vector.
+
+DRY and SHY and Tell the other guy.
+
 * 2013-11-12
 ** base_metrics() and ilk functions should be classes
+Extract these to metric.py (pdding, prepare factory, select, read_and_set).
+
+** display and output should move to separate class or file
+
+** refactor main program
+   More functions. Keep knowledge about docopt in main program.
+
 ** vulnerability_vector could also be a class
-Done.
+Done, but need to be moved inte separate file.
 
 * 2013-11-09
 ** UseCases incoporated.

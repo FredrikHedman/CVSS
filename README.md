@@ -2,7 +2,7 @@
 
 CVSS calculator for CVSS version 2.10
 
-# Version
+# Versio6
 
 1.15
 
@@ -88,12 +88,27 @@ Calculate the score by running the program and answering the questions:
       -h --help                 show this help message and exit
       --version                 show version and exit
 
-# Unit Tests 
+# Unit Tests and Use Case Tests
 
-The tests are all doctests.  No output is expected.
+The tests are doctests.  No output is expected, except on error.
 
      $ python3 metric.py
      $ python3 metric_value.py
+
+You can also run all the examples with
+
+    $ ./run_doctests.sh
+
+No output expected.  Use case tests are shell scripts and can be run with
+
+    $ ./test_uc.sh
+
+giving no output.  Finally, running all tests gives
+
+    $ ./run_all_tests.sh
+    + ./test_uc.sh
+    + ./run_tests.sh
+
 
 # Examples
 
@@ -101,18 +116,4 @@ These are all based on CVSS examples using doctest.  No output is
 expected.
 
     $ python3 cvss_examples.py
-
-You can also run all the examples with
-
-    $ ./run_tests.sh
-
-No output expected.  Use case tests  can be run with
-
-    $ ./test_uc.sh
-
-giving nout output.  Finally, running all tests gives
-
-    $ ./run_all_tests.sh 
-    + ./test_uc.sh
-    + ./run_tests.sh
 
