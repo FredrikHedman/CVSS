@@ -1,6 +1,14 @@
 * <2014-03-07 Fri>
-** Commit the changes that were made in november.
+** Should transform this to a packgage with cvss.py
+as the main program.  The examples should no longer need soft links to
+run. and it should be possible to package cvss.py as a stand alone program.
+** test_vulnerability.py och vulnerability.md should move to tests
+** README.md needs to be updated to refelct new structure
+** Scripts in tests need to be refactored
+In particular the should be made more location independent.
 
+** General clean-up and restructuring
+** Commit the changes that were made in november.
 * 2013-11-14
 ** Extract VulnerabilityVector from cvss.py
 Break the dependency on cvss_210 used for checking.
