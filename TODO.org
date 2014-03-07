@@ -1,9 +1,11 @@
+* <2014-03-07 Fri>
+** Commit the changes that were made in november.
+
 * 2013-11-14
 ** Extract VulnerabilityVector from cvss.py
 Break the dependency on cvss_210 used for checking.
 
 Tested. DONE.
-
 
 * 2013-11-12
 With the command line interface stablized, focus should now shift to
