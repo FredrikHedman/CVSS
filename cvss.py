@@ -279,8 +279,11 @@ if __name__ == "__main__":
         selected = []
         if clarg["--base"]:
             if clarg["<vector>"]:
-                vvec = VulnerabilityVector(clarg["<vector>"])
-                selected.extend(vvec.valid().complete().metric_values())
+                try:
+                    vvec = VulnerabilityVector(clarg["<vector>"])
+                    selected.extend(vvec.valid().complete().metric_values())
+                except Exception as e:
+                    sys.exit(1)
             else:
                 selected = read_and_set(base_metrics(), selected)
         if clarg["--temporal"]:
@@ -293,10 +296,12 @@ if __name__ == "__main__":
             selected = read_and_set(environmental_metrics(), selected)
         cvs = cvs_factory(CommonVulnerabilityScore, selected)
     elif clarg["--base"]:
-        vvec = VulnerabilityVector(clarg["<vector>"])
-        cvs = cvs_factory(CommonVulnerabilityScore,
-                          vvec.valid().complete().metric_values())
-
+        try:
+            vvec = VulnerabilityVector(clarg["<vector>"])
+            cvs = cvs_factory(CommonVulnerabilityScore,
+                              vvec.valid().complete().metric_values())
+        except Exception as e:
+            sys.exit(1)
     elif clarg["--vulnerability"]:
         clarg["--all"] = True
         vvec = VulnerabilityVector(clarg["--vulnerability"])
