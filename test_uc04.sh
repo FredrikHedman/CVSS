@@ -7,8 +7,8 @@
 # Tests for UC04 (for now, same as for UC03)
 #
 PGM=./cvss.py
-# Bad key
-$PGM -ib 'a:b/c:d/' 2>&1 | diff test_uc03_bad_key_out.txt -
+# Empty end
+$PGM -ib 'a:b/c:d/' 2>&1 | diff test_uc03_empty_end_out.txt -
 # Incorrect value
 s=AV:A/AC:M/Au:M/C:P/I:P/A:X
 $PGM -ib $s 2>&1 | diff test_uc03_bad_value_out.txt -

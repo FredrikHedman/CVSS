@@ -7,4 +7,4 @@
 # Run all tests.
 #
 ./test_uc.sh
-./run_tests.sh
+./run_doctests.sh

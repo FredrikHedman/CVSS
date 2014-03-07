@@ -1,2 +1,2 @@
-Not a valid key A:X
-Availability Impact (A) one of: ['N', 'P', 'C'])
+Error: invalid vulnerability vector.
+Hint: X not a metric value. Must be one of: ['N', 'P', 'C'])
