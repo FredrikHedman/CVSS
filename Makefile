@@ -12,7 +12,7 @@ test:
 	./tests/run_all_tests.sh
 
 pep8:
-	flake8 --exclude=misc --ignore=D100,D101,D102,D103,N803,N806 .
+	flake8 --exclude=misc --ignore=D100,D101,D102,D103,D301,N803,N806 .
 
 clean:
 	/bin/rm -f *~ tests/*~ examples/*~ 

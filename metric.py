@@ -4,7 +4,7 @@
 # VERSION: 1.16
 # LICENSE: MIT LICENSE
 #
-r"""Metrics used by CVSS.
+"""Metrics used by CVSS.
 
 >>> from metric_value import MetricValue
 >>> txt = 'Exploiting the vulnerability...'
