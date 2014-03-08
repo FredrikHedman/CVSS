@@ -4,15 +4,17 @@
 # VERSION: 1.16
 # LICENSE: MIT LICENSE
 #
-"""Metrics used by CVSS.
+r"""Metrics used by CVSS.
 
 >>> from metric_value import MetricValue
->>> values = ["Authentication", "Au", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ], 'X' ]
+>>> txt = 'Exploiting the vulnerability...'
+>>> values = ["Authentication", "Au", [('Multiple', 'M', 1.11, txt), ], 'X' ]
 >>> m = Metric(*values)
 Traceback (most recent call last):
 ...
 AssertionError: Not a valid key
->>> values = ["Authentication", "Au", [('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), ]]
+>>> txt = 'Exploiting the vulnerability...'
+>>> values = ["Authentication", "Au", [('Multiple', 'M', 1.11, txt), ]]
 >>> m = Metric(*values)
 >>> m.index
 'M'
@@ -21,15 +23,17 @@ AssertionError: Not a valid key
 Traceback (most recent call last):
 ...
 AssertionError: At least one MetricValue needed.
->>> values = ["Authentication", "Au", [ ('Multiple', 'M', 1.11, 'Exploiting the vulnerability...'), \
-                                   ('Single', 'S', 2.12, 'The vulnerability requires...'), ], \
+>>> txt = 'Exploiting the vulnerability...'
+>>> values = ["Authentication", "Au", [ ('Multiple', 'M', 1.11, txt), \
+              ('Single', 'S', 2.12, 'The vulnerability requires...'), ], \
               'S' \
              ]
 >>> m = Metric(*values)
 >>> m.name
 'Authentication'
 >>> m.values
-[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')]
+[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'),\
+ MetricValue('Single','S',2.12,'The vulnerability requires...')]
 >>> m.index = 4
 Traceback (most recent call last):
 ...
@@ -46,7 +50,10 @@ S
 >>> print(m)
 S
 >>> repr(m)
-"Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'), MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
+"Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,\
+'Exploiting the vulnerability...'),\
+ MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
+
 """
 from collections import OrderedDict
 from metric_value import MetricValue
@@ -78,11 +85,11 @@ class Metric:
                                                     self.index))
 
     def __str__(self):
-        "Use selected MetricValue as a string"
+        """Use selected MetricValue as a string."""
         return str(self.selected)
 
     def __float__(self):
-        "Use selected MetricValue as a float"
+        """Use selected MetricValue as a float."""
         return float(self.selected)
 
     @property
