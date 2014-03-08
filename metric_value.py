@@ -1,15 +1,17 @@
 #! /usr/bin/env python3
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.16
+# VERSION: 1.17
 # LICENSE: MIT LICENSE
 #
 """Metrics values used by CVSS."""
 
 
 class MetricValue:
-    """A Metric can have several different MetricValues.  Once created the
-    MetricValue can not be changed.
+
+    """A Metric can have several different MetricValues.
+
+    Once created the MetricValue can not be changed.
 
     >>> m = MetricValue('Local', 'L', 1.2, 'A vulnerability')
     >>> repr(m)
@@ -46,7 +48,9 @@ class MetricValue:
     Traceback (most recent call last):
     ...
     AttributeError: can't set attribute
+
     """
+
     def __init__(self, metric, value, number, description):
         self.__metric = metric
         self.__value = value

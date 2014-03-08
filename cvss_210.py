@@ -1,20 +1,20 @@
 #!/usr/bin/env python3
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.16
+# VERSION: 1.17
 # LICENSE: MIT LICENSE
 #
-"""
-Calculate CVSS metrics v 2.10.
-"""
+"""Calculate CVSS metrics v 2.10."""
 from cvss_base import CVSS
+
 
 class CommonVulnerabilityScore(CVSS):
     def __init__(self, metrics_seq):
         self.__metrics = {}
         for m in metrics_seq:
             self.__metrics[m.short_name] = m
-        assert len(self.__metrics) == len(metrics_seq), 'Metric short name collision'
+        error_message = 'Metric short name collision'
+        assert len(self.__metrics) == len(metrics_seq), error_message
 
     def __getitem__(self, idx):
         return self.__metrics[idx]
@@ -24,7 +24,7 @@ class CommonVulnerabilityScore(CVSS):
         return "2.10"
 
     def base_fcn(self, impact):
-        score = (0.6*impact + 0.4*self.exploitability - 1.5)
+        score = (0.6 * impact + 0.4 * self.exploitability - 1.5)
         score *= self.fcn(impact)
         return score
 
@@ -36,7 +36,7 @@ class CommonVulnerabilityScore(CVSS):
 
     def environmental_fcn(self, adjusted_temporal_score):
         score = adjusted_temporal_score
-        score += (10.0 - adjusted_temporal_score)*float(self['CDP'])
+        score += (10.0 - adjusted_temporal_score) * float(self['CDP'])
         score *= float(self['TD'])
         return score
 
@@ -64,7 +64,9 @@ class CommonVulnerabilityScore(CVSS):
         return res
 
     def impact_fcn(self, conf_impact, integ_impact, avail_impact):
-        result = 1 - (1-conf_impact)*(1-integ_impact)*(1-avail_impact)
+        result = 1 - ((1 - conf_impact) *
+                      (1 - integ_impact) *
+                      (1 - avail_impact))
         result *= 10.41
         return result
 

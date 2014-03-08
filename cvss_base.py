@@ -1,30 +1,34 @@
 #!/usr/bin/env python3
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.16
+# VERSION: 1.17
 # LICENSE: MIT LICENSE
 #
-"""Base class for CVSS metrics.
 
-This class is an abstract interface.  To create a concrete class
-inhert from this class and implement the follwoing methods:
 
-   * version : CVSS version string
-   * base_fcn(impact) : Base Score
-   * temporal_fcn(base_score) : Temporal Score
-   * environmental_fcn(adjusted_temporal_score) :  Environmental Score
-   * impact : float
-   * adjusted_impact : float
-   * exploitability : float
-   * base_metrics : list of base metrics
-   * temporal_metrics : list of temporal metrics
-   * environmental_metrics : list of environmental metrics
-   * base_vector : string
-   * temporal_vector : string
-   * environmental_vector : string
-
-"""
 class CVSS:
+
+    """Base class for CVSS metrics.
+
+    This class is an abstract interface.  To create a concrete class
+    inherit from this class and implement the follwoing methods:
+
+       * version : CVSS version string
+       * base_fcn(impact) : Base Score
+       * temporal_fcn(base_score) : Temporal Score
+       * environmental_fcn(adjusted_temporal_score) :  Environmental Score
+       * impact : float
+       * adjusted_impact : float
+       * exploitability : float
+       * base_metrics : list of base metrics
+       * temporal_metrics : list of temporal metrics
+       * environmental_metrics : list of environmental metrics
+       * base_vector : string
+       * temporal_vector : string
+       * environmental_vector : string
+
+    """
+
     @property
     def version(self):
         return str()
@@ -47,7 +51,8 @@ class CVSS:
 
     @property
     def environmental_score(self):
-        return round(self.environmental_fcn(self.adjusted_temporal_score), ndigits=1)
+        return round(self.environmental_fcn(self.adjusted_temporal_score),
+                     ndigits=1)
 
     @property
     def impact(self):
