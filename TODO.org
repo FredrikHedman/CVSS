@@ -1,3 +1,21 @@
+* <2014-03-08 Sat>
+** PEP8 checking
+** Different scores need refactoring
+   Use DRY on vulnerability.py and cvss.py to factor out data related
+   to scores.  Currently quite a lot of repeated data.
+
+   For example see BASE_SCORE and base_metrics()
+
+** Refactor cvss.py 
+Should contain the logic for the command line syntax.  The rest should
+be factored out into other files.
+
+   + Reading and processing input interactively
+   + Display calculated scores
+   + Setup and creation of a VulnerabilityVector
+   + Setup and creation of the CommonVulnerabilityScore
+
+
 * <2014-03-07 Fri>
 ** Should transform this to a packgage with cvss.py
 as the main program.  The examples should no longer need soft links to

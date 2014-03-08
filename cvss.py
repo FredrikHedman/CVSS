@@ -34,11 +34,10 @@ import sys
 from os.path import basename
 from docopt import docopt
 from metric import Metric
-from cvss_base import CVSS
 from cvss_210 import CommonVulnerabilityScore
 
-from vulnerability import InvalidBaseVector
 from vulnerability import VulnerabilityVector
+
 
 def all_metrics():
     L = []
@@ -56,7 +55,8 @@ def base_metrics():
           ("Network", "N", 1.0, "Network access"), ]],
         ["Access Complexity", "AC",
          [("High", "H", 0.35, "Specialized access conditions exist"),
-          ("Medium", "M", 0.61, "The access conditions are somewhat specialized"),
+          ("Medium", "M", 0.61,
+           "The access conditions are somewhat specialized"),
           ("Low", "L", 0.71, "No specialized access exist"), ]],
         ["Authentication", "Au",
          [("None", "N", 0.704, "Authentication not required"),
@@ -68,12 +68,15 @@ def base_metrics():
           ("Complete", "C", 0.660, "Total inforamtion disclosure"), ]],
         ["Integrity Impact", "I",
          [("None", "N", 0.0, "No impact"),
-          ("Partial", "P", 0.275, "Possible to modify some system files or information"),
+          ("Partial", "P", 0.275,
+           "Possible to modify some system files or information"),
           ("Complete", "C", 0.660, "Total compromise of system integrity"), ]],
         ["Availability Impact", "A",
          [("None", "N", 0.0, "No impact"),
-          ("Partial", "P", 0.275, "Reduced performance or interruptions in resource availability"),
-          ("Complete", "C", 0.660, "Total shutdown of the affected resource"), ]],
+          ("Partial", "P", 0.275,
+           "Reduced performance or interruptions in resource availability"),
+          ("Complete", "C", 0.660,
+           "Total shutdown of the affected resource"), ]],
     ]
     return BASE_METRICS
 
@@ -83,20 +86,31 @@ def temporal_metrics():
         ["Exploitability", "E",
          [("Not Defined", "ND", 1.0, "Skip this metric"),
           ("Unproven", "U", 0.85, "No exploit code is available"),
-          ("Proof-of-Concept", "POC", 0.9, "Proof-of-concept exploit code exists"),
+          ("Proof-of-Concept", "POC", 0.9,
+           "Proof-of-concept exploit code exists"),
           ("Functional", "F", 0.95, "Functional exploit code is available"),
-          ("High", "H", 1.0, "Exploitable by functional mobile autonomous code"), ]],
+          ("High", "H", 1.0,
+           "Exploitable by functional mobile autonomous code"), ]],
         ["Remediation Level", "RL",
-         [("Not Defined", "ND", 1.0, "Skip this metric"),
-          ("Official Fix", "OF", 0.87, "Complete vendor solution is available"),
-          ("Temporary Fix", "TF", 0.90, "Official but temporary fix available"),
-          ("Workaround", "W", 0.95, "Unofficial, non-vendor solution available"),
-          ("Unavailable", "U", 1.0, "No solution available or it is impossible to apply"), ]],
+         [("Not Defined", "ND", 1.0,
+           "Skip this metric"),
+          ("Official Fix", "OF", 0.87,
+           "Complete vendor solution is available"),
+          ("Temporary Fix", "TF", 0.90,
+           "Official but temporary fix available"),
+          ("Workaround", "W", 0.95,
+           "Unofficial, non-vendor solution available"),
+          ("Unavailable", "U", 1.0,
+           "No solution available or it is impossible to apply"), ]],
         ["Report Confidence", "RC",
-         [("Not Defined", "ND", 1.0, "Skip this metric"),
-          ("Unconfirmed", "UC", 0.90, "Single unconfirmed source"),
-          ("Uncorroborated", "UR", 0.95, "Multiple non-official sources"),
-          ("Confirmed", "C", 1.0, "Acknowledged by the vendor or author"), ]],
+         [("Not Defined", "ND", 1.0,
+           "Skip this metric"),
+          ("Unconfirmed", "UC", 0.90,
+           "Single unconfirmed source"),
+          ("Uncorroborated", "UR", 0.95,
+           "Multiple non-official sources"),
+          ("Confirmed", "C", 1.0,
+           "Acknowledged by the vendor or author"), ]],
     ]
     return TEMPORAL_METRICS
 
@@ -106,14 +120,18 @@ def environmental_metrics():
         ["Collateral Damage Potential", "CDP",
          [("Not Defined", "ND", 0.0, "Skip this metric"),
           ("None", "N", 0.0, "No potential for loss of life"),
-          ("Low", "L", 0.1, "Potential for slight physical or property damage"),
+          ("Low", "L", 0.1,
+           "Potential for slight physical or property damage"),
           ("Low-Medium", "LM", 0.3, "Moderate physical or property damage"),
-          ("Medium-High", "MH", 0.4, "Significant physical or property damage or loss"),
-          ("High", "H", 0.5, "Catastrophic physical or property damage and loss"), ]],
+          ("Medium-High", "MH", 0.4,
+           "Significant physical or property damage or loss"),
+          ("High", "H", 0.5,
+           "Catastrophic physical or property damage and loss"), ]],
         ["Target Distribution", "TD",
          [("Not Defined", "ND", 1.0, "Skip this metric"),
           ("None", "N", 0.0, "No target systems exist"),
-          ("Low", "L", 0.25, "Targets exist on a small scale inside the environment"),
+          ("Low", "L", 0.25,
+           "Targets exist on a small scale inside the environment"),
           ("Medium", "M", 0.75, "Targets exist on a medium scale"),
           ("High", "H", 1.0, "Targets exist on a considerable scale"), ]],
         ["Confidentiality Requirement", "CR",
@@ -161,7 +179,7 @@ def cvs_factory(cls, selected=None):
 
 
 def select_metric_value(m):
-    """Interactive selection of a metric value
+    """Interactive selection of a metric value.
 
     Input:
        m : list of values that can be unpacked into valid
@@ -208,12 +226,12 @@ def display_score(H, F, ML, FD, VEC):
 
     def display_footer_data(FD, VEC):
         for d in FD:
-            print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2*W0, W1))
+            print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2 * W0, W1))
         print('{1} Vulnerability Vector: {0}'.format(VEC[1], VEC[0]))
     #
     W0 = 30
     W1 = len(H[2])
-    S1 = (W0*2 + W1) * '='
+    S1 = (W0 * 2 + W1) * '='
     #
     print(S1)
     display_header(H)
@@ -257,7 +275,8 @@ def generate_verbose_output(cvs, clarg):
                        ('Adjusted Base', cvs.adjusted_base_score),
                        ('Adjusted Temporal', cvs.adjusted_temporal_score),
                        ('Environmental Score', cvs.environmental_score)],
-                      ('Environmental', cvs.environmental_vulnerability_vector))
+                      ('Environmental',
+                       cvs.environmental_vulnerability_vector))
 
 
 def generate_output(cvs, clarg):
@@ -272,11 +291,11 @@ def generate_output(cvs, clarg):
         ('Environmental',
          cvs.environmental_score, cvs.environmental_vulnerability_vector),
     ]
-    divider = "{0}{1}{0}".format("\n", 72 * "+")
+    output_line = "{0[0]} Score = {0[1]}\n{0[0]} Vulnerability Vector = {0[2]}"
     print()
     for s, score in zip(show, list_of_scores):
         if s:
-            print("{0[0]} Score = {0[1]}\n{0[0]} Vulnerability Vector = {0[2]}".format(score))
+            print(output_line.format(score))
     print()
 
 
