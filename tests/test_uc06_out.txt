@@ -1,0 +1,105 @@
+
+++++++++++ Access Vector AV ++++++++++
+L Local access
+A Adjacent network access
+N Network access
+Select one [L]: Selected metric value ###| L |###
+
+++++++++++ Access Complexity AC ++++++++++
+H Specialized access conditions exist
+M The access conditions are somewhat specialized
+L No specialized access exist
+Select one [H]: Selected metric value ###| H |###
+
+++++++++++ Authentication Au ++++++++++
+N Authentication not required
+M Authenticate two or more times
+S Logged into the system
+Select one [N]: Selected metric value ###| M |###
+
+++++++++++ Confidentiality Impact C ++++++++++
+N No impact
+P Considerable disclosure
+C Total inforamtion disclosure
+Select one [N]: Selected metric value ###| C |###
+
+++++++++++ Integrity Impact I ++++++++++
+N No impact
+P Possible to modify some system files or information
+C Total compromise of system integrity
+Select one [N]: Selected metric value ###| C |###
+
+++++++++++ Availability Impact A ++++++++++
+N No impact
+P Reduced performance or interruptions in resource availability
+C Total shutdown of the affected resource
+Select one [N]: Selected metric value ###| C |###
+
+++++++++++ Exploitability E ++++++++++
+ND Skip this metric
+U No exploit code is available
+POC Proof-of-concept exploit code exists
+F Functional exploit code is available
+H Exploitable by functional mobile autonomous code
+Select one [ND]: Selected metric value ###| H |###
+
+++++++++++ Remediation Level RL ++++++++++
+ND Skip this metric
+OF Complete vendor solution is available
+TF Official but temporary fix available
+W Unofficial, non-vendor solution available
+U No solution available or it is impossible to apply
+Select one [ND]: Selected metric value ###| W |###
+
+++++++++++ Report Confidence RC ++++++++++
+ND Skip this metric
+UC Single unconfirmed source
+UR Multiple non-official sources
+C Acknowledged by the vendor or author
+Select one [ND]: Selected metric value ###| UR |###
+
+++++++++++ Collateral Damage Potential CDP ++++++++++
+ND Skip this metric
+N No potential for loss of life
+L Potential for slight physical or property damage
+LM Moderate physical or property damage
+MH Significant physical or property damage or loss
+H Catastrophic physical or property damage and loss
+Select one [ND]: Selected metric value ###| MH |###
+
+++++++++++ Target Distribution TD ++++++++++
+ND Skip this metric
+N No target systems exist
+L Targets exist on a small scale inside the environment
+M Targets exist on a medium scale
+H Targets exist on a considerable scale
+Select one [ND]: Selected metric value ###| M |###
+
+++++++++++ Confidentiality Requirement CR ++++++++++
+ND Skip this metric
+L Limited adverse effect
+M Serious adverse effect
+H Catastrophic adverse effect
+Select one [ND]: Selected metric value ###| M |###
+
+++++++++++ Integrity Requirement IR ++++++++++
+ND Skip this metric
+L Limited adverse effect
+M Serious adverse effect
+H Catastrophic adverse effect
+Select one [ND]: Selected metric value ###| M |###
+
+++++++++++ Availability Requirement AR ++++++++++
+ND Skip this metric
+L Limited adverse effect
+M Serious adverse effect
+H Catastrophic adverse effect
+Select one [ND]: Selected metric value ###| M |###
+
+Base Score = 5.9
+Base Vulnerability Vector = AV:L/AC:H/Au:M/C:C/I:C/A:C
+Temporal Score = 5.3
+Temporal Vulnerability Vector = E:H/RL:W/RC:UR
+Environmental Score = 5.4
+Environmental Vulnerability Vector = CDP:MH/TD:M/CR:M/IR:M/AR:M
+
