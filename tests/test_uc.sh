@@ -11,3 +11,7 @@
 ./tests/test_uc03.sh
 ./tests/test_uc04.sh
 ./tests/test_uc05.sh
+#
+# A regression test
+#
+./tests/test_uc06.sh

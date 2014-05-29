@@ -4,14 +4,15 @@
 # VERSION: 1.17
 # LICENSE: MIT LICENSE
 #
+"""Base class for CVSS metrics."""
 
 
 class CVSS:
 
-    """Base class for CVSS metrics.
+    """This class is an abstract interface.
 
-    This class is an abstract interface.  To create a concrete class
-    inherit from this class and implement the follwoing methods:
+    To create a concrete class inherit from this class and implement
+    the follwoing methods:
 
        * version : CVSS version string
        * base_fcn(impact) : Base Score
