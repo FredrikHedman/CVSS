@@ -2,7 +2,7 @@
 
 CVSS calculator for CVSS version 2.10
 
-# Versio6
+# Version
 
 1.15
 
