@@ -35,11 +35,14 @@ from os.path import basename
 from docopt import docopt
 from metric import Metric
 from cvss_210 import CommonVulnerabilityScore
-
 from vulnerability import VulnerabilityVector
+from cvss_interactive import select_metric_value
+from cvss_interactive import display_score
+from cvss_interactive import generate_output
 
 
 def all_metrics():
+    """Build and return a list of all metrics."""
     L = []
     L.extend(base_metrics())
     L.extend(temporal_metrics())
@@ -48,6 +51,7 @@ def all_metrics():
 
 
 def base_metrics():
+    """Wrap base metrics data and possible values."""
     BASE_METRICS = [
         ["Access Vector", "AV",
          [("Local", "L", 0.395, "Local access"),
@@ -82,6 +86,7 @@ def base_metrics():
 
 
 def temporal_metrics():
+    """Wrap temporal metrics data and possible values."""
     TEMPORAL_METRICS = [
         ["Exploitability", "E",
          [("Not Defined", "ND", 1.0, "Skip this metric"),
@@ -116,6 +121,7 @@ def temporal_metrics():
 
 
 def environmental_metrics():
+    """Wrap environmental metrics data and possible values."""
     ENVIRONMENTAL_METRICS = [
         ["Collateral Damage Potential", "CDP",
          [("Not Defined", "ND", 0.0, "Skip this metric"),
@@ -154,15 +160,17 @@ def environmental_metrics():
 
 
 def add_padding(to_length, selected):
+    """Extend selected to_length elements."""
     if selected is None:
         selected = []
     padding = to_length - len(selected)
-    if padding:
+    if padding > 0:
         selected.extend(padding * [None])
     return selected
 
 
 def prepare_metrics(L, selected):
+    """Prepare a list of selected metrics."""
     lmetrics = []
     for ii, mm in enumerate(L):
         lmetrics.append(Metric(*mm, index=selected[ii]))
@@ -170,6 +178,7 @@ def prepare_metrics(L, selected):
 
 
 def cvs_factory(cls, selected=None):
+    """Common Vulnerability Score factory."""
     L = base_metrics()
     L.extend(temporal_metrics())
     L.extend(environmental_metrics())
@@ -178,73 +187,8 @@ def cvs_factory(cls, selected=None):
     return cls(lmetrics)
 
 
-def select_metric_value(m):
-    """Interactive selection of a metric value.
-
-    Input:
-       m : list of values that can be unpacked into valid
-           parameters for constructing a Metric
-    Return:
-       a valid index for the Metric
-
-    """
-    m = Metric(*m)
-    default_metric_value = m.index
-    print("\n{0} {1} {2} {0}".format(10 * "+", m.name, m.short_name))
-    while True:
-        for v in m.values:
-            print(v, v.description)
-        idx = input('Select one [{0}]: '.format(default_metric_value)).upper()
-
-        if not idx:
-            idx = default_metric_value
-
-        print('Selected metric value ###|', idx, '|###')
-
-        try:
-            m.index = idx
-        except AssertionError:
-            print('Not valid')
-        else:
-            return m.index
-
-
-def display_score(H, F, ML, FD, VEC):
-    def display_header(H):
-        print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
-
-    def display_metrics(ML):
-        for m in ML:
-            print('{0:<{3}}{1:<{3}}{2:>{4}.2f}'.format(m.name,
-                                                       m.selected.metric,
-                                                       m.selected.number,
-                                                       W0, W1))
-
-    def display_footer(F):
-        W2 = len(S1) - len(F[1])
-        print('{0:<{2}}{1}'.format(F[0], F[1], W2))
-
-    def display_footer_data(FD, VEC):
-        for d in FD:
-            print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2 * W0, W1))
-        print('{1} Vulnerability Vector: {0}'.format(VEC[1], VEC[0]))
-    #
-    W0 = 30
-    W1 = len(H[2])
-    S1 = (W0 * 2 + W1) * '='
-    #
-    print(S1)
-    display_header(H)
-    print(S1)
-    display_metrics(ML)
-    print(S1)
-    display_footer(F)
-    print(S1)
-    display_footer_data(FD, VEC)
-    print(S1)
-
-
 def read_and_set(L, selected):
+    """Read and set selected metrics."""
     for m in L:
         mm = select_metric_value(m)
         selected.append(mm)
@@ -252,6 +196,7 @@ def read_and_set(L, selected):
 
 
 def generate_verbose_output(cvs, clarg):
+    """Generate output when verbose output requested."""
     show = [clarg["--base"], clarg["--temporal"], clarg["--environmental"]]
     if show[0] or clarg["--all"]:
         display_score(["BASE METRIC", "EVALUATION", "SCORE"],
@@ -279,27 +224,8 @@ def generate_verbose_output(cvs, clarg):
                        cvs.environmental_vulnerability_vector))
 
 
-def generate_output(cvs, clarg):
-    show = [clarg["--base"] or clarg["--all"],
-            clarg["--temporal"] or clarg["--all"],
-            clarg["--environmental"] or clarg["--all"]]
-    list_of_scores = [
-        ('Base',
-         cvs.base_score, cvs.base_vulnerability_vector),
-        ('Temporal',
-         cvs.temporal_score, cvs.temporal_vulnerability_vector),
-        ('Environmental',
-         cvs.environmental_score, cvs.environmental_vulnerability_vector),
-    ]
-    output_line = "{0[0]} Score = {0[1]}\n{0[0]} Vulnerability Vector = {0[2]}"
-    print()
-    for s, score in zip(show, list_of_scores):
-        if s:
-            print(output_line.format(score))
-    print()
-
-
 def cmd_line_syntax(str):
+    """Parameterized help message."""
     return __doc__.format(PGM=basename(sys.argv[0]))
 
 

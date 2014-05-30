@@ -4,11 +4,16 @@
 # VERSION: 1.17
 # LICENSE: MIT LICENSE
 #
+
 """Calculate CVSS metrics v 2.10."""
+
 from cvss_base import CVSS
 
 
 class CommonVulnerabilityScore(CVSS):
+
+    """A concrete implementation of CVSS."""
+
     def __init__(self, metrics_seq):
         self.__metrics = {}
         for m in metrics_seq:

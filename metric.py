@@ -60,6 +60,9 @@ from metric_value import MetricValue
 
 
 class Metric(object):
+
+    """Metrics used by CVSS."""
+
     def __init__(self, name, short_name, metric_values, index=None):
         assert len(metric_values), 'At least one MetricValue needed.'
         self.__name = name

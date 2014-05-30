@@ -12,7 +12,7 @@ test:
 	./tests/run_all_tests.sh
 
 pep8:
-	flake8 --exclude=misc --ignore=D102,D103,D301,N803,N806 .
+	flake8 --exclude=misc,examples --ignore=D102,D301,N803,N806,E701 .
 
 clean:
 	/bin/rm -f *~ */*~ *.pyc */*.pyc
