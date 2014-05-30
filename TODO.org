@@ -1,3 +1,6 @@
+* <2014-05-30 Fre>
+** DONE Refactor code to also work with python2.7
+** DONE Bump version to 1.20 and push these changes
 * <2014-03-09 Sön>
 ** Plan and follow through some ToDo items
    Start using some simple org-mode TODO commands.
@@ -23,10 +26,11 @@
    - [ ] cvss.py the main program
    - [ ] The examples should no longer need soft links to run
    - [ ] Should be possible to package cvss.py as a stand alone program
-** TODO test_vulnerability.py och vulnerability.md should move to tests [0/2]
+** TODO test_vulnerability.py och vulnerability.md should move [1/3]
+   - [X] Moved to directory examples
    - [ ] How should the doctests import?
-   - [ ] How cna these imports be made location independent?
-** TODO README.md needs to be updated to reflect new structure
+   - [ ] How can these imports be made location independent?
+** DONE README.md needs to be updated to reflect new structure
 ** TODO Scripts in tests need to be refactored [0/8]
 In particular they should be made more location independent.
 

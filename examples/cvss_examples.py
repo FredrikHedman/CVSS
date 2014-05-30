@@ -1,5 +1,5 @@
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.17
+# VERSION: 1.20
 # LICENSE: MIT LICENSE
 #
 """Test for CVSS."""

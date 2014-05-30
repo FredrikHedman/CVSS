@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
+# VERSION: 1.20
 # LICENSE: MIT LICENSE
 #
 """Extracted interactive functions.
