@@ -1,17 +1,18 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.17
+# VERSION: 1.20
 # LICENSE: MIT LICENSE
 #
+"""Base class for CVSS metrics."""
 
 
-class CVSS:
+class CVSS(object):
 
-    """Base class for CVSS metrics.
+    """This class is an abstract interface.
 
-    This class is an abstract interface.  To create a concrete class
-    inherit from this class and implement the follwoing methods:
+    To create a concrete class inherit from this class and implement
+    the follwoing methods:
 
        * version : CVSS version string
        * base_fcn(impact) : Base Score

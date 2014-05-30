@@ -1,13 +1,13 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.17
+# VERSION: 1.20
 # LICENSE: MIT LICENSE
 #
 """Metrics values used by CVSS."""
 
 
-class MetricValue:
+class MetricValue(object):
 
     """A Metric can have several different MetricValues.
 

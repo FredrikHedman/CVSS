@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.17
+# VERSION: 1.20
 # LICENSE: MIT LICENSE
 #
 # Tests for UC04 (for now, same as for UC03)

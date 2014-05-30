@@ -1,32 +1,51 @@
+* <2014-05-30 Fre>
+** DONE Refactor code to also work with python2.7
+** DONE Bump version to 1.20 and push these changes
+* <2014-03-09 Sön>
+** Plan and follow through some ToDo items
+   Start using some simple org-mode TODO commands.
 * <2014-03-08 Sat>
-** PEP8 checking
-** Different scores need refactoring
+** DONE PEP8 checking
+** TODO Different scores need refactoring [/]
    Use DRY on vulnerability.py and cvss.py to factor out data related
    to scores.  Currently quite a lot of repeated data.
 
    For example see BASE_SCORE and base_metrics()
 
-** Refactor cvss.py 
-Should contain the logic for the command line syntax.  The rest should
-be factored out into other files.
-
-   + Reading and processing input interactively
-   + Display calculated scores
-   + Setup and creation of a VulnerabilityVector
-   + Setup and creation of the CommonVulnerabilityScore
-
+** TODO Refactor cvss.py [0/5]
+   + [ ] Should contain only the logic for the command line syntax.  The
+     rest should be factored out into other files.
+   + [ ] Reading and processing input interactively
+   + [ ] Display calculated scores
+   + [ ] Setup and creation of a VulnerabilityVector
+   + [ ] Setup and creation of the CommonVulnerabilityScore
 
 * <2014-03-07 Fri>
-** Should transform this to a packgage with cvss.py
-as the main program.  The examples should no longer need soft links to
-run. and it should be possible to package cvss.py as a stand alone program.
-** test_vulnerability.py och vulnerability.md should move to tests
-** README.md needs to be updated to refelct new structure
-** Scripts in tests need to be refactored
-In particular the should be made more location independent.
+** TODO Should transform this to a packgage with cvss.py [0/4]
+   - [ ] Why a package?
+   - [ ] cvss.py the main program
+   - [ ] The examples should no longer need soft links to run
+   - [ ] Should be possible to package cvss.py as a stand alone program
+** TODO test_vulnerability.py och vulnerability.md should move [1/3]
+   - [X] Moved to directory examples
+   - [ ] How should the doctests import?
+   - [ ] How can these imports be made location independent?
+** DONE README.md needs to be updated to reflect new structure
+** TODO Scripts in tests need to be refactored [0/8]
+In particular they should be made more location independent.
 
-** General clean-up and restructuring
-** Commit the changes that were made in november.
+   - [ ] test_uc01.sh
+   - [ ] test_uc02.sh
+   - [ ] test_uc03.sh
+   - [ ] test_uc04.sh
+   - [ ] test_uc05.sh
+   - [ ] run_all_tests.sh
+   - [ ] run_doctests.sh
+
+** DONE General clean-up and restructuring
+** DONE Commit the changes that were made in november.
+   Completed, but maybe not in a perfect way.  Still need to
+   understand how git flow och github interacts.
 * 2013-11-14
 ** Extract VulnerabilityVector from cvss.py
 Break the dependency on cvss_210 used for checking.
