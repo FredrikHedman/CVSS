@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
 # VERSION: 1.17
@@ -7,7 +7,7 @@
 """Base class for CVSS metrics."""
 
 
-class CVSS:
+class CVSS(object):
 
     """This class is an abstract interface.
 

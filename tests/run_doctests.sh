@@ -4,7 +4,7 @@
 # VERSION: 1.17
 # LICENSE: MIT LICENSE
 #
-PYTHON=python3
+PYTHON=python
 $PYTHON metric_value.py
 $PYTHON metric.py
 $PYTHON cvss_210.py

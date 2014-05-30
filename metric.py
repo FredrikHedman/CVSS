@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#! /usr/bin/env python
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
 # VERSION: 1.17
@@ -59,7 +59,7 @@ from collections import OrderedDict
 from metric_value import MetricValue
 
 
-class Metric:
+class Metric(object):
     def __init__(self, name, short_name, metric_values, index=None):
         assert len(metric_values), 'At least one MetricValue needed.'
         self.__name = name

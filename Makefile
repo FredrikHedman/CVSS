@@ -6,7 +6,7 @@ help:
 	@echo "  clean          clean out temporary files"
 
 example:
-	python3 examples/cvss_examples.py
+	python examples/cvss_examples.py
 
 test:
 	./tests/run_all_tests.sh
@@ -15,5 +15,5 @@ pep8:
 	flake8 --exclude=misc --ignore=D102,D103,D301,N803,N806 .
 
 clean:
-	/bin/rm -f *~ tests/*~ examples/*~
-	/bin/rm -rf __pycache__ exmamples/__pycache__
+	/bin/rm -f *~ */*~ *.pyc */*.pyc
+	/bin/rm -rf __pycache__ examples/__pycache__
