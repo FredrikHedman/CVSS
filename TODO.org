@@ -12,6 +12,11 @@
 
    For example see BASE_SCORE and base_metrics()
 
+   [ ] Move them all to the same file and make that work
+   [ ] Rearrange the data so that the info is more clearly structured
+   [ ] DRY enough?
+
+
 ** TODO Refactor cvss.py [0/5]
    + [ ] Should contain only the logic for the command line syntax.  The
      rest should be factored out into other files.

@@ -179,9 +179,7 @@ def prepare_metrics(L, selected):
 
 def cvs_factory(cls, selected=None):
     """Common Vulnerability Score factory."""
-    L = base_metrics()
-    L.extend(temporal_metrics())
-    L.extend(environmental_metrics())
+    L = all_metrics()
     selected = add_padding(len(L), selected)
     lmetrics = prepare_metrics(L, selected)
     return cls(lmetrics)
