@@ -1,2 +1,3 @@
 Error: invalid vulnerability vector.
 Hint: OrderedDict([('AV', 'A'), ('A', 'P'), ('AC', 'M'), ('Au', 'M'), ('C', 'P'), ('I', 'P')]) duplicate elements or incorrect ordering in vector
+OrderedDict([('AV', 'A'), ('A', 'P'), ('AC', 'M'), ('Au', 'M'), ('C', 'P'), ('I', 'P')]) duplicate elements or incorrect ordering in vector

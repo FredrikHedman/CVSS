@@ -105,3 +105,32 @@ def generate_output(cvs, clarg):
         if s:
             print(output_line.format(score))
     print()
+
+
+def generate_verbose_output(cvs, clarg):
+    """Generate output when verbose output requested."""
+    show = [clarg["--base"], clarg["--temporal"], clarg["--environmental"]]
+    if show[0] or clarg["--all"]:
+        display_score(["BASE METRIC", "EVALUATION", "SCORE"],
+                      ["FORMULA", "BASE SCORE"],
+                      cvs.base_metrics(),
+                      [('Impact', cvs.impact),
+                       ('Exploitability', cvs.exploitability),
+                       ('Base Score', cvs.base_score)],
+                      ('Base', cvs.base_vulnerability_vector))
+    if show[1] or clarg["--all"]:
+        display_score(["TEMPORAL METRIC", "EVALUATION", "SCORE"],
+                      ["FORMULA", "TEMPORAL SCORE"],
+                      cvs.temporal_metrics(),
+                      [('Temporal Score', cvs.temporal_score)],
+                      ('Temporal', cvs.temporal_vulnerability_vector))
+    if show[2] or clarg["--all"]:
+        display_score(["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
+                      ["FORMULA", "ENIRONMENTAL SCORE"],
+                      cvs.environmental_metrics(),
+                      [('Adjusted Impact', cvs.adjusted_impact),
+                       ('Adjusted Base', cvs.adjusted_base_score),
+                       ('Adjusted Temporal', cvs.adjusted_temporal_score),
+                       ('Environmental Score', cvs.environmental_score)],
+                      ('Environmental',
+                       cvs.environmental_vulnerability_vector))

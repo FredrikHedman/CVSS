@@ -1,1 +1,2 @@
 Error in parsing vulnerability vector a:b/c:d/ : need more than 1 value to unpack
+need more than 1 value to unpack

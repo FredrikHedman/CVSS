@@ -1,7 +1,7 @@
 Basic tests
 ===========
 
->>> from cvss import cvs_factory
+>>> from vulnerability import cvs_factory
 >>> from cvss import CommonVulnerabilityScore
 >>> selected = ['N', 'L', 'N', 'N', 'N', 'C']
 >>> cvs = cvs_factory(CommonVulnerabilityScore, selected)

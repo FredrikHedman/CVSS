@@ -1,3 +1,5 @@
+* <2014-05-31 Lör>
+Refactoring according to TODO.
 * <2014-05-30 Fre>
 ** DONE Refactor code to also work with python2.7
 ** DONE Bump version to 1.20 and push these changes
@@ -6,19 +8,22 @@
    Start using some simple org-mode TODO commands.
 * <2014-03-08 Sat>
 ** DONE PEP8 checking
-** TODO Different scores need refactoring [0/4]
+** TODO Different scores need refactoring [1/4]
    + [ ] Use DRY on vulnerability.py and cvss.py to factor out data
-   related to scores.  Currently quite a lot of repeated data.  For
-   example see BASE_SCORE and base_metrics()
+   related to scores. 
+     - Currently quite a lot of repeated data.  For example see
+       BASE_SCORE and base_metrics()
+     - One problem is the mix of basic data and information used for
+       the interactive user interface.
+     - The mix of lists and tuples when initializing all Metrics
+       works, but is not very clear and a bit diffcult to change
+       because of duplication and repetition.
+   + [X] First: move them all to the same file and make that work
 
-   + [ ] Move them all to the same file and make that work
-
-   + [ ] Rearrange the data so that the info is more clearly structured
+   + [ ] Second: rearrange the data so that the info is more clearly
+       structured.
 
    + [ ] DRY enough?
-
-
-
 
 ** TODO Refactor cvss.py [0/5]
    + [ ] Should contain only the logic for the command line syntax.  The
@@ -34,10 +39,10 @@
    - [ ] cvss.py the main program
    - [ ] The examples should no longer need soft links to run
    - [ ] Should be possible to package cvss.py as a stand alone program
-** TODO test_vulnerability.py och vulnerability.md should move [1/3]
+** DONE test_vulnerability.py och vulnerability.md should move [3/3]
    - [X] Moved to directory examples
-   - [ ] How should the doctests import?
-   - [ ] How can these imports be made location independent?
+   - [X] How should the doctests import?
+   - [X] How can these imports be made location independent?
 ** DONE README.md needs to be updated to reflect new structure
 ** TODO Scripts in tests need to be refactored [0/8]
 In particular they should be made more location independent.

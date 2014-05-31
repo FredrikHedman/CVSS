@@ -1,2 +1,3 @@
 Error: invalid vulnerability vector.
 Hint: wrong number of elements in vector
+wrong number of elements in vector

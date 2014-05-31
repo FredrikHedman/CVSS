@@ -1,2 +1,3 @@
 Error: invalid vulnerability vector.
 Hint: X not a metric value. Must be one of: ['N', 'P', 'C'])
+X not a metric value. Must be one of: ['N', 'P', 'C'])
