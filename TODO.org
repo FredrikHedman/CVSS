@@ -6,15 +6,18 @@
    Start using some simple org-mode TODO commands.
 * <2014-03-08 Sat>
 ** DONE PEP8 checking
-** TODO Different scores need refactoring [/]
-   Use DRY on vulnerability.py and cvss.py to factor out data related
-   to scores.  Currently quite a lot of repeated data.
+** TODO Different scores need refactoring [0/4]
+   + [ ] Use DRY on vulnerability.py and cvss.py to factor out data
+   related to scores.  Currently quite a lot of repeated data.  For
+   example see BASE_SCORE and base_metrics()
 
-   For example see BASE_SCORE and base_metrics()
+   + [ ] Move them all to the same file and make that work
 
-   [ ] Move them all to the same file and make that work
-   [ ] Rearrange the data so that the info is more clearly structured
-   [ ] DRY enough?
+   + [ ] Rearrange the data so that the info is more clearly structured
+
+   + [ ] DRY enough?
+
+
 
 
 ** TODO Refactor cvss.py [0/5]

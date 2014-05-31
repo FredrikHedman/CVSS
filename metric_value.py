@@ -13,42 +13,6 @@ class MetricValue(object):
 
     Once created the MetricValue can not be changed.
 
-    >>> m = MetricValue('Local', 'L', 1.2, 'A vulnerability')
-    >>> repr(m)
-    "MetricValue('Local','L',1.2,'A vulnerability')"
-    >>> str(m)
-    'L'
-    >>> print(m)
-    L
-    >>> m.value
-    'L'
-    >>> 2.0 * float(m)
-    2.4
-    >>> m.metric
-    'Local'
-    >>> m.value
-    'L'
-    >>> m.number
-    1.2
-    >>> m.description
-    'A vulnerability'
-    >>> m.metric = 'another name'
-    Traceback (most recent call last):
-    ...
-    AttributeError: can't set attribute
-    >>> m.value = 'another value'
-    Traceback (most recent call last):
-    ...
-    AttributeError: can't set attribute
-    >>> m.number = 0.0
-    Traceback (most recent call last):
-    ...
-    AttributeError: can't set attribute
-    >>> m.description = 'a longer text'
-    Traceback (most recent call last):
-    ...
-    AttributeError: can't set attribute
-
     """
 
     def __init__(self, metric, value, number, description):
