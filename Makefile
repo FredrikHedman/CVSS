@@ -1,3 +1,6 @@
+FLAKEFLAGS  =--max-complexity 11 --show-pep8 --exclude=misc
+FLAKEFLAGS += --ignore=D100,D101,D102,D103,D301,N803
+
 help:
 	@echo "Please use 'make <target>' where <target> is one of"
 	@echo "  example        run example suite"
@@ -20,7 +23,7 @@ uctests:
 	./tests/test_uc.sh
 
 pep8:
-	flake8 --exclude=misc,examples --ignore=D102,D301,N803,N806,E701 .
+	flake8 $(FLAKEFLAGS) .
 
 clean:
 	/bin/rm -f *~ */*~ *.pyc */*.pyc

@@ -47,17 +47,17 @@ class CommonVulnerabilityScore(CVSS):
 
     @property
     def impact(self):
-        ConfImpact = float(self['C'])
-        IntegImpact = float(self['I'])
-        AvailImpact = float(self['A'])
-        return self.impact_fcn(ConfImpact, IntegImpact, AvailImpact)
+        conf_impact = float(self['C'])
+        integ_impact = float(self['I'])
+        avail_impact = float(self['A'])
+        return self.impact_fcn(conf_impact, integ_impact, avail_impact)
 
     @property
     def adjusted_impact(self):
-        ConfImpact = float(self['C']) * float(self['CR'])
-        IntegImpact = float(self['I']) * float(self['IR'])
-        AvailImpact = float(self['A']) * float(self['AR'])
-        result = self.impact_fcn(ConfImpact, IntegImpact, AvailImpact)
+        conf_impact = float(self['C']) * float(self['CR'])
+        integ_impact = float(self['I']) * float(self['IR'])
+        avail_impact = float(self['A']) * float(self['AR'])
+        result = self.impact_fcn(conf_impact, integ_impact, avail_impact)
         return min(10.0, result)
 
     @property

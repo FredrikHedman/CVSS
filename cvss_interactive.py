@@ -53,37 +53,37 @@ def select_metric_value(m):
 def display_score(H, F, ML, FD, VEC):
     """Formatted score that recreates format of the CVSS examples."""
     def display_header(H):
-        print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], W0))
+        print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], w0))
 
     def display_metrics(ML):
         for m in ML:
             print('{0:<{3}}{1:<{3}}{2:>{4}.2f}'.format(m.name,
                                                        m.selected.metric,
                                                        m.selected.number,
-                                                       W0, W1))
+                                                       w0, w1))
 
     def display_footer(F):
-        W2 = len(S1) - len(F[1])
-        print('{0:<{2}}{1}'.format(F[0], F[1], W2))
+        w2 = len(s1) - len(F[1])
+        print('{0:<{2}}{1}'.format(F[0], F[1], w2))
 
     def display_footer_data(FD, VEC):
         for d in FD:
-            print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2 * W0, W1))
+            print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2 * w0, w1))
         print('{1} Vulnerability Vector: {0}'.format(VEC[1], VEC[0]))
     #
-    W0 = 30
-    W1 = len(H[2])
-    S1 = (W0 * 2 + W1) * '='
+    w0 = 30
+    w1 = len(H[2])
+    s1 = (w0 * 2 + w1) * '='
     #
-    print(S1)
+    print(s1)
     display_header(H)
-    print(S1)
+    print(s1)
     display_metrics(ML)
-    print(S1)
+    print(s1)
     display_footer(F)
-    print(S1)
+    print(s1)
     display_footer_data(FD, VEC)
-    print(S1)
+    print(s1)
 
 
 def generate_output(cvs, clarg):
