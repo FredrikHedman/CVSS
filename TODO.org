@@ -1,3 +1,12 @@
+* <2014-06-29 Sön> [1/2]
+  - [X] Fixed som PEP issues.
+  - [ ] Convert to a package
+
+* <2014-06-29 Sön>
+Use git flow approach.  A simple reminder is 
+
+   http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/
+
 * <2014-05-31 Lör>
 Refactoring according to TODO.
 * <2014-05-30 Fre>
