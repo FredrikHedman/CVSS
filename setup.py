@@ -10,7 +10,7 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 
 setup(
     name='cvss',
-    version='1.20',
+    version='1.20.1',
 
     description='CVSS calculator for CVSS version 2.10',
     long_description=long_description,
@@ -51,7 +51,7 @@ setup(
     # when your project is installed. For an analysis of
     # "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/technical.html#install-requires-vs-requirements-files
-    install_requires=['docopt'],
+    install_requires=['docopt', 'flake8', 'pep8'],
 
     include_package_data=True,
     entry_points={

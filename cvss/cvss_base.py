@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.20
+# VERSION: 1.20.1
 # LICENSE: MIT LICENSE
 #
 """Base class for CVSS metrics."""
