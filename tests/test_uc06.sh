@@ -10,6 +10,7 @@ D=tests
 IN=$D/test_uc06_in.txt
 OUT1=$D/test_uc06_out.txt
 OUT2=$D/test_uc06_verbose_out.txt
+CVSS=cvss
 
-cvss -ia < $IN 2>&1 | diff - $OUT1 
-cvss -iav < $IN 2>&1 | diff - $OUT2
+$(CVSS) -ia < $IN 2>&1 | diff - $OUT1 
+$(CVSS) -iav < $IN 2>&1 | diff - $OUT2

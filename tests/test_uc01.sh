@@ -6,6 +6,7 @@
 #
 # Test for UC01
 #
-cvss 2>&1 | diff tests/test_uc01a.txt -
-cvss --help 2>&1 | diff tests/test_uc01b.txt -
-cvss -h 2>&1 | diff tests/test_uc01b.txt -
+CVSS=cvss
+$(CVSS) 2>&1 | diff tests/test_uc01a.txt -
+$(CVSS) --help 2>&1 | diff tests/test_uc01b.txt -
+$(CVSS) -h 2>&1 | diff tests/test_uc01b.txt -

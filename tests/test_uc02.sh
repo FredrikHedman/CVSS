@@ -6,5 +6,6 @@
 #
 # Test for UC02
 #
-cvss -ib < tests/test_uc02_in.txt 2>&1 | diff tests/test_uc02_out.txt -
-cvss -ivb < tests/test_uc02_in.txt 2>&1 | diff tests/test_uc02_verbose_out.txt -
+CVSS=cvss
+$(CVSS) -ib < tests/test_uc02_in.txt 2>&1 | diff tests/test_uc02_out.txt -
+$(CVSS) -ivb < tests/test_uc02_in.txt 2>&1 | diff tests/test_uc02_verbose_out.txt -
