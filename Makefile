@@ -11,7 +11,7 @@ help:
 	@echo "  clean          clean out temporary files"
 
 example:
-	python -m vulnerability examples/cvss_examples.py
+	python -m cvss.vulnerability examples/cvss_examples.py
 
 alltests:
 	./tests/run_all_tests.sh

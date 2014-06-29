@@ -11,5 +11,5 @@ IN=$D/test_uc06_in.txt
 OUT1=$D/test_uc06_out.txt
 OUT2=$D/test_uc06_verbose_out.txt
 
-./cvss.py -ia < $IN 2>&1 | diff - $OUT1 
-./cvss.py -iav < $IN 2>&1 | diff - $OUT2
+cvss -ia < $IN 2>&1 | diff - $OUT1 
+cvss -iav < $IN 2>&1 | diff - $OUT2

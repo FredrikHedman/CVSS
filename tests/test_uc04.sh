@@ -6,7 +6,7 @@
 #
 # Tests for UC04 (for now, same as for UC03)
 #
-PGM=./cvss.py
+PGM=cvss
 # Empty end
 $PGM -ib 'a:b/c:d/' 2>&1 | diff tests/test_uc03_empty_end_out.txt -
 # Bad key

@@ -9,7 +9,7 @@
 These need to use print and input and be indepenet of version.
 """
 from __future__ import print_function
-from metric import Metric
+from cvss.metric import Metric
 
 # Cater for PEP 3111 so that python3 code can still work when using python2.
 try:

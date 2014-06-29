@@ -34,17 +34,17 @@ import sys
 from os.path import basename
 from docopt import docopt
 
-from cvss_210 import CommonVulnerabilityScore
+from cvss.cvss_210 import CommonVulnerabilityScore
 
-from vulnerability import VulnerabilityVector
-from vulnerability import cvs_factory
-from vulnerability import base_metrics
-from vulnerability import temporal_metrics
-from vulnerability import environmental_metrics
+from cvss.vulnerability import VulnerabilityVector
+from cvss.vulnerability import cvs_factory
+from cvss.vulnerability import base_metrics
+from cvss.vulnerability import temporal_metrics
+from cvss.vulnerability import environmental_metrics
 
-from cvss_interactive import select_metric_value
-from cvss_interactive import generate_output
-from cvss_interactive import generate_verbose_output
+from cvss.cvss_interactive import select_metric_value
+from cvss.cvss_interactive import generate_output
+from cvss.cvss_interactive import generate_verbose_output
 
 
 def read_and_set(L, selected):
@@ -102,7 +102,7 @@ def process_cmd_line(clarg):
     return cvs
 
 
-if __name__ == "__main__":
+def main():
     # Create command line parser and parse it.
     clarg = docopt(cmd_line_syntax(__doc__), version=VERSION)
 
@@ -112,3 +112,7 @@ if __name__ == "__main__":
         generate_verbose_output(cvs, clarg)
     else:
         generate_output(cvs, clarg)
+
+
+if __name__ == "__main__":
+    main()

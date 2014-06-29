@@ -6,7 +6,7 @@
 #
 # Tests for UC05  (for now, same as for UC03)
 #
-PGM=./cvss.py
+PGM=cvss
 # Bad key
 $PGM -ib 'a:b/c:d/' 2>&1 | diff tests/test_uc03_bad_key_out.txt -
 # Incorrect value
