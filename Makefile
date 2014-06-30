@@ -1,4 +1,4 @@
-FLAKEFLAGS  =--max-complexity 11 --show-pep8 --exclude=misc
+FLAKEFLAGS  =--max-complexity 9 --show-pep8 --exclude=misc
 FLAKEFLAGS += --ignore=D100,D101,D102,D103,D301,N803
 
 help:

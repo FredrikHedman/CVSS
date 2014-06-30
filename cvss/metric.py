@@ -5,7 +5,7 @@
 # LICENSE: MIT LICENSE
 #
 from collections import OrderedDict
-from cvss.metric_value import MetricValue
+from .metric_value import MetricValue
 
 
 class Metric(object):

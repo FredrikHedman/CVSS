@@ -34,17 +34,17 @@ import sys
 from os.path import basename
 from docopt import docopt
 
-from cvss.cvss_210 import CommonVulnerabilityScore
+from .cvss_210 import CommonVulnerabilityScore
 
-from cvss.vulnerability import VulnerabilityVector
-from cvss.vulnerability import cvs_factory
-from cvss.vulnerability import base_metrics
-from cvss.vulnerability import temporal_metrics
-from cvss.vulnerability import environmental_metrics
+from .vulnerability import VulnerabilityVector
+from .vulnerability import cvs_factory
+from .vulnerability import base_metrics
+from .vulnerability import temporal_metrics
+from .vulnerability import environmental_metrics
 
-from cvss.cvss_interactive import select_metric_value
-from cvss.cvss_interactive import generate_output
-from cvss.cvss_interactive import generate_verbose_output
+from .cvss_interactive import select_metric_value
+from .cvss_interactive import generate_output
+from .cvss_interactive import generate_verbose_output
 
 
 def read_and_set(L, selected):
@@ -60,42 +60,57 @@ def cmd_line_syntax(str):
     return __doc__.format(PGM=basename(sys.argv[0]))
 
 
+def process_cmd_line_interactive(clarg):
+    selected = []
+    if clarg["--base"]:
+        if clarg["<vector>"]:
+            try:
+                vvec = VulnerabilityVector(clarg["<vector>"])
+                selected.extend(vvec.valid().complete().metric_values())
+            except Exception as e:
+                print(e)
+                sys.exit(1)
+        else:
+            selected = read_and_set(base_metrics(), selected)
+    if clarg["--temporal"]:
+        selected = read_and_set(temporal_metrics(), selected)
+    if clarg["--temporal"] and clarg["--environmental"]:
+        selected = read_and_set(environmental_metrics(), selected)
+    if clarg["--all"]:
+        selected = read_and_set(base_metrics(), selected)
+        selected = read_and_set(temporal_metrics(), selected)
+        selected = read_and_set(environmental_metrics(), selected)
+    cvs = cvs_factory(CommonVulnerabilityScore, selected)
+    return cvs
+
+
+def process_cmd_line_base(clarg):
+    try:
+        vvec = VulnerabilityVector(clarg["<vector>"])
+        cvs = cvs_factory(CommonVulnerabilityScore,
+                          vvec.valid().complete().metric_values())
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+    return cvs
+
+
+def process_cmd_line_vulnerability(clarg):
+    clarg["--all"] = True
+    vvec = VulnerabilityVector(clarg["--vulnerability"])
+    cvs = cvs_factory(CommonVulnerabilityScore,
+                      vvec.valid().metric_values())
+    return cvs
+
+
 def process_cmd_line(clarg):
     """React to the command line."""
     if clarg["--interactive"]:
-        selected = []
-        if clarg["--base"]:
-            if clarg["<vector>"]:
-                try:
-                    vvec = VulnerabilityVector(clarg["<vector>"])
-                    selected.extend(vvec.valid().complete().metric_values())
-                except Exception as e:
-                    print(e)
-                    sys.exit(1)
-            else:
-                selected = read_and_set(base_metrics(), selected)
-        if clarg["--temporal"]:
-            selected = read_and_set(temporal_metrics(), selected)
-        if clarg["--temporal"] and clarg["--environmental"]:
-            selected = read_and_set(environmental_metrics(), selected)
-        if clarg["--all"]:
-            selected = read_and_set(base_metrics(), selected)
-            selected = read_and_set(temporal_metrics(), selected)
-            selected = read_and_set(environmental_metrics(), selected)
-        cvs = cvs_factory(CommonVulnerabilityScore, selected)
+        cvs = process_cmd_line_interactive(clarg)
     elif clarg["--base"]:
-        try:
-            vvec = VulnerabilityVector(clarg["<vector>"])
-            cvs = cvs_factory(CommonVulnerabilityScore,
-                              vvec.valid().complete().metric_values())
-        except Exception as e:
-            print(e)
-            sys.exit(1)
+        cvs = process_cmd_line_base(clarg)
     elif clarg["--vulnerability"]:
-        clarg["--all"] = True
-        vvec = VulnerabilityVector(clarg["--vulnerability"])
-        cvs = cvs_factory(CommonVulnerabilityScore,
-                          vvec.valid().metric_values())
+        cvs = process_cmd_line_vulnerability(clarg)
     else:
         print('You need to use --help ...')
         sys.exit(1)

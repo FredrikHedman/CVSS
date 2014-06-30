@@ -7,7 +7,7 @@
 
 """Calculate CVSS metrics v 2.10."""
 
-from cvss.cvss_base import CVSS
+from .cvss_base import CVSS
 
 
 class CommonVulnerabilityScore(CVSS):
