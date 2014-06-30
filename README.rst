@@ -88,15 +88,15 @@ following steps:
       $ git clone https://github.com/FredrikHedman/CVSS.git
       $ cd CVSS
       $ pip install --editable .
-      $ cvss -h                      # will list the help message
+      $ cvss -h                      # should list the help message
 
   * Exit from the sub-shell environment by::
 
-      $ deactive          # does what is says...
+      $ deactive                     # does what is says...
 
 
-Unit Tests, Case Tests and PEP8 compliance
-------------------------------------------
+Unit Tests, Use Case Tests and PEP8 compliance
+----------------------------------------------
 The tests are combination of output driven tests and doctests.  All
 tests are executed by::
 
