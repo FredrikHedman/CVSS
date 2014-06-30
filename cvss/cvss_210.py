@@ -1,13 +1,13 @@
 #!/usr/bin/env python
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.20
+# VERSION: 1.20.1
 # LICENSE: MIT LICENSE
 #
 
 """Calculate CVSS metrics v 2.10."""
 
-from cvss_base import CVSS
+from .cvss_base import CVSS
 
 
 class CommonVulnerabilityScore(CVSS):

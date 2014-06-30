@@ -1,9 +1,0 @@
-docopt==0.6.2
-flake8==2.2.0
-flake8-blind-except==0.1.0
-flake8-docstrings==0.2.0
-mccabe==0.2.1
-pep257==0.3.2
-pep8==1.5.7
-pep8-naming==0.2.2
-pyflakes==0.8.1

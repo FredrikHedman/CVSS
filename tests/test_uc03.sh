@@ -1,12 +1,12 @@
 #!/bin/bash
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.20
+# VERSION: 1.20.1
 # LICENSE: MIT LICENSE
 #
 # Tests for UC03
 #
-PGM=./cvss.py
+PGM=cvss
 # Bad key
 $PGM -ib 'a:b/c:d' 2>&1 | diff tests/test_uc03_bad_key_out2.txt -
 # Empty key

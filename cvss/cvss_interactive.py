@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 #
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
-# VERSION: 1.20
+# VERSION: 1.20.1
 # LICENSE: MIT LICENSE
 #
 """Extracted interactive functions.
@@ -9,7 +9,7 @@
 These need to use print and input and be indepenet of version.
 """
 from __future__ import print_function
-from metric import Metric
+from .metric import Metric
 
 # Cater for PEP 3111 so that python3 code can still work when using python2.
 try:
@@ -53,9 +53,11 @@ def select_metric_value(m):
 def display_score(H, F, ML, FD, VEC):
     """Formatted score that recreates format of the CVSS examples."""
     def display_header(H):
+        print(s1)
         print('{0:<{3}}{1:<{3}}{2}'.format(H[0], H[1], H[2], w0))
 
     def display_metrics(ML):
+        print(s1)
         for m in ML:
             print('{0:<{3}}{1:<{3}}{2:>{4}.2f}'.format(m.name,
                                                        m.selected.metric,
@@ -63,27 +65,25 @@ def display_score(H, F, ML, FD, VEC):
                                                        w0, w1))
 
     def display_footer(F):
+        print(s1)
         w2 = len(s1) - len(F[1])
         print('{0:<{2}}{1}'.format(F[0], F[1], w2))
 
     def display_footer_data(FD, VEC):
+        print(s1)
         for d in FD:
             print('{0:<{2}}{1:>{3}.2f}'.format(d[0] + ' =', d[1], 2 * w0, w1))
         print('{1} Vulnerability Vector: {0}'.format(VEC[1], VEC[0]))
+        print(s1)
     #
     w0 = 30
     w1 = len(H[2])
     s1 = (w0 * 2 + w1) * '='
     #
-    print(s1)
     display_header(H)
-    print(s1)
     display_metrics(ML)
-    print(s1)
     display_footer(F)
-    print(s1)
     display_footer_data(FD, VEC)
-    print(s1)
 
 
 def generate_output(cvs, clarg):
