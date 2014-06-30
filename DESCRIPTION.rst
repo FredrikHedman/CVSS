@@ -43,8 +43,8 @@ Calculate the score by running the program and answering the questions:
       --version                 show version and exit
 
 
-Installation with Python (version >= 3.3)
------------------------------------------
+Installation
+------------
 To avoid installing 3rd party code directly we recommend the use of
 [virtual environments](http://docs.python.org/3/library/venv.html#module-venv).
 As of [Python version 3.3](http://docs.python.org/3/whatsnew/3.3.html)
@@ -57,19 +57,28 @@ can avoid the need to install packages in the system-wide
 site-packages.  To get this up and running for the first time take the
 following steps:
 
-  * Make sure you have at least version 3.3 of Python installed.
-
-  * Using for example version 3.4 create your own virtual environment
-    and activate it (the prompt changes after activation)
-
-    $ pyvenv-3.4 ~/tmp/venv
-    $ source venv/bin/activate
-    (venv) $ deactive                     # does what is says...
-    $ source venv/bin/activate
+  * Make sure you have at least version 2.7 or 3.3 of Python installed.
 
   * Install pip in your virtual environment if it is no already there.
     For details [see.](https://pip.pypa.io/en/latest/installing.html)
     From version Python 3.4 it is already in place.
+
+    * Using for example version 3.4 create your own virtual environment
+      and activate it (the prompt changes after activation)
+
+      $ pyvenv-3.4 ~/tmp/venv
+      $ source venv/bin/activate
+      (venv) $ deactive                     # does what is says...
+      $ source venv/bin/activate
+
+    * With version 2.7 first install virtualenv and then create your own
+      virtual environment and activate it (the prompt changes after
+      activation).  Make sure that setuptools and pip are updated.
+
+      $ virtualenv-2.7 ~/venv/venv27
+      $ . ~/venv/venv27/bin/activate
+      (venv27) $ pip install -U setuptools
+      (venv27) $ pip install -U pip
 
   * Finally download and install the required packages and do a quick test
 
@@ -88,23 +97,23 @@ Unit Tests, Case Tests and PEP8 compliance
 The tests are combination of output driven tests and doctests.  All
 tests are executed by
 
-    $ make alltests
+    (venv) $ make alltests
 
 and individually by 
 
-    $ make doctests
-    $ make uctests
+    (venv) $ make doctests
+    (venv) $ make uctests
 
 No output expected.  PEP8 compliance test can be checked by
 
-    $ make pep8
+    (venv) $ make pep8
 
 Examples
 --------
 These are all based on CVSS examples using doctest.  No output is
 expected.
 
-    $ make examples
+    (venv) $ make examples
 
 
 Developers
