@@ -1,3 +1,11 @@
+* <2014-06-30 Mån> [0/2]
+  - [ ] Fixed documentation.
+  - [ ] Use click instead of docopt
+    - [ ] This will change the structure
+    - [ ] Tests will need to be updated
+    - [ ] New possibility to do tests in a different way?
+  - [ ] How to push a tag?
+
 * <2014-06-29 Sön> [5/5]
   - [X] Fixed som PEP issues.
   - [X] Convert to a package
@@ -38,8 +46,9 @@ Refactoring according to TODO.
    + [ ] DRY enough?
 
 ** TODO Refactor cvss.py [0/5]
-   + [ ] Should contain only the logic for the command line syntax.  The
-     rest should be factored out into other files.
+   + [ ] Should contain only the logic for the command line syntax.
+     The rest should be factored out into other files.
+   + [ ] Change from docopt to click for more precision
    + [ ] Reading and processing input interactively
    + [ ] Display calculated scores
    + [ ] Setup and creation of a VulnerabilityVector
