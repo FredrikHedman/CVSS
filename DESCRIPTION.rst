@@ -59,9 +59,12 @@ following steps:
 
   * Make sure you have at least version 2.7 or 3.3 of Python installed.
 
-  * Install pip in your virtual environment if it is no already there.
-    For details [see.](https://pip.pypa.io/en/latest/installing.html)
-    From version Python 3.4 it is already in place.
+  * Install pip *in* your virtual environment if it is no already
+    there.  For details
+    [see.](https://pip.pypa.io/en/latest/installing.html).  Should pip
+    not be installed *in* your virtual environment, it is quite
+    probable you will get a "Permission denied error".  From version
+    Python 3.4 it is already in place.
 
     * Using for example version 3.4 create your own virtual environment
       and activate it (the prompt changes after activation)

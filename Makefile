@@ -28,3 +28,4 @@ pep8:
 clean:
 	/bin/rm -f *~ */*~ *.pyc */*.pyc
 	/bin/rm -rf __pycache__ examples/__pycache__
+	/bin/rm -rf cvss.egg-info
