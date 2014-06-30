@@ -1,0 +1,86 @@
+* Tests for Metric uused by CVSS
+
+    >>> from metric_value import MetricValue
+    >>> txt = 'Exploiting the vulnerability...'
+    >>> values = ["Authentication", "Au", [('Multiple', 'M', 1.11, txt), ], 'X' ]
+    >>> m = Metric(*values)
+    Traceback (most recent call last):
+    ...
+    AssertionError: Not a valid key
+    >>> txt = 'Exploiting the vulnerability...'
+    >>> values = ["Authentication", "Au", [('Multiple', 'M', 1.11, txt), ]]
+    >>> m = Metric(*values)
+    >>> m.index
+    'M'
+    >>> values = ["Authentication", "Au", [ ], 'S' ]
+    >>> m = Metric(*values)
+    Traceback (most recent call last):
+    ...
+    AssertionError: At least one MetricValue needed.
+    >>> txt = 'Exploiting the vulnerability...'
+    >>> values = ["Authentication", "Au", [ ('Multiple', 'M', 1.11, txt), \
+                  ('Single', 'S', 2.12, 'The vulnerability requires...'), ], \
+                  'S' \
+                 ]
+    >>> m = Metric(*values)
+    >>> m.name
+    'Authentication'
+    >>> m.values
+    [MetricValue('Multiple','M',1.11,'Exploiting the vulnerability...'),\
+     MetricValue('Single','S',2.12,'The vulnerability requires...')]
+    >>> m.index = 4
+    Traceback (most recent call last):
+    ...
+    AssertionError: Not a valid key
+    >>> m.index = 'S'
+    >>> m.selected
+    MetricValue('Single','S',2.12,'The vulnerability requires...')
+    >>> print(m.selected)
+    S
+    >>> float(m.selected)
+    2.12
+    >>> float(m)
+    2.12
+    >>> print(m)
+    S
+    >>> repr(m)
+    "Metric('Authentication','Au',[MetricValue('Multiple','M',1.11,\
+    'Exploiting the vulnerability...'),\
+     MetricValue('Single','S',2.12,'The vulnerability requires...')],'S')"
+
+        >>> m = MetricValue('Local', 'L', 1.2, 'A vulnerability')
+        >>> repr(m)
+        "MetricValue('Local','L',1.2,'A vulnerability')"
+        >>> str(m)
+        'L'
+        >>> print(m)
+        L
+        >>> m.value
+        'L'
+        >>> 2.0 * float(m)
+        2.4
+        >>> m.metric
+        'Local'
+        >>> m.value
+        'L'
+        >>> m.number
+        1.2
+        >>> m.description
+        'A vulnerability'
+        >>> m.metric = 'another name'
+        Traceback (most recent call last):
+        ...
+        AttributeError: can't set attribute
+        >>> m.value = 'another value'
+        Traceback (most recent call last):
+        ...
+        AttributeError: can't set attribute
+        >>> m.number = 0.0
+        Traceback (most recent call last):
+        ...
+        AttributeError: can't set attribute
+        >>> m.description = 'a longer text'
+        Traceback (most recent call last):
+        ...
+        AttributeError: can't set attribute
+

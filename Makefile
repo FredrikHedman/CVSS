@@ -1,4 +1,4 @@
-FLAKEFLAGS  =--max-complexity 11 --show-pep8 --exclude=misc
+FLAKEFLAGS  =--max-complexity 9 --show-pep8 --exclude=misc
 FLAKEFLAGS += --ignore=D100,D101,D102,D103,D301,N803
 
 help:
@@ -11,7 +11,7 @@ help:
 	@echo "  clean          clean out temporary files"
 
 example:
-	python -m vulnerability examples/cvss_examples.py
+	python -m cvss.vulnerability examples/cvss_examples.py
 
 alltests:
 	./tests/run_all_tests.sh
@@ -28,3 +28,4 @@ pep8:
 clean:
 	/bin/rm -f *~ */*~ *.pyc */*.pyc
 	/bin/rm -rf __pycache__ examples/__pycache__
+	/bin/rm -rf cvss.egg-info

@@ -1,3 +1,15 @@
+* <2014-06-29 Sön> [5/5]
+  - [X] Fixed som PEP issues.
+  - [X] Convert to a package
+  - [X] Refactor test scripts
+  - [X] Update README.md
+  - [X] Update DESCRIPTION.rst
+
+* <2014-06-29 Sön>
+Use git flow approach.  A simple reminder is
+
+   http://jeffkreeftmeijer.com/2010/why-arent-you-using-git-flow/
+
 * <2014-05-31 Lör>
 Refactoring according to TODO.
 * <2014-05-30 Fre>
@@ -34,26 +46,27 @@ Refactoring according to TODO.
    + [ ] Setup and creation of the CommonVulnerabilityScore
 
 * <2014-03-07 Fri>
-** TODO Should transform this to a packgage with cvss.py [0/4]
-   - [ ] Why a package?
-   - [ ] cvss.py the main program
-   - [ ] The examples should no longer need soft links to run
-   - [ ] Should be possible to package cvss.py as a stand alone program
+** DONE Should transform this to a packgage with cvss.py [4/4]
+   - [X] Why a package?  So I can distribute it via PyPi
+   - [X] cvss.py the main program
+   - [X] The examples should no longer need soft links to run
+   - [X] Should be possible to package cvss.py as a stand alone program
 ** DONE test_vulnerability.py och vulnerability.md should move [3/3]
    - [X] Moved to directory examples
    - [X] How should the doctests import?
    - [X] How can these imports be made location independent?
 ** DONE README.md needs to be updated to reflect new structure
-** TODO Scripts in tests need to be refactored [0/8]
+** DONE Scripts in tests need to be refactored [8/8]
 In particular they should be made more location independent.
 
-   - [ ] test_uc01.sh
-   - [ ] test_uc02.sh
-   - [ ] test_uc03.sh
-   - [ ] test_uc04.sh
-   - [ ] test_uc05.sh
-   - [ ] run_all_tests.sh
-   - [ ] run_doctests.sh
+   - [X] test_uc01.sh
+   - [X] test_uc02.sh
+   - [X] test_uc03.sh
+   - [X] test_uc04.sh
+   - [X] test_uc05.sh
+   - [X] test_uc06.sh
+   - [X] run_all_tests.sh
+   - [X] run_doctests.sh
 
 ** DONE General clean-up and restructuring
 ** DONE Commit the changes that were made in november.
