@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [0/4]
+* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [1/4]
   1) [ ] **`process_cmd_line_vulnerability` has no error handling** —
      Unlike `process_cmd_line_interactive` and `process_cmd_line_base`,
      `process_cmd_line_vulnerability` calls `VulnerabilityVector(vulnerability)`
@@ -6,7 +6,7 @@
      an unhandled `InvalidBaseVectorError` or `ValueError` to `main()`, where
      there is no handler.  Wrap the body in
      `try/except (InvalidBaseVectorError, ValueError) as e: print(e); sys.exit(1)`.
-  2) [ ] **`print("You need to use --help ...")` in `process_cmd_line` is dead code** —
+  2) [X] **`print("You need to use --help ...")` in `process_cmd_line` is dead code** —
      `main()` already guards `not (clarg["interactive"] or clarg["base"] or
      clarg["vulnerability"])` and exits before calling `process_cmd_line`.
      The else-branch in `process_cmd_line` can never be reached.  Replace with

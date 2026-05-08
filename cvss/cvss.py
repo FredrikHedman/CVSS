@@ -114,8 +114,7 @@ def process_cmd_line(clarg: CvssArgs) -> CVSS:
     elif clarg["vulnerability"]:
         cvs = process_cmd_line_vulnerability(clarg)
     else:
-        print("You need to use --help ...")
-        sys.exit(1)
+        raise RuntimeError("unreachable")
     return cvs
 
 
