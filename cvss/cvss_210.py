@@ -8,51 +8,52 @@
 """Calculate CVSS metrics v 2.10."""
 
 from .cvss_base import CVSS
+from .metric import Metric
 
 
 class CommonVulnerabilityScore(CVSS):
     """A concrete implementation of CVSS."""
 
-    def __init__(self, metrics_seq):
-        self.__metrics = {}
+    def __init__(self, metrics_seq: list[Metric]) -> None:
+        self.__metrics: dict[str, Metric] = {}
         for m in metrics_seq:
             self.__metrics[m.short_name] = m
         error_message = "Metric short name collision"
         assert len(self.__metrics) == len(metrics_seq), error_message
 
-    def __getitem__(self, idx):
+    def __getitem__(self, idx: str) -> Metric:
         return self.__metrics[idx]
 
     @property
-    def version(self):
+    def version(self) -> str:
         return "2.10"
 
-    def base_fcn(self, impact):
+    def base_fcn(self, impact: float) -> float:
         score = 0.6 * impact + 0.4 * self.exploitability - 1.5
         score *= self.fcn(impact)
         return score
 
-    def temporal_fcn(self, score):
+    def temporal_fcn(self, score: float) -> float:
         score *= float(self["E"])
         score *= float(self["RL"])
         score *= float(self["RC"])
         return score
 
-    def environmental_fcn(self, adjusted_temporal_score):
+    def environmental_fcn(self, adjusted_temporal_score: float) -> float:
         score = adjusted_temporal_score
         score += (10.0 - adjusted_temporal_score) * float(self["CDP"])
         score *= float(self["TD"])
         return score
 
     @property
-    def impact(self):
+    def impact(self) -> float:
         conf_impact = float(self["C"])
         integ_impact = float(self["I"])
         avail_impact = float(self["A"])
         return self.impact_fcn(conf_impact, integ_impact, avail_impact)
 
     @property
-    def adjusted_impact(self):
+    def adjusted_impact(self) -> float:
         conf_impact = float(self["C"]) * float(self["CR"])
         integ_impact = float(self["I"]) * float(self["IR"])
         avail_impact = float(self["A"]) * float(self["AR"])
@@ -60,64 +61,57 @@ class CommonVulnerabilityScore(CVSS):
         return min(10.0, result)
 
     @property
-    def exploitability(self):
+    def exploitability(self) -> float:
         res = 20.0
         res *= float(self["AV"])
         res *= float(self["AC"])
         res *= float(self["Au"])
         return res
 
-    def impact_fcn(self, conf_impact, integ_impact, avail_impact):
+    def impact_fcn(
+        self,
+        conf_impact: float,
+        integ_impact: float,
+        avail_impact: float,
+    ) -> float:
         result = 1 - (
             (1 - conf_impact) * (1 - integ_impact) * (1 - avail_impact)
         )
         result *= 10.41
         return result
 
-    def fcn(self, impact):
+    def fcn(self, impact: float) -> float:
         val = 1.176
         if impact == 0:
             val = 0.0
         return val
 
-    def base_metrics(self):
+    def base_metrics(self) -> list[Metric]:
         vv = ["AV", "AC", "Au", "C", "I", "A"]
-        ll = [self[v] for v in vv]
-        return ll
+        return [self[v] for v in vv]
 
     @property
-    def base_vector(self):
+    def base_vector(self) -> str:
         vv = ["AV", "AC", "Au", "C", "I", "A"]
-        vstr = []
-        for v in vv:
-            vstr.append(f"{v}:{self[v]}")
-        return "/".join(vstr)
+        return "/".join(f"{v}:{self[v]}" for v in vv)
 
-    def temporal_metrics(self):
+    def temporal_metrics(self) -> list[Metric]:
         vv = ["E", "RL", "RC"]
-        ll = [self[v] for v in vv]
-        return ll
+        return [self[v] for v in vv]
 
     @property
-    def temporal_vector(self):
+    def temporal_vector(self) -> str:
         vv = ["E", "RL", "RC"]
-        vstr = []
-        for v in vv:
-            vstr.append(f"{v}:{self[v]}")
-        return "/".join(vstr)
+        return "/".join(f"{v}:{self[v]}" for v in vv)
 
-    def environmental_metrics(self):
+    def environmental_metrics(self) -> list[Metric]:
         vv = ["CDP", "TD", "CR", "IR", "AR"]
-        ll = [self[v] for v in vv]
-        return ll
+        return [self[v] for v in vv]
 
     @property
-    def environmental_vector(self):
+    def environmental_vector(self) -> str:
         vv = ["CDP", "TD", "CR", "IR", "AR"]
-        vstr = []
-        for v in vv:
-            vstr.append(f"{v}:{self[v]}")
-        return "/".join(vstr)
+        return "/".join(f"{v}:{self[v]}" for v in vv)
 
 
 if __name__ == "__main__":
