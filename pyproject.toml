@@ -30,3 +30,18 @@ cvss = "cvss.cvss:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["cvss"]
+
+[tool.ruff]
+line-length = 79
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "C90", "N"]
+ignore = ["D100", "D101", "D102", "D103", "D301", "N803"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 9
+
+[dependency-groups]
+dev = [
+    "ruff>=0.15.12",
+]
