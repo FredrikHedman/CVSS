@@ -114,38 +114,44 @@ def generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
 
 def generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Generate output when verbose output requested."""
-    if clarg["base"] or clarg["all"]:
-        display_score(ScoreDisplayData(
-            header=("BASE METRIC", "EVALUATION", "SCORE"),
-            footer_labels=["FORMULA", "BASE SCORE"],
-            metrics=cvs.base_metrics(),
-            footer_data=[
-                ("Impact", cvs.impact),
-                ("Exploitability", cvs.exploitability),
-                ("Base Score", cvs.base_score),
-            ],
-            vector_label=("Base", cvs.base_vulnerability_vector),
-        ))
-    if clarg["temporal"] or clarg["all"]:
-        display_score(ScoreDisplayData(
-            header=("TEMPORAL METRIC", "EVALUATION", "SCORE"),
-            footer_labels=["FORMULA", "TEMPORAL SCORE"],
-            metrics=cvs.temporal_metrics(),
-            footer_data=[("Temporal Score", cvs.temporal_score)],
-            vector_label=("Temporal", cvs.temporal_vulnerability_vector),
-        ))
-    if clarg["environmental"] or clarg["all"]:
-        display_score(ScoreDisplayData(
-            header=("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
-            footer_labels=["FORMULA", "ENIRONMENTAL SCORE"],
-            metrics=cvs.environmental_metrics(),
-            footer_data=[
-                ("Adjusted Impact", cvs.adjusted_impact),
-                ("Adjusted Base", cvs.adjusted_base_score),
-                ("Adjusted Temporal", cvs.adjusted_temporal_score),
-                ("Environmental Score", cvs.environmental_score),
-            ],
-            vector_label=(
-                "Environmental", cvs.environmental_vulnerability_vector
-            ),
-        ))
+    entries: list[tuple[bool, ScoreDisplayData]] = [
+        (clarg["base"] or clarg["all"],
+         ScoreDisplayData(
+             header=("BASE METRIC", "EVALUATION", "SCORE"),
+             footer_labels=["FORMULA", "BASE SCORE"],
+             metrics=cvs.base_metrics(),
+             footer_data=[
+                 ("Impact", cvs.impact),
+                 ("Exploitability", cvs.exploitability),
+                 ("Base Score", cvs.base_score),
+             ],
+             vector_label=("Base", cvs.base_vulnerability_vector),
+         )),
+        (clarg["temporal"] or clarg["all"],
+         ScoreDisplayData(
+             header=("TEMPORAL METRIC", "EVALUATION", "SCORE"),
+             footer_labels=["FORMULA", "TEMPORAL SCORE"],
+             metrics=cvs.temporal_metrics(),
+             footer_data=[("Temporal Score", cvs.temporal_score)],
+             vector_label=("Temporal", cvs.temporal_vulnerability_vector),
+         )),
+        (clarg["environmental"] or clarg["all"],
+         ScoreDisplayData(
+             header=("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
+             footer_labels=["FORMULA", "ENIRONMENTAL SCORE"],
+             metrics=cvs.environmental_metrics(),
+             footer_data=[
+                 ("Adjusted Impact", cvs.adjusted_impact),
+                 ("Adjusted Base", cvs.adjusted_base_score),
+                 ("Adjusted Temporal", cvs.adjusted_temporal_score),
+                 ("Environmental Score", cvs.environmental_score),
+             ],
+             vector_label=(
+                 "Environmental",
+                 cvs.environmental_vulnerability_vector,
+             ),
+         )),
+    ]
+    for show, data in entries:
+        if show:
+            display_score(data)

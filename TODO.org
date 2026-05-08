@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [3/4]
+* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [4/4]
   1) [X] **`process_cmd_line_vulnerability` side-effect mutation** —
      Line 98: `clarg["all"] = True` mutates the caller's `CvssArgs` dict so that
      `generate_output` shows all three scores.  This is a hidden side effect:
@@ -20,7 +20,7 @@
      These guards protect against a programming error (missing required arg),
      not a user-input error, and should be placed BEFORE the `try` so that
      the distinction is explicit.
-  4) [ ] **`generate_verbose_output` duplicates the `clarg["X"] or clarg["all"]`
+  4) [X] **`generate_verbose_output` duplicates the `clarg["X"] or clarg["all"]`
      flag logic** — Three separate `if clarg["base"] or clarg["all"]:` tests
      in `generate_verbose_output` replicate the same pattern as `generate_output`'s
      `entries` list.  Apply the same `list[tuple[bool, ScoreDisplayData]]` pattern
