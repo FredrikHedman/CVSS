@@ -1,3 +1,28 @@
+* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [0/4]
+  1) [ ] **`process_cmd_line_vulnerability` has no error handling** —
+     Unlike `process_cmd_line_interactive` and `process_cmd_line_base`,
+     `process_cmd_line_vulnerability` calls `VulnerabilityVector(vulnerability)`
+     and `vvec.valid()` with no try/except.  A bad vector string propagates as
+     an unhandled `InvalidBaseVectorError` or `ValueError` to `main()`, where
+     there is no handler.  Wrap the body in
+     `try/except (InvalidBaseVectorError, ValueError) as e: print(e); sys.exit(1)`.
+  2) [ ] **`print("You need to use --help ...")` in `process_cmd_line` is dead code** —
+     `main()` already guards `not (clarg["interactive"] or clarg["base"] or
+     clarg["vulnerability"])` and exits before calling `process_cmd_line`.
+     The else-branch in `process_cmd_line` can never be reached.  Replace with
+     `raise RuntimeError("unreachable")` or remove it.
+  3) [ ] **`generate_output` show-list could pair flags with `ScoreEntry` directly** —
+     `show = [clarg["base"] or clarg["all"], ...]` with a parallel `zip` is
+     correct but the flag and score are linked only by position.  A list of
+     `(flag, ScoreEntry)` pairs built in one step would make the relationship
+     explicit without the separate `show` variable.
+  4) [ ] **`select_metric_value` debug-style print `###| |###`** —
+     Line 49: `print("Selected metric value ###|", idx, "|###")` uses
+     double-hash delimiters that look like debug/trace markers.  If intentional
+     UI output, rename to something clearer; if legacy debug noise, remove it.
+     Currently covered by `test_uc02_out.txt`, so removing it requires updating
+     the fixture.
+
 * <2026-05-08 Fri> Findings after override/@TypedDict/annotation cleanup [4/4]
   1) [X] **`assert` in production code in `cvss_210.py`** —
      Line 24: `assert len(self.__metrics) == len(metrics_seq), error_message`.
