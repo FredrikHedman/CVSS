@@ -27,7 +27,7 @@ def test_set_valid_index(av: Metric) -> None:
 
 
 def test_set_invalid_index_raises(av: Metric) -> None:
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         av.index = "X"
 
 
@@ -57,5 +57,5 @@ def test_explicit_index_at_construction() -> None:
 
 
 def test_empty_metric_values_raises() -> None:
-    with pytest.raises(AssertionError):
+    with pytest.raises(ValueError):
         Metric("X", "X", [])

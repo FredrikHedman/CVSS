@@ -17,7 +17,8 @@ class Metric:
         metric_values: list[tuple[str, str, float, str]],
         index: str | None = None,
     ) -> None:
-        assert len(metric_values), "At least one MetricValue needed."
+        if not metric_values:
+            raise ValueError("At least one MetricValue needed.")
         self.__name = name
         self.__short_name = short_name
         # Create the key-value pairs. Use the MetricValue as the key.
@@ -30,7 +31,8 @@ class Metric:
         if index is None:
             self.index = vals[0][0]
         else:
-            assert index in self.__values.keys(), "Not a valid key"
+            if index not in self.__values:
+                raise ValueError(f"{index!r} is not a valid index")
             self.index = index
 
     def __repr__(self) -> str:
@@ -65,7 +67,8 @@ class Metric:
 
     @index.setter
     def index(self, index: str) -> None:
-        assert index in self.__values.keys(), "Not a valid key"
+        if index not in self.__values:
+            raise ValueError(f"{index!r} is not a valid index")
         self.__index = index
 
     @property

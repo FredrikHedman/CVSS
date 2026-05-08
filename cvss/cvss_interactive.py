@@ -44,7 +44,7 @@ def select_metric_value(m: MetricDefinition) -> str:
 
         try:
             metric.index = idx
-        except AssertionError:
+        except ValueError:
             print("Not valid")
         else:
             return metric.index
