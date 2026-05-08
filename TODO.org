@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [1/4]
+* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [2/4]
   1) [X] **`process_cmd_line_vulnerability` side-effect mutation** —
      Line 98: `clarg["all"] = True` mutates the caller's `CvssArgs` dict so that
      `generate_output` shows all three scores.  This is a hidden side effect:
@@ -7,7 +7,7 @@
      to derive what to show from the invocation path rather than mutating shared
      state.  Medium severity: currently harmless because `clarg` is not reused,
      but fragile.
-  2) [ ] **`argparse.Namespace` attributes are `Any` in `main()`** —
+  2) [X] **`argparse.Namespace` attributes are `Any` in `main()`** —
      `args.verbose`, `args.base`, etc. are all typed `Any` by argparse, causing
      40 `reportAny` warnings in basedpyright.  Introduce a private
      `_ParsedArgs(argparse.Namespace)` class with typed fields (`verbose: bool`,

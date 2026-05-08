@@ -30,6 +30,17 @@ from .vulnerability import (
 VERSION = version("cvss")
 
 
+class _ParsedArgs(argparse.Namespace):
+    verbose: bool
+    interactive: bool
+    all: bool
+    base: bool
+    temporal: bool
+    environmental: bool
+    vector: str | None
+    vulnerability: str | None
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="cvss",
@@ -124,7 +135,7 @@ def process_cmd_line(clarg: CvssArgs) -> CVSS:
 
 def main() -> None:
     parser = build_parser()
-    args = parser.parse_args()
+    args: _ParsedArgs = parser.parse_args()  # type: ignore[assignment]
     clarg: CvssArgs = {
         "verbose": args.verbose,
         "interactive": args.interactive,
