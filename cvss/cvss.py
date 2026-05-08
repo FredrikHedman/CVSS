@@ -3,38 +3,12 @@
 # Author: Fredrik Hedman <fredrik.hedman@noruna.se>
 # LICENSE: MIT LICENSE
 #
-"""
-Calculate CVSS metrics based on a list of Metrics.
+"""Calculate CVSS metrics based on a list of Metrics."""
 
-Usage:
-  {PGM} [-v] --interactive --all
-  {PGM} [-v] --interactive [--temporal] --base [<vector>]
-  {PGM} [-v] --interactive [--environmental] --temporal --base [<vector>]
-  {PGM} [-v] --base <vector>
-  {PGM} [-v] --vulnerability <vector>
-  {PGM} (--help | --version)
-
-Options:
-  -i --interactive          select metric values interactively
-  -a --all                  ask for all metrics
-  -b --base                 ask for base metrics
-  -t --temporal             ask for temporal metrics
-  -e --environmental        ask for environmental metrics
-  <vector>                  base vulnerability vector
-  --vulnerability <vector>  calculate score from vector
-
-  -v --verbose              print verbose results
-  -h --help                 show this help message and exit
-  --version                 show version and exit
-
-"""
-
+import argparse
 import sys
 from importlib.metadata import version
-from os.path import basename
 from typing import Any
-
-from docopt import docopt  # type: ignore[import-untyped]
 
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS
@@ -52,8 +26,24 @@ from .vulnerability import (
     temporal_metrics,
 )
 
-_USAGE: str = __doc__ or ""
 VERSION = version("cvss")
+
+
+def build_parser() -> argparse.ArgumentParser:
+    p = argparse.ArgumentParser(
+        prog="cvss",
+        description="Calculate CVSS metrics based on a list of Metrics.",
+    )
+    p.add_argument("-v", "--verbose", action="store_true")
+    p.add_argument("-i", "--interactive", action="store_true")
+    p.add_argument("-a", "--all", action="store_true", dest="all")
+    p.add_argument("-b", "--base", action="store_true")
+    p.add_argument("-t", "--temporal", action="store_true")
+    p.add_argument("-e", "--environmental", action="store_true")
+    p.add_argument("vector", nargs="?", default=None)
+    p.add_argument("--vulnerability", metavar="vector", default=None)
+    p.add_argument("--version", action="version", version=VERSION)
+    return p
 
 
 def read_and_set(L: list[MetricDef], selected: list[str]) -> list[str]:
@@ -64,28 +54,23 @@ def read_and_set(L: list[MetricDef], selected: list[str]) -> list[str]:
     return selected
 
 
-def cmd_line_syntax(s: str) -> str:
-    """Parameterized help message."""
-    return _USAGE.format(PGM=basename(sys.argv[0]))
-
-
 def process_cmd_line_interactive(clarg: dict[str, Any]) -> CVSS:
     selected: list[str] = []
-    if clarg["--base"]:
-        if clarg["<vector>"]:
+    if clarg["base"]:
+        if clarg["vector"]:
             try:
-                vvec = VulnerabilityVector(clarg["<vector>"])
+                vvec = VulnerabilityVector(clarg["vector"])
                 selected.extend(vvec.valid().complete().metric_values())
             except Exception as e:
                 print(e)
                 sys.exit(1)
         else:
             selected = read_and_set(base_metrics(), selected)
-    if clarg["--temporal"]:
+    if clarg["temporal"]:
         selected = read_and_set(temporal_metrics(), selected)
-    if clarg["--temporal"] and clarg["--environmental"]:
+    if clarg["temporal"] and clarg["environmental"]:
         selected = read_and_set(environmental_metrics(), selected)
-    if clarg["--all"]:
+    if clarg["all"]:
         selected = read_and_set(base_metrics(), selected)
         selected = read_and_set(temporal_metrics(), selected)
         selected = read_and_set(environmental_metrics(), selected)
@@ -95,7 +80,7 @@ def process_cmd_line_interactive(clarg: dict[str, Any]) -> CVSS:
 
 def process_cmd_line_base(clarg: dict[str, Any]) -> CVSS:
     try:
-        vvec = VulnerabilityVector(clarg["<vector>"])
+        vvec = VulnerabilityVector(clarg["vector"])
         cvs = cvs_factory(
             CommonVulnerabilityScore, vvec.valid().complete().metric_values()
         )
@@ -106,19 +91,19 @@ def process_cmd_line_base(clarg: dict[str, Any]) -> CVSS:
 
 
 def process_cmd_line_vulnerability(clarg: dict[str, Any]) -> CVSS:
-    clarg["--all"] = True
-    vvec = VulnerabilityVector(clarg["--vulnerability"])
+    clarg["all"] = True
+    vvec = VulnerabilityVector(clarg["vulnerability"])
     cvs = cvs_factory(CommonVulnerabilityScore, vvec.valid().metric_values())
     return cvs
 
 
 def process_cmd_line(clarg: dict[str, Any]) -> CVSS:
     """React to the command line."""
-    if clarg["--interactive"]:
+    if clarg["interactive"]:
         cvs = process_cmd_line_interactive(clarg)
-    elif clarg["--base"]:
+    elif clarg["base"]:
         cvs = process_cmd_line_base(clarg)
-    elif clarg["--vulnerability"]:
+    elif clarg["vulnerability"]:
         cvs = process_cmd_line_vulnerability(clarg)
     else:
         print("You need to use --help ...")
@@ -127,12 +112,30 @@ def process_cmd_line(clarg: dict[str, Any]) -> CVSS:
 
 
 def main() -> None:
-    # Create command line parser and parse it.
-    clarg = docopt(cmd_line_syntax(_USAGE), version=VERSION)
+    parser = build_parser()
+    args = parser.parse_args()
+    clarg = vars(args)
+
+    # Validate interactive-mode flag combinations.
+    if clarg["interactive"]:
+        if clarg["temporal"] and not clarg["base"]:
+            parser.error("--temporal requires --base in interactive mode")
+        if clarg["environmental"] and not (
+            clarg["base"] and clarg["temporal"]
+        ):
+            parser.error(
+                "--environmental requires --base and --temporal"
+                " in interactive mode"
+            )
+
+    # No actionable flag provided → show usage.
+    if not (clarg["interactive"] or clarg["base"] or clarg["vulnerability"]):
+        parser.print_usage()
+        sys.exit(1)
 
     cvs = process_cmd_line(clarg)
 
-    if clarg["--verbose"]:
+    if clarg["verbose"]:
         generate_verbose_output(cvs, clarg)
     else:
         generate_output(cvs, clarg)

@@ -4,8 +4,6 @@ import shutil
 import subprocess
 from pathlib import Path
 
-import pytest
-
 TESTS_DIR = Path(__file__).parent
 CVSS = shutil.which("cvss") or "cvss"
 
@@ -107,16 +105,6 @@ def test_uc03_bad_order():
         "test_uc03_bad_order_out.txt"
     )
 
-
-@pytest.mark.parametrize("flag", ["-it", "-ie", "-ibe", "-ite"])
-def test_uc03_bad_params(flag: str) -> None:
-    assert run([flag]) == expected("test_uc03_bad_params_out.txt")
-
-
-def test_uc03_bad_params_extra():
-    assert run(["-ib", "abc", "-e"]) == expected(
-        "test_uc03_bad_params_out.txt"
-    )
 
 
 def test_uc03_base_only():

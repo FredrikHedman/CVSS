@@ -1,7 +1,3 @@
-Usage:
-  cvss [-v] --interactive --all
-  cvss [-v] --interactive [--temporal] --base [<vector>]
-  cvss [-v] --interactive [--environmental] --temporal --base [<vector>]
-  cvss [-v] --base <vector>
-  cvss [-v] --vulnerability <vector>
-  cvss (--help | --version)
+usage: cvss [-h] [-v] [-i] [-a] [-b] [-t] [-e] [--vulnerability vector]
+            [--version]
+            [vector]

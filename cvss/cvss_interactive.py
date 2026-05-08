@@ -96,9 +96,9 @@ def display_score(
 def generate_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
     """Print requested scores."""
     show = [
-        clarg["--base"] or clarg["--all"],
-        clarg["--temporal"] or clarg["--all"],
-        clarg["--environmental"] or clarg["--all"],
+        clarg["base"] or clarg["all"],
+        clarg["temporal"] or clarg["all"],
+        clarg["environmental"] or clarg["all"],
     ]
     list_of_scores = [
         ("Base", cvs.base_score, cvs.base_vulnerability_vector),
@@ -121,8 +121,8 @@ def generate_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
 
 def generate_verbose_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
     """Generate output when verbose output requested."""
-    show = [clarg["--base"], clarg["--temporal"], clarg["--environmental"]]
-    if show[0] or clarg["--all"]:
+    show = [clarg["base"], clarg["temporal"], clarg["environmental"]]
+    if show[0] or clarg["all"]:
         display_score(
             ("BASE METRIC", "EVALUATION", "SCORE"),
             ["FORMULA", "BASE SCORE"],
@@ -134,7 +134,7 @@ def generate_verbose_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
             ],
             ("Base", cvs.base_vulnerability_vector),
         )
-    if show[1] or clarg["--all"]:
+    if show[1] or clarg["all"]:
         display_score(
             ("TEMPORAL METRIC", "EVALUATION", "SCORE"),
             ["FORMULA", "TEMPORAL SCORE"],
@@ -142,7 +142,7 @@ def generate_verbose_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
             [("Temporal Score", cvs.temporal_score)],
             ("Temporal", cvs.temporal_vulnerability_vector),
         )
-    if show[2] or clarg["--all"]:
+    if show[2] or clarg["all"]:
         display_score(
             ("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
             ["FORMULA", "ENIRONMENTAL SCORE"],

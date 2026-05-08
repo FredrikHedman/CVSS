@@ -1,22 +1,19 @@
+usage: cvss [-h] [-v] [-i] [-a] [-b] [-t] [-e] [--vulnerability vector]
+            [--version]
+            [vector]
+
 Calculate CVSS metrics based on a list of Metrics.
 
-Usage:
-  cvss [-v] --interactive --all
-  cvss [-v] --interactive [--temporal] --base [<vector>]
-  cvss [-v] --interactive [--environmental] --temporal --base [<vector>]
-  cvss [-v] --base <vector>
-  cvss [-v] --vulnerability <vector>
-  cvss (--help | --version)
+positional arguments:
+  vector
 
-Options:
-  -i --interactive          select metric values interactively
-  -a --all                  ask for all metrics
-  -b --base                 ask for base metrics
-  -t --temporal             ask for temporal metrics
-  -e --environmental        ask for environmental metrics
-  <vector>                  base vulnerability vector
-  --vulnerability <vector>  calculate score from vector
-
-  -v --verbose              print verbose results
-  -h --help                 show this help message and exit
-  --version                 show version and exit
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose
+  -i, --interactive
+  -a, --all
+  -b, --base
+  -t, --temporal
+  -e, --environmental
+  --vulnerability vector
+  --version             show program's version number and exit

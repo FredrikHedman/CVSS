@@ -1,34 +1,34 @@
 * <2026-05-08 Fri> Refactor findings from type annotation work [0/7]
-  - [ ] **MetricValue → @dataclass(frozen=True) or NamedTuple**
-    The class is a pure immutable value object with no logic beyond
-    property access.  A frozen dataclass (or NamedTuple) would eliminate
-    all manual __init__, __repr__, and property boilerplate.
-  - [ ] **OrderedDict → dict**
-    Python 3.7+ guarantees dict insertion order.  OrderedDict in
-    metric.py and vulnerability.py adds complexity with no benefit.
-    Replacing it simplifies type annotations and removes an import.
-  - [ ] **assert → raise ValueError**
-    assert guards in Metric.__init__ and index.setter are silenced by
-    python -O.  Replace with explicit raises for correct runtime
-    behaviour in all execution modes.
-  - [ ] **Unify *_SCORE strings and *_metrics() data (DRY)**
-    BASE_SCORE et al. and base_metrics() both encode the same metric
-    abbreviations (originally noted 2014-03-08 TODO).  A MetricDefinition
-    dataclass with name, abbreviation, weight values, and allowed
-    abbreviation list would be a single source of truth.
-  - [ ] **Replace docopt with click or argparse**
-    docopt is unmaintained and emits SyntaxWarning on Python 3.12+
-    (visible on every `cvss --version` call).  click was already noted
-    in the 2014 TODO; argparse is stdlib.
-  - [ ] **display_score argument shapes → dataclass or TypedDict**
-    Five positional parameters with opaque tuple shapes make every call
-    site hard to read.  A single DisplayScoreData dataclass would make
-    call sites self-documenting and eliminate the ScoreHeader/FooterLine/
-    FooterData/VecLabel aliases.
-  - [ ] **lambda/map → list comprehensions in vulnerability.py**
-    Two map(lambda x: x.split(":"), ...) patterns remain in
-    _parse_vulnerability_string; list comprehensions are more readable
-    and avoid the type: ignore comment on the OrderedDict constructor.
+  1) [X] **Replace docopt with click or argparse**
+     docopt is unmaintained and emits SyntaxWarning on Python 3.12+
+     (visible on every `cvss --version` call).  click was already noted
+     in the 2014 TODO; argparse is stdlib.
+  2) [ ] **MetricValue → @dataclass(frozen=True) or NamedTuple**
+     The class is a pure immutable value object with no logic beyond
+     property access.  A frozen dataclass (or NamedTuple) would eliminate
+     all manual __init__, __repr__, and property boilerplate.
+  3) [ ] **Unify *_SCORE strings and *_metrics() data (DRY)**
+     BASE_SCORE et al. and base_metrics() both encode the same metric
+     abbreviations (originally noted 2014-03-08 TODO).  A MetricDefinition
+     dataclass with name, abbreviation, weight values, and allowed
+     abbreviation list would be a single source of truth.
+  4) [ ] **display_score argument shapes → dataclass or TypedDict**
+     Five positional parameters with opaque tuple shapes make every call
+     site hard to read.  A single DisplayScoreData dataclass would make
+     call sites self-documenting and eliminate the ScoreHeader/FooterLine/
+     FooterData/VecLabel aliases.
+  5) [ ] **OrderedDict → dict**
+     Python 3.7+ guarantees dict insertion order.  OrderedDict in
+     metric.py and vulnerability.py adds complexity with no benefit.
+     Replacing it simplifies type annotations and removes an import.
+  6) [ ] **assert → raise ValueError**
+     assert guards in Metric.__init__ and index.setter are silenced by
+     python -O.  Replace with explicit raises for correct runtime
+     behaviour in all execution modes.
+  7) [ ] **lambda/map → list comprehensions in vulnerability.py**
+     Two map(lambda x: x.split(":"), ...) patterns remain in
+     _parse_vulnerability_string; list comprehensions are more readable
+     and avoid the type: ignore comment on the OrderedDict constructor.
 
 * <2014-06-30 Mån> [0/2]
   - [ ] Fixed documentation.
