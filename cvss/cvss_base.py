@@ -6,84 +6,104 @@
 #
 """Base class for CVSS metrics."""
 
+import abc
 
-class CVSS(object):
-    """This class is an abstract interface.
+from .metric import Metric
 
-    To create a concrete class inherit from this class and implement
-    the follwoing methods:
 
-       * version : CVSS version string
-       * base_fcn(impact) : Base Score
-       * temporal_fcn(base_score) : Temporal Score
-       * environmental_fcn(adjusted_temporal_score) :  Environmental Score
-       * impact : float
-       * adjusted_impact : float
-       * exploitability : float
-       * base_metrics : list of base metrics
-       * temporal_metrics : list of temporal metrics
-       * environmental_metrics : list of environmental metrics
-       * base_vector : string
-       * temporal_vector : string
-       * environmental_vector : string
+class CVSS(abc.ABC):
+    """Abstract base class for CVSS score calculators.
 
+    Subclasses must implement the scoring functions, metric accessors,
+    and vector properties listed below.
     """
 
-    @property
-    def version(self):
-        return str()
+    # ------------------------------------------------------------------
+    # Abstract: subclasses supply these
+    # ------------------------------------------------------------------
 
     @property
-    def base_score(self):
+    @abc.abstractmethod
+    def version(self) -> str: ...
+
+    @abc.abstractmethod
+    def base_fcn(self, impact: float) -> float: ...
+
+    @abc.abstractmethod
+    def temporal_fcn(self, score: float) -> float: ...
+
+    @abc.abstractmethod
+    def environmental_fcn(self, adjusted_temporal_score: float) -> float: ...
+
+    @property
+    @abc.abstractmethod
+    def impact(self) -> float: ...
+
+    @property
+    @abc.abstractmethod
+    def adjusted_impact(self) -> float: ...
+
+    @property
+    @abc.abstractmethod
+    def exploitability(self) -> float: ...
+
+    @abc.abstractmethod
+    def base_metrics(self) -> list[Metric]: ...
+
+    @abc.abstractmethod
+    def temporal_metrics(self) -> list[Metric]: ...
+
+    @abc.abstractmethod
+    def environmental_metrics(self) -> list[Metric]: ...
+
+    @property
+    @abc.abstractmethod
+    def base_vector(self) -> str: ...
+
+    @property
+    @abc.abstractmethod
+    def temporal_vector(self) -> str: ...
+
+    @property
+    @abc.abstractmethod
+    def environmental_vector(self) -> str: ...
+
+    # ------------------------------------------------------------------
+    # Concrete: template-method properties built on the abstract ones
+    # ------------------------------------------------------------------
+
+    @property
+    def base_score(self) -> float:
         return round(self.base_fcn(self.impact), ndigits=1)
 
     @property
-    def adjusted_base_score(self):
+    def adjusted_base_score(self) -> float:
         return round(self.base_fcn(self.adjusted_impact), ndigits=1)
 
     @property
-    def temporal_score(self):
+    def temporal_score(self) -> float:
         return round(self.temporal_fcn(self.base_score), ndigits=1)
 
     @property
-    def adjusted_temporal_score(self):
-        return round(self.temporal_fcn(self.adjusted_base_score), ndigits=1)
+    def adjusted_temporal_score(self) -> float:
+        return round(
+            self.temporal_fcn(self.adjusted_base_score), ndigits=1
+        )
 
     @property
-    def environmental_score(self):
+    def environmental_score(self) -> float:
         return round(
             self.environmental_fcn(self.adjusted_temporal_score), ndigits=1
         )
 
     @property
-    def impact(self):
-        return float()
-
-    @property
-    def adjusted_impact(self):
-        return float()
-
-    @property
-    def exploitability(self):
-        return float()
-
-    def base_metrics(self):
-        return None
-
-    def temporal_metrics(self):
-        return None
-
-    def environmental_metrics(self):
-        return None
-
-    @property
-    def base_vulnerability_vector(self):
+    def base_vulnerability_vector(self) -> str:
         return self.base_vector
 
     @property
-    def temporal_vulnerability_vector(self):
+    def temporal_vulnerability_vector(self) -> str:
         return self.temporal_vector
 
     @property
-    def environmental_vulnerability_vector(self):
+    def environmental_vulnerability_vector(self) -> str:
         return self.environmental_vector
