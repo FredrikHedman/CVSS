@@ -1,3 +1,25 @@
+* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [0/4]
+  1) [ ] **Double error printing** — `_parse_vulnerability_string`, `valid()`,
+     and `complete()` in `vulnerability.py` all `print(...)` before re-raising.
+     Callers in `cvss.py` (`process_cmd_line_interactive`,
+     `process_cmd_line_base`) also `print(e)` on the caught exception, so every
+     error message appears twice.  Remove the `print` calls from the raising
+     site; let the top-level handler be the single place that reports errors.
+  2) [ ] **`part.split(":")[0]: part.split(":")[1]` double split** — The new
+     dict comprehension in `_parse_vulnerability_string` calls `split(":")` twice
+     per part.  Replace with `part.split(":", 1)` unpacked into `k, v`, which is
+     both cheaper and more readable.  Using `maxsplit=1` also correctly handles
+     values that contain colons.
+  3) [ ] **Dead `if __name__ == "__main__": doctest.testmod()` blocks** —
+     `cvss_210.py` and `vulnerability.py` still have them.  pytest already runs
+     doctests via `--doctest-modules`; these blocks add noise with no benefit.
+     Remove them (same as the block removed from `metric.py` in Refactor 1).
+  4) [ ] **`clarg: dict[str, Any]` → use `argparse.Namespace` directly** —
+     `main()` calls `vars(args)` and passes the resulting `dict[str, Any]` to
+     every `process_cmd_line_*` function.  Using `args` (a `Namespace`) directly
+     gives typed attribute access; alternatively a `TypedDict` makes the keys
+     explicit.  Either removes the `Any` annotations on `clarg` parameters.
+
 * <2026-05-08 Fri> Refactor findings from type annotation work [3/7]
   1) [X] **Replace docopt with click or argparse**
      docopt is unmaintained and emits SyntaxWarning on Python 3.12+
