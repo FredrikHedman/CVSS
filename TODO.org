@@ -69,7 +69,7 @@
      gives typed attribute access; alternatively a `TypedDict` makes the keys
      explicit.  Either removes the `Any` annotations on `clarg` parameters.
 
-* <2026-05-08 Fri> Refactor findings from type annotation work [5/7]
+* <2026-05-08 Fri> Refactor findings from type annotation work [7/7]
   1) [X] **Replace docopt with click or argparse**
      docopt is unmaintained and emits SyntaxWarning on Python 3.12+
      (visible on every `cvss --version` call).  click was already noted
@@ -88,7 +88,7 @@
      site hard to read.  A single DisplayScoreData dataclass would make
      call sites self-documenting and eliminate the ScoreHeader/FooterLine/
      FooterData/VecLabel aliases.
-  5) [ ] **OrderedDict → dict**
+  5) [X] **OrderedDict → dict**
      Python 3.7+ guarantees dict insertion order.  OrderedDict in
      metric.py and vulnerability.py adds complexity with no benefit.
      Replacing it simplifies type annotations and removes an import.
@@ -96,7 +96,7 @@
      assert guards in Metric.__init__ and index.setter are silenced by
      python -O.  Replace with explicit raises for correct runtime
      behaviour in all execution modes.
-  7) [ ] **lambda/map → list comprehensions in vulnerability.py**
+  7) [X] **lambda/map → list comprehensions in vulnerability.py**
      Two map(lambda x: x.split(":"), ...) patterns remain in
      _parse_vulnerability_string; list comprehensions are more readable
      and avoid the type: ignore comment on the OrderedDict constructor.

@@ -122,8 +122,7 @@ def generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
 
 def generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Generate output when verbose output requested."""
-    show = [clarg["base"], clarg["temporal"], clarg["environmental"]]
-    if show[0] or clarg["all"]:
+    if clarg["base"] or clarg["all"]:
         display_score(ScoreDisplayData(
             header=("BASE METRIC", "EVALUATION", "SCORE"),
             footer_labels=["FORMULA", "BASE SCORE"],
@@ -135,7 +134,7 @@ def generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
             ],
             vector_label=("Base", cvs.base_vulnerability_vector),
         ))
-    if show[1] or clarg["all"]:
+    if clarg["temporal"] or clarg["all"]:
         display_score(ScoreDisplayData(
             header=("TEMPORAL METRIC", "EVALUATION", "SCORE"),
             footer_labels=["FORMULA", "TEMPORAL SCORE"],
@@ -143,7 +142,7 @@ def generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
             footer_data=[("Temporal Score", cvs.temporal_score)],
             vector_label=("Temporal", cvs.temporal_vulnerability_vector),
         ))
-    if show[2] or clarg["all"]:
+    if clarg["environmental"] or clarg["all"]:
         display_score(ScoreDisplayData(
             header=("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
             footer_labels=["FORMULA", "ENIRONMENTAL SCORE"],
