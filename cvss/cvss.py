@@ -18,7 +18,7 @@ from .cvss_interactive import (
     select_metric_value,
 )
 from .vulnerability import (
-    MetricDef,
+    MetricDefinition,
     VulnerabilityVector,
     base_metrics,
     cvs_factory,
@@ -46,7 +46,7 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def read_and_set(L: list[MetricDef], selected: list[str]) -> list[str]:
+def read_and_set(L: list[MetricDefinition], selected: list[str]) -> list[str]:
     """Read and set selected metrics."""
     for m in L:
         mm = select_metric_value(m)

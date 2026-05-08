@@ -10,7 +10,7 @@ from typing import Any
 
 from .cvss_base import CVSS
 from .metric import Metric
-from .vulnerability import MetricDef
+from .vulnerability import MetricDefinition
 
 # Type aliases for display_score arguments
 ScoreHeader = tuple[str, str, str]
@@ -19,17 +19,16 @@ FooterData = list[tuple[str, float]]
 VecLabel = tuple[str, str]
 
 
-def select_metric_value(m: MetricDef) -> str:
+def select_metric_value(m: MetricDefinition) -> str:
     """Interactive selection of a metric value.
 
     Input:
-       m : list of values that can be unpacked into valid
-           parameters for constructing a Metric
+       m : MetricDefinition describing the metric and its allowed values
     Return:
        a valid index for the Metric
 
     """
-    metric = Metric(*m)
+    metric = Metric(m.name, m.abbrev, m.metric_values())
     default_metric_value = metric.index
     sep = 10 * "+"
     print(f"\n{sep} {metric.name} {metric.short_name} {sep}")

@@ -7,7 +7,7 @@
      The class is a pure immutable value object with no logic beyond
      property access.  A frozen dataclass (or NamedTuple) would eliminate
      all manual __init__, __repr__, and property boilerplate.
-  3) [ ] **Unify *_SCORE strings and *_metrics() data (DRY)**
+  3) [X] **Unify *_SCORE strings and *_metrics() data (DRY)**
      BASE_SCORE et al. and base_metrics() both encode the same metric
      abbreviations (originally noted 2014-03-08 TODO).  A MetricDefinition
      dataclass with name, abbreviation, weight values, and allowed
