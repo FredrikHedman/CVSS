@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings after override/@TypedDict/annotation cleanup [2/4]
+* <2026-05-08 Fri> Findings after override/@TypedDict/annotation cleanup [3/4]
   1) [X] **`assert` in production code in `cvss_210.py`** —
      Line 24: `assert len(self.__metrics) == len(metrics_seq), error_message`.
      The same pattern was already replaced with `raise ValueError` in
@@ -15,14 +15,14 @@
      a `@dataclass` would make the type explicit and remove the reliance on
      positional unpacking; aligns with the `ScoreDisplayData` dataclass pattern
      already used in the same module.
-  4) [ ] **`CommonVulnerabilityScore` hardcoded metric key lists** —
+  4) [X] **`CommonVulnerabilityScore` hardcoded metric key lists** —
      `base_metrics()`, `base_vector`, `temporal_metrics()`, `temporal_vector`,
      `environmental_metrics()`, `environmental_vector` all duplicate key lists
      like `["AV","AC","Au","C","I","A"]`.  These are already encoded in
      `BASE_DEFINITIONS` etc. in `vulnerability.py`; derive the lists from the
      definitions to make `cvss_210.py` DRY and immune to future metric reorders.
 
-* <2026-05-08 Fri> Findings from partition/ValueError/dataclass/print cleanup [3/4]
+* <2026-05-08 Fri> Findings from partition/ValueError/dataclass/print cleanup [4/4]
   1) [X] **Remove dead `if __name__ == "__main__": doctest.testmod()` blocks** —
      `cvss_210.py` and `vulnerability.py` still have them.  pytest runs doctests
      via `--doctest-modules`; these blocks add noise.  A 2-line removal each,
@@ -33,7 +33,7 @@
      the only expected exceptions are `InvalidBaseVectorError` and `ValueError`.
      Narrowing to `except (InvalidBaseVectorError, ValueError)` prevents silent
      swallowing of unexpected errors.
-  3) [ ] **`CommonVulnerabilityScore` hardcoded metric key lists** —
+  3) [X] **`CommonVulnerabilityScore` hardcoded metric key lists** —
      `base_metrics()`, `base_vector`, `temporal_metrics()`, `temporal_vector`,
      `environmental_metrics()`, and `environmental_vector` all hard-code lists
      like `["AV","AC","Au","C","I","A"]`.  These duplicate the abbreviation

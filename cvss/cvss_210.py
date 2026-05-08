@@ -11,6 +11,15 @@ from typing import override
 
 from .cvss_base import CVSS
 from .metric import Metric
+from .vulnerability import (
+    BASE_DEFINITIONS,
+    ENVIRONMENTAL_DEFINITIONS,
+    TEMPORAL_DEFINITIONS,
+)
+
+_BASE_KEYS: tuple[str, ...] = tuple(d.abbrev for d in BASE_DEFINITIONS)
+_TEMPORAL_KEYS: tuple[str, ...] = tuple(d.abbrev for d in TEMPORAL_DEFINITIONS)
+_ENV_KEYS: tuple[str, ...] = tuple(d.abbrev for d in ENVIRONMENTAL_DEFINITIONS)
 
 
 class CommonVulnerabilityScore(CVSS):
@@ -97,35 +106,29 @@ class CommonVulnerabilityScore(CVSS):
 
     @override
     def base_metrics(self) -> list[Metric]:
-        vv = ["AV", "AC", "Au", "C", "I", "A"]
-        return [self[v] for v in vv]
+        return [self[v] for v in _BASE_KEYS]
 
     @property
     @override
     def base_vector(self) -> str:
-        vv = ["AV", "AC", "Au", "C", "I", "A"]
-        return "/".join(f"{v}:{self[v]}" for v in vv)
+        return "/".join(f"{v}:{self[v]}" for v in _BASE_KEYS)
 
     @override
     def temporal_metrics(self) -> list[Metric]:
-        vv = ["E", "RL", "RC"]
-        return [self[v] for v in vv]
+        return [self[v] for v in _TEMPORAL_KEYS]
 
     @property
     @override
     def temporal_vector(self) -> str:
-        vv = ["E", "RL", "RC"]
-        return "/".join(f"{v}:{self[v]}" for v in vv)
+        return "/".join(f"{v}:{self[v]}" for v in _TEMPORAL_KEYS)
 
     @override
     def environmental_metrics(self) -> list[Metric]:
-        vv = ["CDP", "TD", "CR", "IR", "AR"]
-        return [self[v] for v in vv]
+        return [self[v] for v in _ENV_KEYS]
 
     @property
     @override
     def environmental_vector(self) -> str:
-        vv = ["CDP", "TD", "CR", "IR", "AR"]
-        return "/".join(f"{v}:{self[v]}" for v in vv)
+        return "/".join(f"{v}:{self[v]}" for v in _ENV_KEYS)
 
 
