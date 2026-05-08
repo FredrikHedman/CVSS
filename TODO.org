@@ -3,7 +3,7 @@
      docopt is unmaintained and emits SyntaxWarning on Python 3.12+
      (visible on every `cvss --version` call).  click was already noted
      in the 2014 TODO; argparse is stdlib.
-  2) [ ] **MetricValue → @dataclass(frozen=True) or NamedTuple**
+  2) [X] **MetricValue → @dataclass(frozen=True) or NamedTuple**
      The class is a pure immutable value object with no logic beyond
      property access.  A frozen dataclass (or NamedTuple) would eliminate
      all manual __init__, __repr__, and property boilerplate.
