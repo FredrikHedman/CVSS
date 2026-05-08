@@ -5,22 +5,29 @@
 # LICENSE: MIT LICENSE
 #
 from collections import OrderedDict
+
 from .metric_value import MetricValue
 
 
-class Metric(object):
+class Metric:
     """Metrics used by CVSS."""
 
-    def __init__(self, name, short_name, metric_values, index=None):
+    def __init__(
+        self,
+        name: str,
+        short_name: str,
+        metric_values: list[tuple[str, str, float, str]],
+        index: str | None = None,
+    ) -> None:
         assert len(metric_values), "At least one MetricValue needed."
         self.__name = name
         self.__short_name = short_name
         # Create the key-value pairs. Use the MetricValue as the key.
-        vals = []
+        vals: list[tuple[str, MetricValue]] = []
         for x in metric_values:
             m = MetricValue(*x)
             vals.append((m.value, m))
-        self.__values = OrderedDict(vals)
+        self.__values: OrderedDict[str, MetricValue] = OrderedDict(vals)
         # Use the first key available.
         if index is None:
             self.index = vals[0][0]
@@ -28,43 +35,43 @@ class Metric(object):
             assert index in self.__values.keys(), "Not a valid key"
             self.index = index
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return (
             f"{self.__class__.__name__}('{self.name}','{self.short_name}',"
             f"{self.values},'{self.index}')"
         )
 
-    def __str__(self):
+    def __str__(self) -> str:
         """Use selected MetricValue as a string."""
         return str(self.selected)
 
-    def __float__(self):
+    def __float__(self) -> float:
         """Use selected MetricValue as a float."""
         return float(self.selected)
 
     @property
-    def name(self):
+    def name(self) -> str:
         return self.__name
 
     @property
-    def short_name(self):
+    def short_name(self) -> str:
         return self.__short_name
 
     @property
-    def values(self):
+    def values(self) -> list[MetricValue]:
         return list(self.__values.values())
 
     @property
-    def index(self):
+    def index(self) -> str:
         return self.__index
 
     @index.setter
-    def index(self, index):
+    def index(self, index: str) -> None:
         assert index in self.__values.keys(), "Not a valid key"
         self.__index = index
 
     @property
-    def selected(self):
+    def selected(self) -> MetricValue:
         return self.__values[self.__index]
 
 
