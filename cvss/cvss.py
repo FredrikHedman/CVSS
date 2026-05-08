@@ -19,6 +19,7 @@ from .cvss_interactive import (
 )
 from .cvss_types import CvssArgs
 from .vulnerability import (
+    InvalidBaseVectorError,
     MetricDefinition,
     VulnerabilityVector,
     base_metrics,
@@ -62,7 +63,7 @@ def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
             try:
                 vvec = VulnerabilityVector(clarg["vector"])
                 selected.extend(vvec.valid().complete().metric_values())
-            except Exception as e:
+            except (InvalidBaseVectorError, ValueError) as e:
                 print(e)
                 sys.exit(1)
         else:
@@ -88,7 +89,7 @@ def process_cmd_line_base(clarg: CvssArgs) -> CVSS:
         cvs = cvs_factory(
             CommonVulnerabilityScore, vvec.valid().complete().metric_values()
         )
-    except Exception as e:
+    except (InvalidBaseVectorError, ValueError) as e:
         print(e)
         sys.exit(1)
     return cvs

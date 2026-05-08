@@ -1,10 +1,11 @@
 """Unit tests for the argparse-based CLI in cvss.cvss."""
 
 from typing import cast
+from unittest.mock import patch
 
 import pytest
 
-from cvss.cvss import build_parser
+from cvss.cvss import build_parser, process_cmd_line_base
 from cvss.cvss_types import CvssArgs
 
 
@@ -63,6 +64,19 @@ def test_interactive_combined_flags() -> None:
     clarg = cast(CvssArgs, vars(parser.parse_args(["-ib"])))
     assert clarg["interactive"] is True
     assert clarg["base"] is True
+
+
+def test_unexpected_exception_propagates() -> None:
+    """Unexpected exceptions must NOT be swallowed by process_cmd_line_base."""
+    clarg: CvssArgs = {
+        "verbose": False, "interactive": False, "all": False,
+        "base": True, "temporal": False, "environmental": False,
+        "vector": "AV:N/AC:L/Au:N/C:C/I:C/A:C", "vulnerability": None,
+    }
+    exc_to_raise = RuntimeError("oops")
+    with patch("cvss.cvss.VulnerabilityVector", side_effect=exc_to_raise):
+        with pytest.raises(RuntimeError, match="oops"):
+            _ = process_cmd_line_base(clarg)
 
 
 @pytest.mark.parametrize("flag", ["-it", "-ite"])
