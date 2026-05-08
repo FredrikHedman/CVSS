@@ -8,7 +8,6 @@
 import argparse
 import sys
 from importlib.metadata import version
-from typing import cast
 
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS
@@ -121,7 +120,16 @@ def process_cmd_line(clarg: CvssArgs) -> CVSS:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
-    clarg = cast(CvssArgs, vars(args))
+    clarg: CvssArgs = {
+        "verbose": args.verbose,
+        "interactive": args.interactive,
+        "all": args.all,
+        "base": args.base,
+        "temporal": args.temporal,
+        "environmental": args.environmental,
+        "vector": args.vector,
+        "vulnerability": args.vulnerability,
+    }
 
     # Validate interactive-mode flag combinations.
     if clarg["interactive"]:

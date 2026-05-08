@@ -1,6 +1,5 @@
 """Unit tests for the argparse-based CLI in cvss.cvss."""
 
-from typing import cast
 from unittest.mock import patch
 
 import pytest
@@ -36,32 +35,50 @@ def test_help_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
 
 def test_base_flag_parsed() -> None:
     parser = build_parser()
-    clarg = cast(CvssArgs, vars(
-        parser.parse_args(["--base", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
-    ))
+    _args = parser.parse_args(["--base", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
+    clarg: CvssArgs = {
+        "verbose": _args.verbose, "interactive": _args.interactive,
+        "all": _args.all, "base": _args.base, "temporal": _args.temporal,
+        "environmental": _args.environmental, "vector": _args.vector,
+        "vulnerability": _args.vulnerability,
+    }
     assert clarg["base"] is True
     assert clarg["vector"] == "AV:N/AC:L/Au:N/C:C/I:C/A:C"
 
 
 def test_vulnerability_flag_parsed() -> None:
     parser = build_parser()
-    clarg = cast(CvssArgs, vars(
-        parser.parse_args(["--vulnerability", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
-    ))
+    _args = parser.parse_args(["--vulnerability", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
+    clarg: CvssArgs = {
+        "verbose": _args.verbose, "interactive": _args.interactive,
+        "all": _args.all, "base": _args.base, "temporal": _args.temporal,
+        "environmental": _args.environmental, "vector": _args.vector,
+        "vulnerability": _args.vulnerability,
+    }
     assert clarg["vulnerability"] == "AV:N/AC:L/Au:N/C:C/I:C/A:C"
 
 
 def test_verbose_short_flag() -> None:
     parser = build_parser()
-    clarg = cast(CvssArgs, vars(
-        parser.parse_args(["-v", "--base", "AV:L/AC:H/Au:N/C:N/I:N/A:N"])
-    ))
+    _args = parser.parse_args(["-v", "--base", "AV:L/AC:H/Au:N/C:N/I:N/A:N"])
+    clarg: CvssArgs = {
+        "verbose": _args.verbose, "interactive": _args.interactive,
+        "all": _args.all, "base": _args.base, "temporal": _args.temporal,
+        "environmental": _args.environmental, "vector": _args.vector,
+        "vulnerability": _args.vulnerability,
+    }
     assert clarg["verbose"] is True
 
 
 def test_interactive_combined_flags() -> None:
     parser = build_parser()
-    clarg = cast(CvssArgs, vars(parser.parse_args(["-ib"])))
+    _args = parser.parse_args(["-ib"])
+    clarg: CvssArgs = {
+        "verbose": _args.verbose, "interactive": _args.interactive,
+        "all": _args.all, "base": _args.base, "temporal": _args.temporal,
+        "environmental": _args.environmental, "vector": _args.vector,
+        "vulnerability": _args.vulnerability,
+    }
     assert clarg["interactive"] is True
     assert clarg["base"] is True
 
