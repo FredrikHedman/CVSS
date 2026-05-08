@@ -1,13 +1,17 @@
 help:
 	@echo "Please use 'make <target>' where <target> is one of"
-	@echo "  test     run all tests (pytest)"
-	@echo "  lint     check for lint violations (ruff)"
-	@echo "  format   auto-format source files (ruff)"
-	@echo "  example  run example suite"
-	@echo "  clean    clean out temporary files"
+	@echo "  test       run all tests (pytest)"
+	@echo "  typecheck  run static type checking (basedpyright)"
+	@echo "  lint       check for lint violations (ruff)"
+	@echo "  format     auto-format source files (ruff)"
+	@echo "  example    run example suite"
+	@echo "  clean      clean out temporary files"
 
 test:
 	uv run pytest
+
+typecheck:
+	uv run basedpyright
 
 lint:
 	uv run ruff check .
