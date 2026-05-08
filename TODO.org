@@ -1,5 +1,5 @@
-* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [0/4]
-  1) [ ] **`process_cmd_line_vulnerability` side-effect mutation** —
+* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [1/4]
+  1) [X] **`process_cmd_line_vulnerability` side-effect mutation** —
      Line 98: `clarg["all"] = True` mutates the caller's `CvssArgs` dict so that
      `generate_output` shows all three scores.  This is a hidden side effect:
      the caller (main) sees its dict modified, and `generate_output` silently

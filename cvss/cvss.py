@@ -95,7 +95,6 @@ def process_cmd_line_base(clarg: CvssArgs) -> CVSS:
 
 
 def process_cmd_line_vulnerability(clarg: CvssArgs) -> CVSS:
-    clarg["all"] = True
     vulnerability = clarg["vulnerability"]
     if vulnerability is None:
         raise ValueError("--vulnerability requires a vector argument")
@@ -155,6 +154,10 @@ def main() -> None:
         sys.exit(1)
 
     cvs = process_cmd_line(clarg)
+
+    # --vulnerability always shows all three scores
+    if clarg["vulnerability"]:
+        clarg["all"] = True
 
     if clarg["verbose"]:
         generate_verbose_output(cvs, clarg)

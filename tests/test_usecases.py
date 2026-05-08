@@ -155,3 +155,16 @@ def test_uc06_interactive_all():
 def test_uc06_interactive_all_verbose():
     out = run(["-iav"], stdin_file=TESTS_DIR / "test_uc06_in.txt")
     assert out == expected("test_uc06_verbose_out.txt")
+
+
+# ---------------------------------------------------------------------------
+# --vulnerability flag
+# ---------------------------------------------------------------------------
+
+
+def test_vulnerability_shows_all_scores() -> None:
+    """--vulnerability must output all three score lines."""
+    out = run(["--vulnerability", "AV:A/AC:M/Au:S/C:C/I:P/A:C"])
+    assert "Base Score = " in out
+    assert "Temporal Score = " in out
+    assert "Environmental Score = " in out
