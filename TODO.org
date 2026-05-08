@@ -1,3 +1,28 @@
+* <2026-05-08 Fri> Findings from partition/ValueError/dataclass/print cleanup [0/4]
+  1) [ ] **Remove dead `if __name__ == "__main__": doctest.testmod()` blocks** —
+     `cvss_210.py` and `vulnerability.py` still have them.  pytest runs doctests
+     via `--doctest-modules`; these blocks add noise.  A 2-line removal each,
+     same as the block already removed from `metric.py`.
+  2) [ ] **`except Exception` → specific exception types in `cvss.py`** —
+     `process_cmd_line_interactive` (line 64) and `process_cmd_line_base`
+     (line 87) both catch `except Exception`.  After the print-removal refactor
+     the only expected exceptions are `InvalidBaseVectorError` and `ValueError`.
+     Narrowing to `except (InvalidBaseVectorError, ValueError)` prevents silent
+     swallowing of unexpected errors.
+  3) [ ] **`CommonVulnerabilityScore` hardcoded metric key lists** —
+     `base_metrics()`, `base_vector`, `temporal_metrics()`, `temporal_vector`,
+     `environmental_metrics()`, and `environmental_vector` all hard-code lists
+     like `["AV","AC","Au","C","I","A"]`.  These duplicate the abbreviation
+     order already encoded in `BASE_DEFINITIONS` (etc.) in `vulnerability.py`.
+     Derive the lists from the definitions to make `cvss_210.py` DRY.
+  4) [ ] **`clarg: dict[str, Any]` → `argparse.Namespace` or `TypedDict`** —
+     Five functions in `cvss.py` and two in `cvss_interactive.py` accept
+     `dict[str, Any]`.  `vars(args)` in `main()` discards argparse's type
+     information.  A `CvssArgs` TypedDict (keys: `base`, `temporal`,
+     `environmental`, `all`, `interactive`, `verbose`, `vector`,
+     `vulnerability`) would make every key access type-safe without changing
+     runtime behaviour.
+
 * <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [2/4]
   1) [X] **Double error printing** — `_parse_vulnerability_string`, `valid()`,
      and `complete()` in `vulnerability.py` all `print(...)` before re-raising.
