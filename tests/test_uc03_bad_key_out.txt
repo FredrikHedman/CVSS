@@ -1,2 +1,2 @@
-Error in parsing vulnerability vector a:b/c:d/ : dictionary update sequence element #2 has length 1; 2 is required
-dictionary update sequence element #2 has length 1; 2 is required
+Error in parsing vulnerability vector a:b/c:d/ : '' is not a 'key:value' pair
+Error in parsing vulnerability vector a:b/c:d/

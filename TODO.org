@@ -30,7 +30,7 @@
      _parse_vulnerability_string; list comprehensions are more readable
      and avoid the type: ignore comment on the OrderedDict constructor.
 
-* <2026-05-08 Fri> Findings from argparse / dataclass / DRY refactors [1/3]
+* <2026-05-08 Fri> Findings from argparse / dataclass / DRY refactors [2/3]
   1) [X] **`Metric.__values` still uses `OrderedDict`** — metric.py was not
      touched in the DRY refactor, so `OrderedDict[str, MetricValue]` remains.
      Replacing with `dict[str, MetricValue]` completes TODO item 5 for the
@@ -41,7 +41,7 @@
      this, replace `type[_T]` with `type[CVSSConstructor]`, and return
      `CVSSConstructor`.  This removes the ignore comment and makes the
      factory's contract explicit.
-  3) [ ] **`_parse_vulnerability_string` `type: ignore[arg-type]`** — The
+  3) [X] **`_parse_vulnerability_string` `type: ignore[arg-type]`** — The
      `dict(pairs)` call requires `list[tuple[str, str]]` but `pairs` is
      `list[list[str]]` (split produces lists).  Using a dict comprehension
      `{p[0]: p[1] for p in pairs}` avoids the ignore and makes the intent
