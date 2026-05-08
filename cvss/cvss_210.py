@@ -20,8 +20,8 @@ class CommonVulnerabilityScore(CVSS):
         self.__metrics: dict[str, Metric] = {}
         for m in metrics_seq:
             self.__metrics[m.short_name] = m
-        error_message = "Metric short name collision"
-        assert len(self.__metrics) == len(metrics_seq), error_message
+        if len(self.__metrics) != len(metrics_seq):
+            raise ValueError("Metric short name collision")
 
     def __getitem__(self, idx: str) -> Metric:
         return self.__metrics[idx]
