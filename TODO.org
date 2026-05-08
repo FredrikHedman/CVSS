@@ -1,5 +1,5 @@
-* <2026-05-08 Fri> Findings from partition/ValueError/dataclass/print cleanup [0/4]
-  1) [ ] **Remove dead `if __name__ == "__main__": doctest.testmod()` blocks** —
+* <2026-05-08 Fri> Findings from partition/ValueError/dataclass/print cleanup [1/4]
+  1) [X] **Remove dead `if __name__ == "__main__": doctest.testmod()` blocks** —
      `cvss_210.py` and `vulnerability.py` still have them.  pytest runs doctests
      via `--doctest-modules`; these blocks add noise.  A 2-line removal each,
      same as the block already removed from `metric.py`.
@@ -23,7 +23,7 @@
      `vulnerability`) would make every key access type-safe without changing
      runtime behaviour.
 
-* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [2/4]
+* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [3/4]
   1) [X] **Double error printing** — `_parse_vulnerability_string`, `valid()`,
      and `complete()` in `vulnerability.py` all `print(...)` before re-raising.
      Callers in `cvss.py` (`process_cmd_line_interactive`,
@@ -35,7 +35,7 @@
      per part.  Replace with `part.split(":", 1)` unpacked into `k, v`, which is
      both cheaper and more readable.  Using `maxsplit=1` also correctly handles
      values that contain colons.
-  3) [ ] **Dead `if __name__ == "__main__": doctest.testmod()` blocks** —
+  3) [X] **Dead `if __name__ == "__main__": doctest.testmod()` blocks** —
      `cvss_210.py` and `vulnerability.py` still have them.  pytest already runs
      doctests via `--doctest-modules`; these blocks add noise with no benefit.
      Remove them (same as the block removed from `metric.py` in Refactor 1).

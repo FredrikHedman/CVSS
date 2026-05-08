@@ -17,7 +17,7 @@ def test_no_args_shows_usage(capsys: pytest.CaptureFixture[str]) -> None:
 def test_version(capsys: pytest.CaptureFixture[str]) -> None:
     parser = build_parser()
     with pytest.raises(SystemExit) as exc:
-        parser.parse_args(["--version"])
+        _ = parser.parse_args(["--version"])
     assert exc.value.code == 0
     captured = capsys.readouterr()
     assert "2.0.0" in captured.out
@@ -26,7 +26,7 @@ def test_version(capsys: pytest.CaptureFixture[str]) -> None:
 def test_help_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
     parser = build_parser()
     with pytest.raises(SystemExit) as exc:
-        parser.parse_args(["--help"])
+        _ = parser.parse_args(["--help"])
     assert exc.value.code == 0
 
 

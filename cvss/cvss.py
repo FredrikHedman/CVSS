@@ -34,15 +34,15 @@ def build_parser() -> argparse.ArgumentParser:
         prog="cvss",
         description="Calculate CVSS metrics based on a list of Metrics.",
     )
-    p.add_argument("-v", "--verbose", action="store_true")
-    p.add_argument("-i", "--interactive", action="store_true")
-    p.add_argument("-a", "--all", action="store_true", dest="all")
-    p.add_argument("-b", "--base", action="store_true")
-    p.add_argument("-t", "--temporal", action="store_true")
-    p.add_argument("-e", "--environmental", action="store_true")
-    p.add_argument("vector", nargs="?", default=None)
-    p.add_argument("--vulnerability", metavar="vector", default=None)
-    p.add_argument("--version", action="version", version=VERSION)
+    _ = p.add_argument("-v", "--verbose", action="store_true")
+    _ = p.add_argument("-i", "--interactive", action="store_true")
+    _ = p.add_argument("-a", "--all", action="store_true", dest="all")
+    _ = p.add_argument("-b", "--base", action="store_true")
+    _ = p.add_argument("-t", "--temporal", action="store_true")
+    _ = p.add_argument("-e", "--environmental", action="store_true")
+    _ = p.add_argument("vector", nargs="?", default=None)
+    _ = p.add_argument("--vulnerability", metavar="vector", default=None)
+    _ = p.add_argument("--version", action="version", version=VERSION)
     return p
 
 

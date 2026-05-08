@@ -58,4 +58,4 @@ def test_explicit_index_at_construction() -> None:
 
 def test_empty_metric_values_raises() -> None:
     with pytest.raises(ValueError):
-        Metric("X", "X", [])
+        _ = Metric("X", "X", [])

@@ -129,7 +129,3 @@ class CommonVulnerabilityScore(CVSS):
         return "/".join(f"{v}:{self[v]}" for v in vv)
 
 
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
