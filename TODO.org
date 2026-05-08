@@ -1,3 +1,27 @@
+* <2026-05-08 Fri> Findings after override/@TypedDict/annotation cleanup [0/4]
+  1) [ ] **`assert` in production code in `cvss_210.py`** —
+     Line 24: `assert len(self.__metrics) == len(metrics_seq), error_message`.
+     The same pattern was already replaced with `raise ValueError` in
+     `metric.py`.  Replace with `if len(...) != len(...): raise ValueError(...)`.
+  2) [ ] **`except Exception` → specific exception types in `cvss.py`** —
+     `process_cmd_line_interactive` (line 65) and `process_cmd_line_base`
+     (line 91) both catch `except Exception`.  After the CvssArgs refactor the
+     only expected exceptions are `InvalidBaseVectorError` and `ValueError`.
+     Narrowing to `except (InvalidBaseVectorError, ValueError)` prevents silent
+     swallowing of unexpected errors.
+  3) [ ] **`list_of_scores` typed as `list[tuple[str, float, str]]`** —
+     `generate_output` builds an anonymous list of 3-tuples and iterates with
+     `name, val, vec = score`.  Introducing a `ScoreEntry = NamedTuple(...)` or
+     a `@dataclass` would make the type explicit and remove the reliance on
+     positional unpacking; aligns with the `ScoreDisplayData` dataclass pattern
+     already used in the same module.
+  4) [ ] **`CommonVulnerabilityScore` hardcoded metric key lists** —
+     `base_metrics()`, `base_vector`, `temporal_metrics()`, `temporal_vector`,
+     `environmental_metrics()`, `environmental_vector` all duplicate key lists
+     like `["AV","AC","Au","C","I","A"]`.  These are already encoded in
+     `BASE_DEFINITIONS` etc. in `vulnerability.py`; derive the lists from the
+     definitions to make `cvss_210.py` DRY and immune to future metric reorders.
+
 * <2026-05-08 Fri> Findings from partition/ValueError/dataclass/print cleanup [2/4]
   1) [X] **Remove dead `if __name__ == "__main__": doctest.testmod()` blocks** —
      `cvss_210.py` and `vulnerability.py` still have them.  pytest runs doctests
