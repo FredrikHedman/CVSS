@@ -1,3 +1,32 @@
+* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [0/4]
+  1) [ ] **`process_cmd_line_vulnerability` side-effect mutation** —
+     Line 98: `clarg["all"] = True` mutates the caller's `CvssArgs` dict so that
+     `generate_output` shows all three scores.  This is a hidden side effect:
+     the caller (main) sees its dict modified, and `generate_output` silently
+     depends on it.  The clean fix is to pass an explicit "show_all" flag or
+     to derive what to show from the invocation path rather than mutating shared
+     state.  Medium severity: currently harmless because `clarg` is not reused,
+     but fragile.
+  2) [ ] **`argparse.Namespace` attributes are `Any` in `main()`** —
+     `args.verbose`, `args.base`, etc. are all typed `Any` by argparse, causing
+     40 `reportAny` warnings in basedpyright.  Introduce a private
+     `_ParsedArgs(argparse.Namespace)` class with typed fields (`verbose: bool`,
+     `vector: str | None`, …) and assign with one `# type: ignore[assignment]`.
+     This makes every attribute access in the dict-construction block properly
+     typed and eliminates all warnings without scattering ignores.
+  3) [ ] **`guard-then-catch` pattern in `process_cmd_line_base` and `…_vulnerability`** —
+     The `if vector is None: raise ValueError(...)` checks sit inside the
+     `try` block, so the handler catches and swallows them via `sys.exit(1)`.
+     These guards protect against a programming error (missing required arg),
+     not a user-input error, and should be placed BEFORE the `try` so that
+     the distinction is explicit.
+  4) [ ] **`generate_verbose_output` duplicates the `clarg["X"] or clarg["all"]`
+     flag logic** — Three separate `if clarg["base"] or clarg["all"]:` tests
+     in `generate_verbose_output` replicate the same pattern as `generate_output`'s
+     `entries` list.  Apply the same `list[tuple[bool, ScoreDisplayData]]` pattern
+     for consistency and to make future flag changes apply to both output modes
+     in one place.
+
 * <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [4/4]
   1) [X] **`process_cmd_line_vulnerability` has no error handling** —
      Unlike `process_cmd_line_interactive` and `process_cmd_line_base`,
