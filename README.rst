@@ -6,7 +6,7 @@ The details of the Common Vulnerability Scoring System is described in
 
 Version
 -------
-VERSION = 1.20.1
+VERSION = 2.0.0
 
 
 What is new
