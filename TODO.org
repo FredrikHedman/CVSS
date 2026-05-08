@@ -1,5 +1,5 @@
-* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [1/4]
-  1) [ ] **Double error printing** — `_parse_vulnerability_string`, `valid()`,
+* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [2/4]
+  1) [X] **Double error printing** — `_parse_vulnerability_string`, `valid()`,
      and `complete()` in `vulnerability.py` all `print(...)` before re-raising.
      Callers in `cvss.py` (`process_cmd_line_interactive`,
      `process_cmd_line_base`) also `print(e)` on the caught exception, so every

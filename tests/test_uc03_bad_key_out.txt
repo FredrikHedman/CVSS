@@ -1,2 +1,1 @@
-Error in parsing vulnerability vector a:b/c:d/ : '' is not a 'key:value' pair
-Error in parsing vulnerability vector a:b/c:d/
+Error in parsing vulnerability vector a:b/c:d/: '' is not a 'key:value' pair

@@ -1,3 +1,1 @@
-Error: invalid vulnerability vector.
-Hint: a not a metric
 a not a metric
