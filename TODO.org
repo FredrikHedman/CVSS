@@ -1,11 +1,11 @@
-* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [0/4]
+* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [1/4]
   1) [ ] **Double error printing** — `_parse_vulnerability_string`, `valid()`,
      and `complete()` in `vulnerability.py` all `print(...)` before re-raising.
      Callers in `cvss.py` (`process_cmd_line_interactive`,
      `process_cmd_line_base`) also `print(e)` on the caught exception, so every
      error message appears twice.  Remove the `print` calls from the raising
      site; let the top-level handler be the single place that reports errors.
-  2) [ ] **`part.split(":")[0]: part.split(":")[1]` double split** — The new
+  2) [X] **`part.split(":")[0]: part.split(":")[1]` double split** — The new
      dict comprehension in `_parse_vulnerability_string` calls `split(":")` twice
      per part.  Replace with `part.split(":", 1)` unpacked into `k, v`, which is
      both cheaper and more readable.  Using `maxsplit=1` also correctly handles
@@ -52,7 +52,7 @@
      _parse_vulnerability_string; list comprehensions are more readable
      and avoid the type: ignore comment on the OrderedDict constructor.
 
-* <2026-05-08 Fri> Findings from argparse / dataclass / DRY refactors [2/3]
+* <2026-05-08 Fri> Findings from argparse / dataclass / DRY refactors [3/3]
   1) [X] **`Metric.__values` still uses `OrderedDict`** — metric.py was not
      touched in the DRY refactor, so `OrderedDict[str, MetricValue]` remains.
      Replacing with `dict[str, MetricValue]` completes TODO item 5 for the
@@ -69,6 +69,7 @@
      `{p[0]: p[1] for p in pairs}` avoids the ignore and makes the intent
      clearer.  Can validate length-2 splits here too, eliminating the
      separate `ValueError` branch.
+
 
 * <2014-06-30 Mån> [0/2]
   - [ ] Fixed documentation.
