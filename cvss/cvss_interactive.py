@@ -6,10 +6,20 @@
 #
 """Extracted interactive functions."""
 
+from typing import Any
+
+from .cvss_base import CVSS
 from .metric import Metric
+from .vulnerability import MetricDef
+
+# Type aliases for display_score arguments
+ScoreHeader = tuple[str, str, str]
+FooterLine = list[str]
+FooterData = list[tuple[str, float]]
+VecLabel = tuple[str, str]
 
 
-def select_metric_value(m):
+def select_metric_value(m: MetricDef) -> str:
     """Interactive selection of a metric value.
 
     Input:
@@ -19,12 +29,12 @@ def select_metric_value(m):
        a valid index for the Metric
 
     """
-    m = Metric(*m)
-    default_metric_value = m.index
+    metric = Metric(*m)
+    default_metric_value = metric.index
     sep = 10 * "+"
-    print(f"\n{sep} {m.name} {m.short_name} {sep}")
+    print(f"\n{sep} {metric.name} {metric.short_name} {sep}")
     while True:
-        for v in m.values:
+        for v in metric.values:
             print(v, v.description)
         idx = input(f"Select one [{default_metric_value}]: ").upper()
 
@@ -34,21 +44,27 @@ def select_metric_value(m):
         print("Selected metric value ###|", idx, "|###")
 
         try:
-            m.index = idx
+            metric.index = idx
         except AssertionError:
             print("Not valid")
         else:
-            return m.index
+            return metric.index
 
 
-def display_score(H, F, ML, FD, VEC):
+def display_score(
+    H: ScoreHeader,
+    F: FooterLine,
+    ML: list[Metric],
+    FD: FooterData,
+    VEC: VecLabel,
+) -> None:
     """Formatted score that recreates format of the CVSS examples."""
 
-    def display_header(H):
+    def display_header(H: ScoreHeader) -> None:
         print(s1)
         print(f"{H[0]:<{w0}}{H[1]:<{w0}}{H[2]}")
 
-    def display_metrics(ML):
+    def display_metrics(ML: list[Metric]) -> None:
         print(s1)
         for m in ML:
             print(
@@ -56,30 +72,28 @@ def display_score(H, F, ML, FD, VEC):
                 f"{m.selected.number:>{w1}.2f}"
             )
 
-    def display_footer(F):
+    def display_footer(F: FooterLine) -> None:
         print(s1)
         w2 = len(s1) - len(F[1])
         print(f"{F[0]:<{w2}}{F[1]}")
 
-    def display_footer_data(FD, VEC):
+    def display_footer_data(FD: FooterData, VEC: VecLabel) -> None:
         print(s1)
         for d in FD:
             print(f"{d[0] + ' =':<{2 * w0}}{d[1]:>{w1}.2f}")
         print(f"{VEC[0]} Vulnerability Vector: {VEC[1]}")
         print(s1)
 
-    #
     w0 = 30
     w1 = len(H[2])
     s1 = (w0 * 2 + w1) * "="
-    #
     display_header(H)
     display_metrics(ML)
     display_footer(F)
     display_footer_data(FD, VEC)
 
 
-def generate_output(cvs, clarg):
+def generate_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
     """Print requested scores."""
     show = [
         clarg["--base"] or clarg["--all"],
@@ -105,12 +119,12 @@ def generate_output(cvs, clarg):
     print()
 
 
-def generate_verbose_output(cvs, clarg):
+def generate_verbose_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
     """Generate output when verbose output requested."""
     show = [clarg["--base"], clarg["--temporal"], clarg["--environmental"]]
     if show[0] or clarg["--all"]:
         display_score(
-            ["BASE METRIC", "EVALUATION", "SCORE"],
+            ("BASE METRIC", "EVALUATION", "SCORE"),
             ["FORMULA", "BASE SCORE"],
             cvs.base_metrics(),
             [
@@ -122,7 +136,7 @@ def generate_verbose_output(cvs, clarg):
         )
     if show[1] or clarg["--all"]:
         display_score(
-            ["TEMPORAL METRIC", "EVALUATION", "SCORE"],
+            ("TEMPORAL METRIC", "EVALUATION", "SCORE"),
             ["FORMULA", "TEMPORAL SCORE"],
             cvs.temporal_metrics(),
             [("Temporal Score", cvs.temporal_score)],
@@ -130,7 +144,7 @@ def generate_verbose_output(cvs, clarg):
         )
     if show[2] or clarg["--all"]:
         display_score(
-            ["ENIRONMENTAL METRIC", "EVALUATION", "SCORE"],
+            ("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
             ["FORMULA", "ENIRONMENTAL SCORE"],
             cvs.environmental_metrics(),
             [
