@@ -46,8 +46,6 @@ def select_metric_value(m: MetricDefinition) -> str:
         if not idx:
             idx = default_metric_value
 
-        print("Selected metric value ###|", idx, "|###")
-
         try:
             metric.index = idx
         except ValueError:

@@ -4,7 +4,11 @@ from unittest.mock import patch
 
 import pytest
 
-from cvss.cvss import build_parser, process_cmd_line_base, process_cmd_line_vulnerability
+from cvss.cvss import (
+    build_parser,
+    process_cmd_line_base,
+    process_cmd_line_vulnerability,
+)
 from cvss.cvss_types import CvssArgs
 
 
@@ -48,7 +52,9 @@ def test_base_flag_parsed() -> None:
 
 def test_vulnerability_flag_parsed() -> None:
     parser = build_parser()
-    _args = parser.parse_args(["--vulnerability", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
+    _args = parser.parse_args(
+        ["--vulnerability", "AV:N/AC:L/Au:N/C:C/I:C/A:C"]
+    )
     clarg: CvssArgs = {
         "verbose": _args.verbose, "interactive": _args.interactive,
         "all": _args.all, "base": _args.base, "temporal": _args.temporal,
@@ -96,7 +102,9 @@ def test_unexpected_exception_propagates() -> None:
             _ = process_cmd_line_base(clarg)
 
 
-def test_vulnerability_bad_vector_exits(capsys: pytest.CaptureFixture[str]) -> None:
+def test_vulnerability_bad_vector_exits(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     """Bad --vulnerability vector must print error and exit 1."""
     clarg: CvssArgs = {
         "verbose": False, "interactive": False, "all": False,
@@ -111,7 +119,7 @@ def test_vulnerability_bad_vector_exits(capsys: pytest.CaptureFixture[str]) -> N
 
 
 def test_unexpected_exception_propagates_vulnerability() -> None:
-    """Unexpected exceptions must NOT be swallowed by process_cmd_line_vulnerability."""
+    """Unexpected exceptions must NOT be swallowed by process_cmd_line_vulnerability."""  # noqa: E501
     clarg: CvssArgs = {
         "verbose": False, "interactive": False, "all": False,
         "base": False, "temporal": False, "environmental": False,

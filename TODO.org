@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [3/4]
+* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [4/4]
   1) [X] **`process_cmd_line_vulnerability` has no error handling** —
      Unlike `process_cmd_line_interactive` and `process_cmd_line_base`,
      `process_cmd_line_vulnerability` calls `VulnerabilityVector(vulnerability)`
@@ -16,7 +16,7 @@
      correct but the flag and score are linked only by position.  A list of
      `(flag, ScoreEntry)` pairs built in one step would make the relationship
      explicit without the separate `show` variable.
-  4) [ ] **`select_metric_value` debug-style print `###| |###`** —
+  4) [X] **`select_metric_value` debug-style print `###| |###`** —
      Line 49: `print("Selected metric value ###|", idx, "|###")` uses
      double-hash delimiters that look like debug/trace markers.  If intentional
      UI output, rename to something clearer; if legacy debug noise, remove it.
