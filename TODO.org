@@ -30,12 +30,12 @@
      _parse_vulnerability_string; list comprehensions are more readable
      and avoid the type: ignore comment on the OrderedDict constructor.
 
-* <2026-05-08 Fri> Findings from argparse / dataclass / DRY refactors [0/3]
+* <2026-05-08 Fri> Findings from argparse / dataclass / DRY refactors [1/3]
   1) [X] **`Metric.__values` still uses `OrderedDict`** — metric.py was not
      touched in the DRY refactor, so `OrderedDict[str, MetricValue]` remains.
      Replacing with `dict[str, MetricValue]` completes TODO item 5 for the
      whole codebase and removes the `collections` import from metric.py.
-  2) [ ] **`cvs_factory` `type: ignore[call-arg]`** — The TypeVar `_T` cannot
+  2) [X] **`cvs_factory` `type: ignore[call-arg]`** — The TypeVar `_T` cannot
      guarantee that `cls` has an `__init__(self, list[Metric]) -> None`
      signature.  Introduce a `CVSSConstructor` Protocol that declares exactly
      this, replace `type[_T]` with `type[CVSSConstructor]`, and return
