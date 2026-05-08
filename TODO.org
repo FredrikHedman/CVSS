@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [2/4]
+* <2026-05-08 Fri> Findings after cast/error-handling/ScoreEntry/debug-print cleanup [3/4]
   1) [X] **`process_cmd_line_vulnerability` side-effect mutation** —
      Line 98: `clarg["all"] = True` mutates the caller's `CvssArgs` dict so that
      `generate_output` shows all three scores.  This is a hidden side effect:
@@ -14,7 +14,7 @@
      `vector: str | None`, …) and assign with one `# type: ignore[assignment]`.
      This makes every attribute access in the dict-construction block properly
      typed and eliminates all warnings without scattering ignores.
-  3) [ ] **`guard-then-catch` pattern in `process_cmd_line_base` and `…_vulnerability`** —
+  3) [X] **`guard-then-catch` pattern in `process_cmd_line_base` and `…_vulnerability`** —
      The `if vector is None: raise ValueError(...)` checks sit inside the
      `try` block, so the handler catches and swallows them via `sys.exit(1)`.
      These guards protect against a programming error (missing required arg),

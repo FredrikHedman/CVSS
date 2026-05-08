@@ -107,7 +107,7 @@ def process_cmd_line_base(clarg: CvssArgs) -> CVSS:
 
 def process_cmd_line_vulnerability(clarg: CvssArgs) -> CVSS:
     vulnerability = clarg["vulnerability"]
-    if vulnerability is None:
+    if vulnerability is None:  # unreachable: argparse requires a value
         raise ValueError("--vulnerability requires a vector argument")
     try:
         vvec = VulnerabilityVector(vulnerability)
