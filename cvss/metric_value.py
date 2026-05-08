@@ -7,6 +7,7 @@
 """Metrics values used by CVSS."""
 
 from dataclasses import dataclass
+from typing import override
 
 
 @dataclass(frozen=True)
@@ -21,6 +22,7 @@ class MetricValue:
     number: float
     description: str
 
+    @override
     def __str__(self) -> str:
         return self.value
 

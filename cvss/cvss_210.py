@@ -7,6 +7,8 @@
 
 """Calculate CVSS metrics v 2.10."""
 
+from typing import override
+
 from .cvss_base import CVSS
 from .metric import Metric
 
@@ -25,20 +27,24 @@ class CommonVulnerabilityScore(CVSS):
         return self.__metrics[idx]
 
     @property
+    @override
     def version(self) -> str:
         return "2.10"
 
+    @override
     def base_fcn(self, impact: float) -> float:
         score = 0.6 * impact + 0.4 * self.exploitability - 1.5
         score *= self.fcn(impact)
         return score
 
+    @override
     def temporal_fcn(self, score: float) -> float:
         score *= float(self["E"])
         score *= float(self["RL"])
         score *= float(self["RC"])
         return score
 
+    @override
     def environmental_fcn(self, adjusted_temporal_score: float) -> float:
         score = adjusted_temporal_score
         score += (10.0 - adjusted_temporal_score) * float(self["CDP"])
@@ -46,6 +52,7 @@ class CommonVulnerabilityScore(CVSS):
         return score
 
     @property
+    @override
     def impact(self) -> float:
         conf_impact = float(self["C"])
         integ_impact = float(self["I"])
@@ -53,6 +60,7 @@ class CommonVulnerabilityScore(CVSS):
         return self.impact_fcn(conf_impact, integ_impact, avail_impact)
 
     @property
+    @override
     def adjusted_impact(self) -> float:
         conf_impact = float(self["C"]) * float(self["CR"])
         integ_impact = float(self["I"]) * float(self["IR"])
@@ -61,6 +69,7 @@ class CommonVulnerabilityScore(CVSS):
         return min(10.0, result)
 
     @property
+    @override
     def exploitability(self) -> float:
         res = 20.0
         res *= float(self["AV"])
@@ -86,29 +95,35 @@ class CommonVulnerabilityScore(CVSS):
             val = 0.0
         return val
 
+    @override
     def base_metrics(self) -> list[Metric]:
         vv = ["AV", "AC", "Au", "C", "I", "A"]
         return [self[v] for v in vv]
 
     @property
+    @override
     def base_vector(self) -> str:
         vv = ["AV", "AC", "Au", "C", "I", "A"]
         return "/".join(f"{v}:{self[v]}" for v in vv)
 
+    @override
     def temporal_metrics(self) -> list[Metric]:
         vv = ["E", "RL", "RC"]
         return [self[v] for v in vv]
 
     @property
+    @override
     def temporal_vector(self) -> str:
         vv = ["E", "RL", "RC"]
         return "/".join(f"{v}:{self[v]}" for v in vv)
 
+    @override
     def environmental_metrics(self) -> list[Metric]:
         vv = ["CDP", "TD", "CR", "IR", "AR"]
         return [self[v] for v in vv]
 
     @property
+    @override
     def environmental_vector(self) -> str:
         vv = ["CDP", "TD", "CR", "IR", "AR"]
         return "/".join(f"{v}:{self[v]}" for v in vv)

@@ -4,6 +4,8 @@
 # VERSION: 1.20.1
 # LICENSE: MIT LICENSE
 #
+from typing import override
+
 from .metric_value import MetricValue
 
 
@@ -35,12 +37,14 @@ class Metric:
                 raise ValueError(f"{index!r} is not a valid index")
             self.index = index
 
+    @override
     def __repr__(self) -> str:
         return (
             f"{self.__class__.__name__}('{self.name}','{self.short_name}',"
             f"{self.values},'{self.index}')"
         )
 
+    @override
     def __str__(self) -> str:
         """Use selected MetricValue as a string."""
         return str(self.selected)
