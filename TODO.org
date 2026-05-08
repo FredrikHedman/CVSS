@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Refactor findings from type annotation work [0/7]
+* <2026-05-08 Fri> Refactor findings from type annotation work [3/7]
   1) [X] **Replace docopt with click or argparse**
      docopt is unmaintained and emits SyntaxWarning on Python 3.12+
      (visible on every `cvss --version` call).  click was already noted
@@ -31,7 +31,7 @@
      and avoid the type: ignore comment on the OrderedDict constructor.
 
 * <2026-05-08 Fri> Findings from argparse / dataclass / DRY refactors [0/3]
-  1) [ ] **`Metric.__values` still uses `OrderedDict`** — metric.py was not
+  1) [X] **`Metric.__values` still uses `OrderedDict`** — metric.py was not
      touched in the DRY refactor, so `OrderedDict[str, MetricValue]` remains.
      Replacing with `dict[str, MetricValue]` completes TODO item 5 for the
      whole codebase and removes the `collections` import from metric.py.

@@ -4,8 +4,6 @@
 # VERSION: 1.20.1
 # LICENSE: MIT LICENSE
 #
-from collections import OrderedDict
-
 from .metric_value import MetricValue
 
 
@@ -27,7 +25,7 @@ class Metric:
         for x in metric_values:
             m = MetricValue(*x)
             vals.append((m.value, m))
-        self.__values: OrderedDict[str, MetricValue] = OrderedDict(vals)
+        self.__values: dict[str, MetricValue] = dict(vals)
         # Use the first key available.
         if index is None:
             self.index = vals[0][0]
@@ -73,9 +71,3 @@ class Metric:
     @property
     def selected(self) -> MetricValue:
         return self.__values[self.__index]
-
-
-if __name__ == "__main__":
-    import doctest
-
-    doctest.testmod()
