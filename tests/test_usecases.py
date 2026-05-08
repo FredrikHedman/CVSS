@@ -10,7 +10,7 @@ TESTS_DIR = Path(__file__).parent
 CVSS = shutil.which("cvss") or "cvss"
 
 
-def run(args, stdin_file=None):
+def run(args: list[str], stdin_file: Path | None = None) -> str:
     """Run cvss with *args*, optionally feeding *stdin_file* as stdin.
 
     Returns combined stdout+stderr as a string.
@@ -27,7 +27,7 @@ def run(args, stdin_file=None):
     return result.stdout + result.stderr
 
 
-def expected(filename):
+def expected(filename: str) -> str:
     return (TESTS_DIR / filename).read_text()
 
 
@@ -109,7 +109,7 @@ def test_uc03_bad_order():
 
 
 @pytest.mark.parametrize("flag", ["-it", "-ie", "-ibe", "-ite"])
-def test_uc03_bad_params(flag):
+def test_uc03_bad_params(flag: str) -> None:
     assert run([flag]) == expected("test_uc03_bad_params_out.txt")
 
 

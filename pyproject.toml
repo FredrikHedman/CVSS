@@ -49,6 +49,7 @@ max-complexity = 9
 [tool.basedpyright]
 pythonVersion = "3.10"
 typeCheckingMode = "strict"
+include = ["cvss", "tests"]
 exclude = ["misc"]
 
 [dependency-groups]
