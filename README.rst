@@ -50,34 +50,58 @@ Installation
 ------------
 Requires Python 3.10+ and `uv <https://docs.astral.sh/uv/>`_::
 
-    $ git clone https://github.com/FredrikHedman/CVSS.git
+    $ git clone git@gitlab.com:FredrikHedman/CVSS.git
     $ cd CVSS
-    $ uv sync
+    $ make install
     $ uv run cvss --help
+
+``make install`` creates a ``.venv`` virtualenv, installs all runtime and
+development dependencies, and ensures ``uv.lock`` is in sync with
+``pyproject.toml``.
 
 
 Development
 -----------
+After cloning and running ``make install``, the following targets are available::
+
+    $ make help
+
 Run the full test suite (pytest)::
 
-      $ make test
+    $ make test
 
 Check and auto-fix code style (ruff)::
 
-      $ make lint
-      $ make format
+    $ make lint
+    $ make format
 
 Verify static types (basedpyright)::
 
-      $ make typecheck
+    $ make typecheck
 
 Run the example suite::
 
-      $ make example
+    $ make example
+
+Regenerate the lock file after editing ``pyproject.toml``::
+
+    $ make lock
+
+Build wheel and source distribution into ``dist/``::
+
+    $ make build
+
+Fetch latest changes from the remote (SSH passphrase may be required)::
+
+    $ make fetch
+
+Push commits and tags to the remote (SSH passphrase may be required)::
+
+    $ make push
 
 Remove build artefacts::
 
-      $ make clean
+    $ make clean
 
 
 Developers
