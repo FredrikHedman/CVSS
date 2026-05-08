@@ -33,6 +33,7 @@ packages = ["cvss"]
 
 [tool.ruff]
 line-length = 79
+exclude = ["misc"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "C90", "N"]

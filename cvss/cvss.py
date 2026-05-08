@@ -28,7 +28,6 @@ Options:
   --version                 show version and exit
 
 """
-VERSION = "1.20.1"
 
 import sys
 from os.path import basename
@@ -45,6 +44,8 @@ from .vulnerability import environmental_metrics
 from .cvss_interactive import select_metric_value
 from .cvss_interactive import generate_output
 from .cvss_interactive import generate_verbose_output
+
+VERSION = "1.20.1"
 
 
 def read_and_set(L, selected):
@@ -87,8 +88,9 @@ def process_cmd_line_interactive(clarg):
 def process_cmd_line_base(clarg):
     try:
         vvec = VulnerabilityVector(clarg["<vector>"])
-        cvs = cvs_factory(CommonVulnerabilityScore,
-                          vvec.valid().complete().metric_values())
+        cvs = cvs_factory(
+            CommonVulnerabilityScore, vvec.valid().complete().metric_values()
+        )
     except Exception as e:
         print(e)
         sys.exit(1)
@@ -98,8 +100,7 @@ def process_cmd_line_base(clarg):
 def process_cmd_line_vulnerability(clarg):
     clarg["--all"] = True
     vvec = VulnerabilityVector(clarg["--vulnerability"])
-    cvs = cvs_factory(CommonVulnerabilityScore,
-                      vvec.valid().metric_values())
+    cvs = cvs_factory(CommonVulnerabilityScore, vvec.valid().metric_values())
     return cvs
 
 
@@ -112,7 +113,7 @@ def process_cmd_line(clarg):
     elif clarg["--vulnerability"]:
         cvs = process_cmd_line_vulnerability(clarg)
     else:
-        print('You need to use --help ...')
+        print("You need to use --help ...")
         sys.exit(1)
     return cvs
 

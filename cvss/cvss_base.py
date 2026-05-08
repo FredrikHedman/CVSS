@@ -8,7 +8,6 @@
 
 
 class CVSS(object):
-
     """This class is an abstract interface.
 
     To create a concrete class inherit from this class and implement
@@ -52,8 +51,9 @@ class CVSS(object):
 
     @property
     def environmental_score(self):
-        return round(self.environmental_fcn(self.adjusted_temporal_score),
-                     ndigits=1)
+        return round(
+            self.environmental_fcn(self.adjusted_temporal_score), ndigits=1
+        )
 
     @property
     def impact(self):

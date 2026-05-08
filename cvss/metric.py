@@ -9,11 +9,10 @@ from .metric_value import MetricValue
 
 
 class Metric(object):
-
     """Metrics used by CVSS."""
 
     def __init__(self, name, short_name, metric_values, index=None):
-        assert len(metric_values), 'At least one MetricValue needed.'
+        assert len(metric_values), "At least one MetricValue needed."
         self.__name = name
         self.__short_name = short_name
         # Create the key-value pairs. Use the MetricValue as the key.
@@ -26,15 +25,17 @@ class Metric(object):
         if index is None:
             self.index = vals[0][0]
         else:
-            assert index in self.__values.keys(), 'Not a valid key'
+            assert index in self.__values.keys(), "Not a valid key"
             self.index = index
 
     def __repr__(self):
-        return ("{0}('{1}','{2}',{3},'{4}')".format(self.__class__.__name__,
-                                                    self.name,
-                                                    self.short_name,
-                                                    self.values,
-                                                    self.index))
+        return "{0}('{1}','{2}',{3},'{4}')".format(
+            self.__class__.__name__,
+            self.name,
+            self.short_name,
+            self.values,
+            self.index,
+        )
 
     def __str__(self):
         """Use selected MetricValue as a string."""
@@ -72,4 +73,5 @@ class Metric(object):
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod()
