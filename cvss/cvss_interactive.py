@@ -96,25 +96,19 @@ def display_score(data: ScoreDisplayData) -> None:
 
 def generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Print requested scores."""
-    show = [
-        clarg["base"] or clarg["all"],
-        clarg["temporal"] or clarg["all"],
-        clarg["environmental"] or clarg["all"],
-    ]
-    list_of_scores: list[ScoreEntry] = [
-        ScoreEntry("Base", cvs.base_score, cvs.base_vulnerability_vector),
-        ScoreEntry(
-            "Temporal", cvs.temporal_score, cvs.temporal_vulnerability_vector
-        ),
-        ScoreEntry(
-            "Environmental",
-            cvs.environmental_score,
-            cvs.environmental_vulnerability_vector,
-        ),
+    entries: list[tuple[bool, ScoreEntry]] = [
+        (clarg["base"] or clarg["all"],
+         ScoreEntry("Base", cvs.base_score, cvs.base_vulnerability_vector)),
+        (clarg["temporal"] or clarg["all"],
+         ScoreEntry("Temporal", cvs.temporal_score,
+                    cvs.temporal_vulnerability_vector)),
+        (clarg["environmental"] or clarg["all"],
+         ScoreEntry("Environmental", cvs.environmental_score,
+                    cvs.environmental_vulnerability_vector)),
     ]
     print()
-    for s, score in zip(show, list_of_scores):
-        if s:
+    for show, score in entries:
+        if show:
             print(f"{score.name} Score = {score.value}")
             print(f"{score.name} Vulnerability Vector = {score.vector}")
     print()

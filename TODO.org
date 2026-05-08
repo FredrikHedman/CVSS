@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [2/4]
+* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [3/4]
   1) [X] **`process_cmd_line_vulnerability` has no error handling** —
      Unlike `process_cmd_line_interactive` and `process_cmd_line_base`,
      `process_cmd_line_vulnerability` calls `VulnerabilityVector(vulnerability)`
@@ -11,7 +11,7 @@
      clarg["vulnerability"])` and exits before calling `process_cmd_line`.
      The else-branch in `process_cmd_line` can never be reached.  Replace with
      `raise RuntimeError("unreachable")` or remove it.
-  3) [ ] **`generate_output` show-list could pair flags with `ScoreEntry` directly** —
+  3) [X] **`generate_output` show-list could pair flags with `ScoreEntry` directly** —
      `show = [clarg["base"] or clarg["all"], ...]` with a parallel `zip` is
      correct but the flag and score are linked only by position.  A list of
      `(flag, ScoreEntry)` pairs built in one step would make the relationship
