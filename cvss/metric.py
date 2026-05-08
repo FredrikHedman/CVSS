@@ -29,12 +29,9 @@ class Metric(object):
             self.index = index
 
     def __repr__(self):
-        return "{0}('{1}','{2}',{3},'{4}')".format(
-            self.__class__.__name__,
-            self.name,
-            self.short_name,
-            self.values,
-            self.index,
+        return (
+            f"{self.__class__.__name__}('{self.name}','{self.short_name}',"
+            f"{self.values},'{self.index}')"
         )
 
     def __str__(self):

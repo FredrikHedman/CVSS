@@ -21,11 +21,12 @@ def select_metric_value(m):
     """
     m = Metric(*m)
     default_metric_value = m.index
-    print("\n{0} {1} {2} {0}".format(10 * "+", m.name, m.short_name))
+    sep = 10 * "+"
+    print(f"\n{sep} {m.name} {m.short_name} {sep}")
     while True:
         for v in m.values:
             print(v, v.description)
-        idx = input("Select one [{0}]: ".format(default_metric_value)).upper()
+        idx = input(f"Select one [{default_metric_value}]: ").upper()
 
         if not idx:
             idx = default_metric_value
@@ -45,27 +46,26 @@ def display_score(H, F, ML, FD, VEC):
 
     def display_header(H):
         print(s1)
-        print("{0:<{3}}{1:<{3}}{2}".format(H[0], H[1], H[2], w0))
+        print(f"{H[0]:<{w0}}{H[1]:<{w0}}{H[2]}")
 
     def display_metrics(ML):
         print(s1)
         for m in ML:
             print(
-                "{0:<{3}}{1:<{3}}{2:>{4}.2f}".format(
-                    m.name, m.selected.metric, m.selected.number, w0, w1
-                )
+                f"{m.name:<{w0}}{m.selected.metric:<{w0}}"
+                f"{m.selected.number:>{w1}.2f}"
             )
 
     def display_footer(F):
         print(s1)
         w2 = len(s1) - len(F[1])
-        print("{0:<{2}}{1}".format(F[0], F[1], w2))
+        print(f"{F[0]:<{w2}}{F[1]}")
 
     def display_footer_data(FD, VEC):
         print(s1)
         for d in FD:
-            print("{0:<{2}}{1:>{3}.2f}".format(d[0] + " =", d[1], 2 * w0, w1))
-        print("{1} Vulnerability Vector: {0}".format(VEC[1], VEC[0]))
+            print(f"{d[0] + ' =':<{2 * w0}}{d[1]:>{w1}.2f}")
+        print(f"{VEC[0]} Vulnerability Vector: {VEC[1]}")
         print(s1)
 
     #
@@ -95,11 +95,13 @@ def generate_output(cvs, clarg):
             cvs.environmental_vulnerability_vector,
         ),
     ]
-    output_line = "{0[0]} Score = {0[1]}\n{0[0]} Vulnerability Vector = {0[2]}"
     print()
     for s, score in zip(show, list_of_scores):
         if s:
-            print(output_line.format(score))
+            print(
+                f"{score[0]} Score = {score[1]}\n"
+                f"{score[0]} Vulnerability Vector = {score[2]}"
+            )
     print()
 
 

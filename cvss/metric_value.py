@@ -21,12 +21,9 @@ class MetricValue(object):
         self.__description = description
 
     def __repr__(self):
-        return "{0}('{1}','{2}',{3},'{4}')".format(
-            self.__class__.__name__,
-            self.metric,
-            self.value,
-            self.number,
-            self.description,
+        return (
+            f"{self.__class__.__name__}('{self.metric}','{self.value}',"
+            f"{self.number},'{self.description}')"
         )
 
     def __str__(self):

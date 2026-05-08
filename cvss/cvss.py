@@ -30,6 +30,7 @@ Options:
 """
 
 import sys
+from importlib.metadata import version
 from os.path import basename
 from docopt import docopt
 
@@ -45,7 +46,7 @@ from .cvss_interactive import select_metric_value
 from .cvss_interactive import generate_output
 from .cvss_interactive import generate_verbose_output
 
-VERSION = "1.20.1"
+VERSION = version("cvss")
 
 
 def read_and_set(L, selected):
