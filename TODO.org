@@ -20,7 +20,7 @@
      gives typed attribute access; alternatively a `TypedDict` makes the keys
      explicit.  Either removes the `Any` annotations on `clarg` parameters.
 
-* <2026-05-08 Fri> Refactor findings from type annotation work [4/7]
+* <2026-05-08 Fri> Refactor findings from type annotation work [5/7]
   1) [X] **Replace docopt with click or argparse**
      docopt is unmaintained and emits SyntaxWarning on Python 3.12+
      (visible on every `cvss --version` call).  click was already noted
@@ -34,7 +34,7 @@
      abbreviations (originally noted 2014-03-08 TODO).  A MetricDefinition
      dataclass with name, abbreviation, weight values, and allowed
      abbreviation list would be a single source of truth.
-  4) [ ] **display_score argument shapes → dataclass or TypedDict**
+  4) [X] **display_score argument shapes → dataclass or TypedDict**
      Five positional parameters with opaque tuple shapes make every call
      site hard to read.  A single DisplayScoreData dataclass would make
      call sites self-documenting and eliminate the ScoreHeader/FooterLine/

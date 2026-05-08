@@ -6,17 +6,23 @@
 #
 """Extracted interactive functions."""
 
+from dataclasses import dataclass
 from typing import Any
 
 from .cvss_base import CVSS
 from .metric import Metric
 from .vulnerability import MetricDefinition
 
-# Type aliases for display_score arguments
-ScoreHeader = tuple[str, str, str]
-FooterLine = list[str]
-FooterData = list[tuple[str, float]]
-VecLabel = tuple[str, str]
+
+@dataclass(frozen=True)
+class ScoreDisplayData:
+    """All data needed to render one score table via display_score."""
+
+    header: tuple[str, str, str]
+    footer_labels: list[str]
+    metrics: list[Metric]
+    footer_data: list[tuple[str, float]]
+    vector_label: tuple[str, str]
 
 
 def select_metric_value(m: MetricDefinition) -> str:
@@ -50,46 +56,47 @@ def select_metric_value(m: MetricDefinition) -> str:
             return metric.index
 
 
-def display_score(
-    H: ScoreHeader,
-    F: FooterLine,
-    ML: list[Metric],
-    FD: FooterData,
-    VEC: VecLabel,
-) -> None:
+def display_score(data: ScoreDisplayData) -> None:
     """Formatted score that recreates format of the CVSS examples."""
 
-    def display_header(H: ScoreHeader) -> None:
+    def display_header() -> None:
         print(s1)
-        print(f"{H[0]:<{w0}}{H[1]:<{w0}}{H[2]}")
+        print(
+            f"{data.header[0]:<{w0}}"
+            f"{data.header[1]:<{w0}}"
+            f"{data.header[2]}"
+        )
 
-    def display_metrics(ML: list[Metric]) -> None:
+    def display_metrics() -> None:
         print(s1)
-        for m in ML:
+        for m in data.metrics:
             print(
                 f"{m.name:<{w0}}{m.selected.metric:<{w0}}"
                 f"{m.selected.number:>{w1}.2f}"
             )
 
-    def display_footer(F: FooterLine) -> None:
+    def display_footer() -> None:
         print(s1)
-        w2 = len(s1) - len(F[1])
-        print(f"{F[0]:<{w2}}{F[1]}")
+        w2 = len(s1) - len(data.footer_labels[1])
+        print(f"{data.footer_labels[0]:<{w2}}{data.footer_labels[1]}")
 
-    def display_footer_data(FD: FooterData, VEC: VecLabel) -> None:
+    def display_footer_data() -> None:
         print(s1)
-        for d in FD:
-            print(f"{d[0] + ' =':<{2 * w0}}{d[1]:>{w1}.2f}")
-        print(f"{VEC[0]} Vulnerability Vector: {VEC[1]}")
+        for label, value in data.footer_data:
+            print(f"{label + ' =':<{2 * w0}}{value:>{w1}.2f}")
+        print(
+            f"{data.vector_label[0]} Vulnerability Vector:"
+            f" {data.vector_label[1]}"
+        )
         print(s1)
 
     w0 = 30
-    w1 = len(H[2])
+    w1 = len(data.header[2])
     s1 = (w0 * 2 + w1) * "="
-    display_header(H)
-    display_metrics(ML)
-    display_footer(F)
-    display_footer_data(FD, VEC)
+    display_header()
+    display_metrics()
+    display_footer()
+    display_footer_data()
 
 
 def generate_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
@@ -122,35 +129,37 @@ def generate_verbose_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
     """Generate output when verbose output requested."""
     show = [clarg["base"], clarg["temporal"], clarg["environmental"]]
     if show[0] or clarg["all"]:
-        display_score(
-            ("BASE METRIC", "EVALUATION", "SCORE"),
-            ["FORMULA", "BASE SCORE"],
-            cvs.base_metrics(),
-            [
+        display_score(ScoreDisplayData(
+            header=("BASE METRIC", "EVALUATION", "SCORE"),
+            footer_labels=["FORMULA", "BASE SCORE"],
+            metrics=cvs.base_metrics(),
+            footer_data=[
                 ("Impact", cvs.impact),
                 ("Exploitability", cvs.exploitability),
                 ("Base Score", cvs.base_score),
             ],
-            ("Base", cvs.base_vulnerability_vector),
-        )
+            vector_label=("Base", cvs.base_vulnerability_vector),
+        ))
     if show[1] or clarg["all"]:
-        display_score(
-            ("TEMPORAL METRIC", "EVALUATION", "SCORE"),
-            ["FORMULA", "TEMPORAL SCORE"],
-            cvs.temporal_metrics(),
-            [("Temporal Score", cvs.temporal_score)],
-            ("Temporal", cvs.temporal_vulnerability_vector),
-        )
+        display_score(ScoreDisplayData(
+            header=("TEMPORAL METRIC", "EVALUATION", "SCORE"),
+            footer_labels=["FORMULA", "TEMPORAL SCORE"],
+            metrics=cvs.temporal_metrics(),
+            footer_data=[("Temporal Score", cvs.temporal_score)],
+            vector_label=("Temporal", cvs.temporal_vulnerability_vector),
+        ))
     if show[2] or clarg["all"]:
-        display_score(
-            ("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
-            ["FORMULA", "ENIRONMENTAL SCORE"],
-            cvs.environmental_metrics(),
-            [
+        display_score(ScoreDisplayData(
+            header=("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
+            footer_labels=["FORMULA", "ENIRONMENTAL SCORE"],
+            metrics=cvs.environmental_metrics(),
+            footer_data=[
                 ("Adjusted Impact", cvs.adjusted_impact),
                 ("Adjusted Base", cvs.adjusted_base_score),
                 ("Adjusted Temporal", cvs.adjusted_temporal_score),
                 ("Environmental Score", cvs.environmental_score),
             ],
-            ("Environmental", cvs.environmental_vulnerability_vector),
-        )
+            vector_label=(
+                "Environmental", cvs.environmental_vulnerability_vector
+            ),
+        ))
