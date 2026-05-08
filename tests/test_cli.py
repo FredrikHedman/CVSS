@@ -84,7 +84,7 @@ def test_environmental_without_temporal_rejected(
         ):
             parser.error(
                 "--environmental requires --base and --temporal"
-                " in interactive mode"
+                + " in interactive mode"
             )
     assert exc.value.code == 2
     captured = capsys.readouterr()

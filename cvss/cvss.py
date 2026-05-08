@@ -125,7 +125,7 @@ def main() -> None:
         ):
             parser.error(
                 "--environmental requires --base and --temporal"
-                " in interactive mode"
+                + " in interactive mode"
             )
 
     # No actionable flag provided → show usage.

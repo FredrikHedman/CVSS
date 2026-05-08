@@ -61,18 +61,15 @@ def display_score(data: ScoreDisplayData) -> None:
 
     def display_header() -> None:
         print(s1)
-        print(
-            f"{data.header[0]:<{w0}}"
-            f"{data.header[1]:<{w0}}"
-            f"{data.header[2]}"
-        )
+        h = data.header
+        print(f"{h[0]:<{w0}}{h[1]:<{w0}}{h[2]}")
 
     def display_metrics() -> None:
         print(s1)
         for m in data.metrics:
             print(
                 f"{m.name:<{w0}}{m.selected.metric:<{w0}}"
-                f"{m.selected.number:>{w1}.2f}"
+                + f"{m.selected.number:>{w1}.2f}"
             )
 
     def display_footer() -> None:
@@ -84,10 +81,8 @@ def display_score(data: ScoreDisplayData) -> None:
         print(s1)
         for label, value in data.footer_data:
             print(f"{label + ' =':<{2 * w0}}{value:>{w1}.2f}")
-        print(
-            f"{data.vector_label[0]} Vulnerability Vector:"
-            f" {data.vector_label[1]}"
-        )
+        vl = data.vector_label
+        print(f"{vl[0]} Vulnerability Vector: {vl[1]}")
         print(s1)
 
     w0 = 30
@@ -118,10 +113,9 @@ def generate_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
     print()
     for s, score in zip(show, list_of_scores):
         if s:
-            print(
-                f"{score[0]} Score = {score[1]}\n"
-                f"{score[0]} Vulnerability Vector = {score[2]}"
-            )
+            name, val, vec = score
+            print(f"{name} Score = {val}")
+            print(f"{name} Vulnerability Vector = {vec}")
     print()
 
 
