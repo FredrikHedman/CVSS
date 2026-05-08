@@ -1,5 +1,5 @@
-* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [1/4]
-  1) [ ] **`process_cmd_line_vulnerability` has no error handling** —
+* <2026-05-08 Fri> Findings after assert/except/DRY/NamedTuple/show-list cleanup [2/4]
+  1) [X] **`process_cmd_line_vulnerability` has no error handling** —
      Unlike `process_cmd_line_interactive` and `process_cmd_line_base`,
      `process_cmd_line_vulnerability` calls `VulnerabilityVector(vulnerability)`
      and `vvec.valid()` with no try/except.  A bad vector string propagates as

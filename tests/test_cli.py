@@ -4,7 +4,7 @@ from unittest.mock import patch
 
 import pytest
 
-from cvss.cvss import build_parser, process_cmd_line_base
+from cvss.cvss import build_parser, process_cmd_line_base, process_cmd_line_vulnerability
 from cvss.cvss_types import CvssArgs
 
 
@@ -94,6 +94,33 @@ def test_unexpected_exception_propagates() -> None:
     with patch("cvss.cvss.VulnerabilityVector", side_effect=exc_to_raise):
         with pytest.raises(RuntimeError, match="oops"):
             _ = process_cmd_line_base(clarg)
+
+
+def test_vulnerability_bad_vector_exits(capsys: pytest.CaptureFixture[str]) -> None:
+    """Bad --vulnerability vector must print error and exit 1."""
+    clarg: CvssArgs = {
+        "verbose": False, "interactive": False, "all": False,
+        "base": False, "temporal": False, "environmental": False,
+        "vector": None, "vulnerability": "BAD:VECTOR",
+    }
+    with pytest.raises(SystemExit) as exc:
+        _ = process_cmd_line_vulnerability(clarg)
+    assert exc.value.code == 1
+    captured = capsys.readouterr()
+    assert captured.out != ""
+
+
+def test_unexpected_exception_propagates_vulnerability() -> None:
+    """Unexpected exceptions must NOT be swallowed by process_cmd_line_vulnerability."""
+    clarg: CvssArgs = {
+        "verbose": False, "interactive": False, "all": False,
+        "base": False, "temporal": False, "environmental": False,
+        "vector": None, "vulnerability": "AV:N/AC:L/Au:N/C:C/I:C/A:C",
+    }
+    exc_to_raise = RuntimeError("oops")
+    with patch("cvss.cvss.VulnerabilityVector", side_effect=exc_to_raise):
+        with pytest.raises(RuntimeError, match="oops"):
+            _ = process_cmd_line_vulnerability(clarg)
 
 
 @pytest.mark.parametrize("flag", ["-it", "-ite"])

@@ -99,8 +99,12 @@ def process_cmd_line_vulnerability(clarg: CvssArgs) -> CVSS:
     vulnerability = clarg["vulnerability"]
     if vulnerability is None:
         raise ValueError("--vulnerability requires a vector argument")
-    vvec = VulnerabilityVector(vulnerability)
-    cvs = cvs_factory(CommonVulnerabilityScore, vvec.valid().metric_values())
+    try:
+        vvec = VulnerabilityVector(vulnerability)
+        cvs = cvs_factory(CommonVulnerabilityScore, vvec.valid().metric_values())
+    except (InvalidBaseVectorError, ValueError) as e:
+        print(e)
+        sys.exit(1)
     return cvs
 
 
