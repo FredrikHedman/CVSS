@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings after override/@TypedDict/annotation cleanup [3/4]
+* <2026-05-08 Fri> Findings after override/@TypedDict/annotation cleanup [4/4]
   1) [X] **`assert` in production code in `cvss_210.py`** —
      Line 24: `assert len(self.__metrics) == len(metrics_seq), error_message`.
      The same pattern was already replaced with `raise ValueError` in
@@ -9,7 +9,7 @@
      only expected exceptions are `InvalidBaseVectorError` and `ValueError`.
      Narrowing to `except (InvalidBaseVectorError, ValueError)` prevents silent
      swallowing of unexpected errors.
-  3) [ ] **`list_of_scores` typed as `list[tuple[str, float, str]]`** —
+  3) [X] **`list_of_scores` typed as `list[tuple[str, float, str]]`** —
      `generate_output` builds an anonymous list of 3-tuples and iterates with
      `name, val, vec = score`.  Introducing a `ScoreEntry = NamedTuple(...)` or
      a `@dataclass` would make the type explicit and remove the reliance on

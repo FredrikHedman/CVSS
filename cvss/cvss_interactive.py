@@ -9,7 +9,7 @@
 from dataclasses import dataclass
 
 from .cvss_base import CVSS
-from .cvss_types import CvssArgs
+from .cvss_types import CvssArgs, ScoreEntry
 from .metric import Metric
 from .vulnerability import MetricDefinition
 
@@ -101,10 +101,12 @@ def generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
         clarg["temporal"] or clarg["all"],
         clarg["environmental"] or clarg["all"],
     ]
-    list_of_scores = [
-        ("Base", cvs.base_score, cvs.base_vulnerability_vector),
-        ("Temporal", cvs.temporal_score, cvs.temporal_vulnerability_vector),
-        (
+    list_of_scores: list[ScoreEntry] = [
+        ScoreEntry("Base", cvs.base_score, cvs.base_vulnerability_vector),
+        ScoreEntry(
+            "Temporal", cvs.temporal_score, cvs.temporal_vulnerability_vector
+        ),
+        ScoreEntry(
             "Environmental",
             cvs.environmental_score,
             cvs.environmental_vulnerability_vector,
@@ -113,9 +115,8 @@ def generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
     print()
     for s, score in zip(show, list_of_scores):
         if s:
-            name, val, vec = score
-            print(f"{name} Score = {val}")
-            print(f"{name} Vulnerability Vector = {vec}")
+            print(f"{score.name} Score = {score.value}")
+            print(f"{score.name} Vulnerability Vector = {score.vector}")
     print()
 
 

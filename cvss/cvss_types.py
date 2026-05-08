@@ -5,7 +5,15 @@
 #
 """Shared type definitions for the cvss CLI."""
 
-from typing import TypedDict
+from typing import NamedTuple, TypedDict
+
+
+class ScoreEntry(NamedTuple):
+    """One score label, numeric value, and vulnerability vector."""
+
+    name: str
+    value: float
+    vector: str
 
 
 class CvssArgs(TypedDict):
