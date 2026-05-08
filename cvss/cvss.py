@@ -32,24 +32,31 @@ Options:
 import sys
 from importlib.metadata import version
 from os.path import basename
-from docopt import docopt
+from typing import Any
+
+from docopt import docopt  # type: ignore[import-untyped]
 
 from .cvss_210 import CommonVulnerabilityScore
+from .cvss_base import CVSS
+from .cvss_interactive import (
+    generate_output,
+    generate_verbose_output,
+    select_metric_value,
+)
+from .vulnerability import (
+    MetricDef,
+    VulnerabilityVector,
+    base_metrics,
+    cvs_factory,
+    environmental_metrics,
+    temporal_metrics,
+)
 
-from .vulnerability import VulnerabilityVector
-from .vulnerability import cvs_factory
-from .vulnerability import base_metrics
-from .vulnerability import temporal_metrics
-from .vulnerability import environmental_metrics
-
-from .cvss_interactive import select_metric_value
-from .cvss_interactive import generate_output
-from .cvss_interactive import generate_verbose_output
-
+_USAGE: str = __doc__ or ""
 VERSION = version("cvss")
 
 
-def read_and_set(L, selected):
+def read_and_set(L: list[MetricDef], selected: list[str]) -> list[str]:
     """Read and set selected metrics."""
     for m in L:
         mm = select_metric_value(m)
@@ -57,13 +64,13 @@ def read_and_set(L, selected):
     return selected
 
 
-def cmd_line_syntax(str):
+def cmd_line_syntax(s: str) -> str:
     """Parameterized help message."""
-    return __doc__.format(PGM=basename(sys.argv[0]))
+    return _USAGE.format(PGM=basename(sys.argv[0]))
 
 
-def process_cmd_line_interactive(clarg):
-    selected = []
+def process_cmd_line_interactive(clarg: dict[str, Any]) -> CVSS:
+    selected: list[str] = []
     if clarg["--base"]:
         if clarg["<vector>"]:
             try:
@@ -86,7 +93,7 @@ def process_cmd_line_interactive(clarg):
     return cvs
 
 
-def process_cmd_line_base(clarg):
+def process_cmd_line_base(clarg: dict[str, Any]) -> CVSS:
     try:
         vvec = VulnerabilityVector(clarg["<vector>"])
         cvs = cvs_factory(
@@ -98,14 +105,14 @@ def process_cmd_line_base(clarg):
     return cvs
 
 
-def process_cmd_line_vulnerability(clarg):
+def process_cmd_line_vulnerability(clarg: dict[str, Any]) -> CVSS:
     clarg["--all"] = True
     vvec = VulnerabilityVector(clarg["--vulnerability"])
     cvs = cvs_factory(CommonVulnerabilityScore, vvec.valid().metric_values())
     return cvs
 
 
-def process_cmd_line(clarg):
+def process_cmd_line(clarg: dict[str, Any]) -> CVSS:
     """React to the command line."""
     if clarg["--interactive"]:
         cvs = process_cmd_line_interactive(clarg)
@@ -119,9 +126,9 @@ def process_cmd_line(clarg):
     return cvs
 
 
-def main():
+def main() -> None:
     # Create command line parser and parse it.
-    clarg = docopt(cmd_line_syntax(__doc__), version=VERSION)
+    clarg = docopt(cmd_line_syntax(_USAGE), version=VERSION)
 
     cvs = process_cmd_line(clarg)
 
