@@ -4,21 +4,9 @@
 # VERSION: 1.20.1
 # LICENSE: MIT LICENSE
 #
-"""Extracted interactive functions.
+"""Extracted interactive functions."""
 
-These need to use print and input and be indepenet of version.
-"""
-
-from __future__ import print_function
 from .metric import Metric
-
-# Cater for PEP 3111 so that python3 code can still work when using python2.
-try:
-    import __builtin__
-
-    input = getattr(__builtin__, "raw_input")
-except (ImportError, AttributeError):
-    pass
 
 
 def select_metric_value(m):
