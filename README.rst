@@ -11,7 +11,10 @@ VERSION = 1.20.1
 
 What is new
 -----------
-Completed transformation to a Python package.
+Modernised packaging and tooling: migrated to ``uv`` + ``pyproject.toml``,
+replaced ``flake8``/``pep8`` with ``ruff``, replaced shell-script test runners
+with ``pytest``, dropped Python 2 support, and added full type annotations
+verified by ``basedpyright``.
 
 
 How to
@@ -53,28 +56,28 @@ Requires Python 3.10+ and `uv <https://docs.astral.sh/uv/>`_::
     $ uv run cvss --help
 
 
-Unit Tests, Use Case Tests and PEP8 compliance
-----------------------------------------------
-The tests are combination of output driven tests and doctests.  All
-tests are executed by::
+Development
+-----------
+Run the full test suite (pytest)::
 
-      $ make alltests
+      $ make test
 
-and individually by::
+Check and auto-fix code style (ruff)::
 
-      $ make doctests
-      $ make uctests
+      $ make lint
+      $ make format
 
-No output expected.  PEP8 compliance test can be checked by::
+Verify static types (basedpyright)::
 
-      $ make pep8
+      $ make typecheck
 
-Examples
---------
-These are all based on CVSS examples using doctest.  No output is
-expected::
+Run the example suite::
 
-      $ make examples
+      $ make example
+
+Remove build artefacts::
+
+      $ make clean
 
 
 Developers
