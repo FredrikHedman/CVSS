@@ -19,7 +19,7 @@ classifiers = [
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
 ]
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 dependencies = []
 
 [project.urls]
@@ -47,10 +47,16 @@ ignore = ["D100", "D101", "D102", "D103", "D301", "N803"]
 max-complexity = 9
 
 [tool.basedpyright]
-pythonVersion = "3.10"
+pythonVersion = "3.12"
 typeCheckingMode = "strict"
 include = ["cvss", "tests"]
 exclude = ["misc"]
+reportImplicitOverride = "warning"
+reportImplicitStringConcatenation = "warning"
+reportUnusedCallResult = "warning"
+reportExplicitAny = "warning"
+reportAny = "warning"
+reportUnannotatedClassAttribute = "warning"
 
 [dependency-groups]
 dev = [
