@@ -29,6 +29,7 @@ class Metric:
             m = MetricValue(*x)
             vals.append((m.value, m))
         self.__values: dict[str, MetricValue] = dict(vals)
+        self.__index: str  # assigned by index.setter below
         # Use the first key available.
         if index is None:
             self.index = vals[0][0]
