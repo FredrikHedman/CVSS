@@ -48,7 +48,7 @@ max-complexity = 9
 
 [tool.basedpyright]
 pythonVersion = "3.10"
-typeCheckingMode = "standard"
+typeCheckingMode = "strict"
 exclude = ["misc"]
 
 [dependency-groups]
