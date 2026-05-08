@@ -7,9 +7,9 @@
 """Extracted interactive functions."""
 
 from dataclasses import dataclass
-from typing import Any
 
 from .cvss_base import CVSS
+from .cvss_types import CvssArgs
 from .metric import Metric
 from .vulnerability import MetricDefinition
 
@@ -94,7 +94,7 @@ def display_score(data: ScoreDisplayData) -> None:
     display_footer_data()
 
 
-def generate_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
+def generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Print requested scores."""
     show = [
         clarg["base"] or clarg["all"],
@@ -119,7 +119,7 @@ def generate_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
     print()
 
 
-def generate_verbose_output(cvs: CVSS, clarg: dict[str, Any]) -> None:
+def generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Generate output when verbose output requested."""
     show = [clarg["base"], clarg["temporal"], clarg["environmental"]]
     if show[0] or clarg["all"]:

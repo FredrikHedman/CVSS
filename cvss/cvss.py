@@ -8,7 +8,7 @@
 import argparse
 import sys
 from importlib.metadata import version
-from typing import Any
+from typing import cast
 
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS
@@ -17,6 +17,7 @@ from .cvss_interactive import (
     generate_verbose_output,
     select_metric_value,
 )
+from .cvss_types import CvssArgs
 from .vulnerability import (
     MetricDefinition,
     VulnerabilityVector,
@@ -54,7 +55,7 @@ def read_and_set(L: list[MetricDefinition], selected: list[str]) -> list[str]:
     return selected
 
 
-def process_cmd_line_interactive(clarg: dict[str, Any]) -> CVSS:
+def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
     selected: list[str] = []
     if clarg["base"]:
         if clarg["vector"]:
@@ -78,9 +79,12 @@ def process_cmd_line_interactive(clarg: dict[str, Any]) -> CVSS:
     return cvs
 
 
-def process_cmd_line_base(clarg: dict[str, Any]) -> CVSS:
+def process_cmd_line_base(clarg: CvssArgs) -> CVSS:
     try:
-        vvec = VulnerabilityVector(clarg["vector"])
+        vector = clarg["vector"]
+        if vector is None:
+            raise ValueError("--base requires a vector argument")
+        vvec = VulnerabilityVector(vector)
         cvs = cvs_factory(
             CommonVulnerabilityScore, vvec.valid().complete().metric_values()
         )
@@ -90,14 +94,17 @@ def process_cmd_line_base(clarg: dict[str, Any]) -> CVSS:
     return cvs
 
 
-def process_cmd_line_vulnerability(clarg: dict[str, Any]) -> CVSS:
+def process_cmd_line_vulnerability(clarg: CvssArgs) -> CVSS:
     clarg["all"] = True
-    vvec = VulnerabilityVector(clarg["vulnerability"])
+    vulnerability = clarg["vulnerability"]
+    if vulnerability is None:
+        raise ValueError("--vulnerability requires a vector argument")
+    vvec = VulnerabilityVector(vulnerability)
     cvs = cvs_factory(CommonVulnerabilityScore, vvec.valid().metric_values())
     return cvs
 
 
-def process_cmd_line(clarg: dict[str, Any]) -> CVSS:
+def process_cmd_line(clarg: CvssArgs) -> CVSS:
     """React to the command line."""
     if clarg["interactive"]:
         cvs = process_cmd_line_interactive(clarg)
@@ -114,7 +121,7 @@ def process_cmd_line(clarg: dict[str, Any]) -> CVSS:
 def main() -> None:
     parser = build_parser()
     args = parser.parse_args()
-    clarg = vars(args)
+    clarg = cast(CvssArgs, vars(args))
 
     # Validate interactive-mode flag combinations.
     if clarg["interactive"]:

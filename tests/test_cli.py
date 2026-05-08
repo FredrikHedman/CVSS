@@ -1,8 +1,11 @@
 """Unit tests for the argparse-based CLI in cvss.cvss."""
 
+from typing import cast
+
 import pytest
 
 from cvss.cvss import build_parser
+from cvss.cvss_types import CvssArgs
 
 
 def test_no_args_shows_usage(capsys: pytest.CaptureFixture[str]) -> None:
@@ -32,28 +35,34 @@ def test_help_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
 
 def test_base_flag_parsed() -> None:
     parser = build_parser()
-    args = parser.parse_args(["--base", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
-    assert args.base is True
-    assert args.vector == "AV:N/AC:L/Au:N/C:C/I:C/A:C"
+    clarg = cast(CvssArgs, vars(
+        parser.parse_args(["--base", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
+    ))
+    assert clarg["base"] is True
+    assert clarg["vector"] == "AV:N/AC:L/Au:N/C:C/I:C/A:C"
 
 
 def test_vulnerability_flag_parsed() -> None:
     parser = build_parser()
-    args = parser.parse_args(["--vulnerability", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
-    assert args.vulnerability == "AV:N/AC:L/Au:N/C:C/I:C/A:C"
+    clarg = cast(CvssArgs, vars(
+        parser.parse_args(["--vulnerability", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
+    ))
+    assert clarg["vulnerability"] == "AV:N/AC:L/Au:N/C:C/I:C/A:C"
 
 
 def test_verbose_short_flag() -> None:
     parser = build_parser()
-    args = parser.parse_args(["-v", "--base", "AV:L/AC:H/Au:N/C:N/I:N/A:N"])
-    assert args.verbose is True
+    clarg = cast(CvssArgs, vars(
+        parser.parse_args(["-v", "--base", "AV:L/AC:H/Au:N/C:N/I:N/A:N"])
+    ))
+    assert clarg["verbose"] is True
 
 
 def test_interactive_combined_flags() -> None:
     parser = build_parser()
-    args = parser.parse_args(["-ib"])
-    assert args.interactive is True
-    assert args.base is True
+    clarg = cast(CvssArgs, vars(parser.parse_args(["-ib"])))
+    assert clarg["interactive"] is True
+    assert clarg["base"] is True
 
 
 @pytest.mark.parametrize("flag", ["-it", "-ite"])

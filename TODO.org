@@ -1,4 +1,4 @@
-* <2026-05-08 Fri> Findings from partition/ValueError/dataclass/print cleanup [1/4]
+* <2026-05-08 Fri> Findings from partition/ValueError/dataclass/print cleanup [2/4]
   1) [X] **Remove dead `if __name__ == "__main__": doctest.testmod()` blocks** —
      `cvss_210.py` and `vulnerability.py` still have them.  pytest runs doctests
      via `--doctest-modules`; these blocks add noise.  A 2-line removal each,
@@ -15,7 +15,7 @@
      like `["AV","AC","Au","C","I","A"]`.  These duplicate the abbreviation
      order already encoded in `BASE_DEFINITIONS` (etc.) in `vulnerability.py`.
      Derive the lists from the definitions to make `cvss_210.py` DRY.
-  4) [ ] **`clarg: dict[str, Any]` → `argparse.Namespace` or `TypedDict`** —
+  4) [X] **`clarg: dict[str, Any]` → `argparse.Namespace` or `TypedDict`** —
      Five functions in `cvss.py` and two in `cvss_interactive.py` accept
      `dict[str, Any]`.  `vars(args)` in `main()` discards argparse's type
      information.  A `CvssArgs` TypedDict (keys: `base`, `temporal`,
@@ -23,7 +23,7 @@
      `vulnerability`) would make every key access type-safe without changing
      runtime behaviour.
 
-* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [3/4]
+* <2026-05-08 Fri> Findings from Protocol / dict-comprehension refactors [4/4]
   1) [X] **Double error printing** — `_parse_vulnerability_string`, `valid()`,
      and `complete()` in `vulnerability.py` all `print(...)` before re-raising.
      Callers in `cvss.py` (`process_cmd_line_interactive`,
@@ -39,7 +39,7 @@
      `cvss_210.py` and `vulnerability.py` still have them.  pytest already runs
      doctests via `--doctest-modules`; these blocks add noise with no benefit.
      Remove them (same as the block removed from `metric.py` in Refactor 1).
-  4) [ ] **`clarg: dict[str, Any]` → use `argparse.Namespace` directly** —
+  4) [X] **`clarg: dict[str, Any]` → use `argparse.Namespace` directly** —
      `main()` calls `vars(args)` and passes the resulting `dict[str, Any]` to
      every `process_cmd_line_*` function.  Using `args` (a `Namespace`) directly
      gives typed attribute access; alternatively a `TypedDict` makes the keys
