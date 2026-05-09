@@ -1,5 +1,5 @@
-* <2026-05-09 Sat> Findings after str-signature/read_metrics/make_clarg cleanup [0/3]
-  1) [ ] **`test_temporal_without_base_rejected` and `…_environmental` duplicate
+* <2026-05-09 Sat> Findings after str-signature/read_metrics/make_clarg cleanup [1/3]
+  1) [X] **`test_temporal_without_base_rejected` and `…_environmental` duplicate
      `main()`'s logic** (carry-over from previous TODO item 4) — These tests
      mirror the validation if-conditions from `main()` inline rather than calling
      `main()` end-to-end.  Replace with end-to-end tests:

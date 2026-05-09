@@ -111,12 +111,9 @@ def test_base_requires_vector(capsys: pytest.CaptureFixture[str]) -> None:
 def test_temporal_without_base_rejected(
     flag: str, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    parser = build_parser()
-    args = parser.parse_args([flag])
-    clarg = vars(args)
-    with pytest.raises(SystemExit) as exc:
-        if clarg["temporal"] and not clarg["base"]:
-            parser.error("--temporal requires --base in interactive mode")
+    with patch("sys.argv", ["cvss", flag]):
+        with pytest.raises(SystemExit) as exc:
+            main()
     assert exc.value.code == 2
     captured = capsys.readouterr()
     assert "--temporal requires --base" in captured.err
@@ -126,17 +123,9 @@ def test_temporal_without_base_rejected(
 def test_environmental_without_temporal_rejected(
     flag: str, capsys: pytest.CaptureFixture[str]
 ) -> None:
-    parser = build_parser()
-    args = parser.parse_args([flag])
-    clarg = vars(args)
-    with pytest.raises(SystemExit) as exc:
-        if clarg["environmental"] and not (
-            clarg["base"] and clarg["temporal"]
-        ):
-            parser.error(
-                "--environmental requires --base and --temporal"
-                + " in interactive mode"
-            )
+    with patch("sys.argv", ["cvss", flag]):
+        with pytest.raises(SystemExit) as exc:
+            main()
     assert exc.value.code == 2
     captured = capsys.readouterr()
     assert "--environmental requires" in captured.err
