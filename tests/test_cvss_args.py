@@ -1,5 +1,6 @@
 """Tests for CvssArgs TypedDict and ScoreEntry NamedTuple."""
 
+from cvss.cvss import build_parser
 from cvss.cvss_types import CvssArgs, ScoreEntry
 
 
@@ -31,6 +32,16 @@ def test_cvss_args_optional_fields_accept_none() -> None:
     }
     assert d["vector"] is None
     assert d["vulnerability"] is None
+
+
+def test_parser_keys_match_cvss_args() -> None:
+    """Verify build_parser() argument names stay in sync with CvssArgs."""
+    parser_keys = set(vars(build_parser().parse_args([])).keys())
+    cvss_args_keys = set(CvssArgs.__required_keys__)
+    assert parser_keys == cvss_args_keys, (
+        f"Key drift: parser has {parser_keys - cvss_args_keys!r} "
+        f"extra, CvssArgs has {cvss_args_keys - parser_keys!r} extra"
+    )
 
 
 def test_score_entry_named_access() -> None:

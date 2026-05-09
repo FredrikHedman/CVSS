@@ -1,4 +1,4 @@
-* <2026-05-09 Sat> Findings after str-signature/read_metrics/make_clarg cleanup [1/3]
+* <2026-05-09 Sat> Findings after str-signature/read_metrics/make_clarg cleanup [2/3]
   1) [X] **`test_temporal_without_base_rejected` and `…_environmental` duplicate
      `main()`'s logic** (carry-over from previous TODO item 4) — These tests
      mirror the validation if-conditions from `main()` inline rather than calling
@@ -6,7 +6,7 @@
      `patch("sys.argv", ["cvss", "-it"])` + `main()`, asserting exit code 2 and
      the error message in stderr.  Dead code removed: the duplicated
      `if clarg["temporal"] and not clarg["base"]: parser.error(...)` blocks.
-  2) [ ] **Three places encode the same 8-field argument schema** — `build_parser()`,
+  2) [X] **Three places encode the same 8-field argument schema** — `build_parser()`,
      `_ParsedArgs`, and `make_clarg` all independently enumerate the 8 CLI flags.
      If a new flag is added, all three need updating.  Add a unit test that calls
      `vars(build_parser().parse_args([]))` and compares its key set to
