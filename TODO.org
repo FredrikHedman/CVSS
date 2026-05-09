@@ -1,4 +1,4 @@
-* <2026-05-09 Sat> Findings after str-signature/read_metrics/make_clarg cleanup [2/3]
+* <2026-05-09 Sat> Findings after str-signature/read_metrics/make_clarg cleanup [3/3]
   1) [X] **`test_temporal_without_base_rejected` and `…_environmental` duplicate
      `main()`'s logic** (carry-over from previous TODO item 4) — These tests
      mirror the validation if-conditions from `main()` inline rather than calling
@@ -11,7 +11,7 @@
      If a new flag is added, all three need updating.  Add a unit test that calls
      `vars(build_parser().parse_args([]))` and compares its key set to
      `CvssArgs.__required_keys__` to catch future drift at CI time.
-  3) [ ] **`process_cmd_line` has a type-narrowing RuntimeError guard that
+  3) [X] **`process_cmd_line` has a type-narrowing RuntimeError guard that
      duplicates `main()`'s validation** — `elif clarg["base"]:` still needs
      `if vector is None: raise RuntimeError(...)` to satisfy the type checker,
      because `main()`'s `parser.error()` narrowing is not visible across the

@@ -8,6 +8,7 @@
 import argparse
 import sys
 from importlib.metadata import version
+from typing import cast
 
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS
@@ -129,17 +130,12 @@ def process_cmd_line_vulnerability(vulnerability: str) -> CVSS:
 def process_cmd_line(clarg: CvssArgs) -> CVSS:
     """React to the command line."""
     if clarg["interactive"]:
-        cvs = process_cmd_line_interactive(clarg)
+        return process_cmd_line_interactive(clarg)
     elif clarg["base"]:
-        vector = clarg["vector"]
-        if vector is None:
-            raise RuntimeError("unreachable: main() validated base+vector")
-        cvs = process_cmd_line_base(vector)
+        return process_cmd_line_base(cast(str, clarg["vector"]))
     elif clarg["vulnerability"]:
-        cvs = process_cmd_line_vulnerability(clarg["vulnerability"])
-    else:
-        raise RuntimeError("unreachable")
-    return cvs
+        return process_cmd_line_vulnerability(clarg["vulnerability"])
+    raise RuntimeError("unreachable")
 
 
 def main() -> None:
