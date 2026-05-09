@@ -1,5 +1,5 @@
-* <2026-05-09 Sat> Findings after mutation/typed-args/guard/verbose-entries cleanup [0/4]
-  1) [ ] **`process_cmd_line_base` and `…_vulnerability` accept `CvssArgs` but only
+* <2026-05-09 Sat> Findings after mutation/typed-args/guard/verbose-entries cleanup [1/4]
+  1) [X] **`process_cmd_line_base` and `…_vulnerability` accept `CvssArgs` but only
      use one field each** — After the mutation refactor, `process_cmd_line_vulnerability`
      reads only `clarg["vulnerability"]` and `process_cmd_line_base` reads only
      `clarg["vector"]`.  Narrowing their signatures to `(vector: str) -> CVSS` and

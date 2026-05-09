@@ -6,6 +6,7 @@ import pytest
 
 from cvss.cvss import (
     build_parser,
+    main,
     process_cmd_line_base,
     process_cmd_line_vulnerability,
 )
@@ -91,28 +92,18 @@ def test_interactive_combined_flags() -> None:
 
 def test_unexpected_exception_propagates() -> None:
     """Unexpected exceptions must NOT be swallowed by process_cmd_line_base."""
-    clarg: CvssArgs = {
-        "verbose": False, "interactive": False, "all": False,
-        "base": True, "temporal": False, "environmental": False,
-        "vector": "AV:N/AC:L/Au:N/C:C/I:C/A:C", "vulnerability": None,
-    }
     exc_to_raise = RuntimeError("oops")
     with patch("cvss.cvss.VulnerabilityVector", side_effect=exc_to_raise):
         with pytest.raises(RuntimeError, match="oops"):
-            _ = process_cmd_line_base(clarg)
+            _ = process_cmd_line_base("AV:N/AC:L/Au:N/C:C/I:C/A:C")
 
 
 def test_vulnerability_bad_vector_exits(
     capsys: pytest.CaptureFixture[str],
 ) -> None:
     """Bad --vulnerability vector must print error and exit 1."""
-    clarg: CvssArgs = {
-        "verbose": False, "interactive": False, "all": False,
-        "base": False, "temporal": False, "environmental": False,
-        "vector": None, "vulnerability": "BAD:VECTOR",
-    }
     with pytest.raises(SystemExit) as exc:
-        _ = process_cmd_line_vulnerability(clarg)
+        _ = process_cmd_line_vulnerability("BAD:VECTOR")
     assert exc.value.code == 1
     captured = capsys.readouterr()
     assert captured.out != ""
@@ -120,15 +111,20 @@ def test_vulnerability_bad_vector_exits(
 
 def test_unexpected_exception_propagates_vulnerability() -> None:
     """Unexpected exceptions must NOT be swallowed by process_cmd_line_vulnerability."""  # noqa: E501
-    clarg: CvssArgs = {
-        "verbose": False, "interactive": False, "all": False,
-        "base": False, "temporal": False, "environmental": False,
-        "vector": None, "vulnerability": "AV:N/AC:L/Au:N/C:C/I:C/A:C",
-    }
     exc_to_raise = RuntimeError("oops")
     with patch("cvss.cvss.VulnerabilityVector", side_effect=exc_to_raise):
         with pytest.raises(RuntimeError, match="oops"):
-            _ = process_cmd_line_vulnerability(clarg)
+            _ = process_cmd_line_vulnerability("AV:N/AC:L/Au:N/C:C/I:C/A:C")
+
+
+def test_base_requires_vector(capsys: pytest.CaptureFixture[str]) -> None:
+    """cvss --base without a vector must exit 2 with an error message."""
+    with patch("sys.argv", ["cvss", "--base"]):
+        with pytest.raises(SystemExit) as exc:
+            main()
+    assert exc.value.code == 2
+    captured = capsys.readouterr()
+    assert "--base requires a vector argument" in captured.err
 
 
 @pytest.mark.parametrize("flag", ["-it", "-ite"])

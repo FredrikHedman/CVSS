@@ -90,11 +90,8 @@ def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
     return cvs
 
 
-def process_cmd_line_base(clarg: CvssArgs) -> CVSS:
+def process_cmd_line_base(vector: str) -> CVSS:
     try:
-        vector = clarg["vector"]
-        if vector is None:
-            raise ValueError("--base requires a vector argument")
         vvec = VulnerabilityVector(vector)
         cvs = cvs_factory(
             CommonVulnerabilityScore, vvec.valid().complete().metric_values()
@@ -105,10 +102,7 @@ def process_cmd_line_base(clarg: CvssArgs) -> CVSS:
     return cvs
 
 
-def process_cmd_line_vulnerability(clarg: CvssArgs) -> CVSS:
-    vulnerability = clarg["vulnerability"]
-    if vulnerability is None:  # unreachable: argparse requires a value
-        raise ValueError("--vulnerability requires a vector argument")
+def process_cmd_line_vulnerability(vulnerability: str) -> CVSS:
     try:
         vvec = VulnerabilityVector(vulnerability)
         cvs = cvs_factory(
@@ -125,9 +119,15 @@ def process_cmd_line(clarg: CvssArgs) -> CVSS:
     if clarg["interactive"]:
         cvs = process_cmd_line_interactive(clarg)
     elif clarg["base"]:
-        cvs = process_cmd_line_base(clarg)
+        vector = clarg["vector"]
+        if vector is None:
+            raise RuntimeError("unreachable: main() validated base+vector")
+        cvs = process_cmd_line_base(vector)
     elif clarg["vulnerability"]:
-        cvs = process_cmd_line_vulnerability(clarg)
+        vulnerability = clarg["vulnerability"]
+        if vulnerability is None:
+            raise RuntimeError("unreachable: argparse requires a value")
+        cvs = process_cmd_line_vulnerability(vulnerability)
     else:
         raise RuntimeError("unreachable")
     return cvs
@@ -147,7 +147,9 @@ def main() -> None:
         "vulnerability": args.vulnerability,
     }
 
-    # Validate interactive-mode flag combinations.
+    # Validate flag combinations.
+    if clarg["base"] and not clarg["interactive"] and clarg["vector"] is None:
+        parser.error("--base requires a vector argument")
     if clarg["interactive"]:
         if clarg["temporal"] and not clarg["base"]:
             parser.error("--temporal requires --base in interactive mode")
