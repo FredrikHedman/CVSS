@@ -1,3 +1,22 @@
+* <2026-05-09 Sat> Findings after _ParsedArgs/e2e-tests/drift-test/cast cleanup [0/3]
+  1) [ ] **`main()` has three distinct responsibilities** — flag validation, dispatch,
+     and output rendering (~30 lines).  Extracting `_validate_flags(parser, clarg)`
+     (which calls `parser.error()` and returns nothing) would make `main()` a clean
+     ~10-line orchestrator: parse → validate → dispatch → output.  The extracted
+     function is also independently testable.
+  2) [ ] **`read_metrics` belongs in `cvss_interactive.py`** — `read_metrics` calls
+     `select_metric_value` (which lives in `cvss_interactive`) and is conceptually
+     an interactive I/O operation.  Currently it lives in `cvss.py` alongside CLI
+     wiring, making `cvss.py` import interactive I/O.  Moving `read_metrics` to
+     `cvss_interactive.py` (and updating `process_cmd_line_interactive` to call it
+     from there) would make `cvss.py` a pure CLI wiring layer.
+  3) [ ] **Default-value drift between `_ParsedArgs` and `build_parser()` is untested**
+     — The existing `test_parser_keys_match_cvss_args` catches key-name drift but
+     not default-value drift.  `_ParsedArgs` declares `verbose = False` and
+     `vector = None`; if `build_parser()` changes a default, `make_clarg` would
+     silently produce wrong values.  Extend the test (or add a sibling) to call
+     `make_clarg(build_parser().parse_args([]))` and assert specific field values.
+
 * <2026-05-09 Sat> Findings after str-signature/read_metrics/make_clarg cleanup [3/3]
   1) [X] **`test_temporal_without_base_rejected` and `…_environmental` duplicate
      `main()`'s logic** (carry-over from previous TODO item 4) — These tests
