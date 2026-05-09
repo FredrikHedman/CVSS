@@ -31,19 +31,19 @@ VERSION = version("cvss")
 
 
 class _ParsedArgs(argparse.Namespace):
-    verbose: bool
-    interactive: bool
-    all: bool
-    base: bool
-    temporal: bool
-    environmental: bool
-    vector: str | None
-    vulnerability: str | None
+    verbose: bool = False
+    interactive: bool = False
+    all: bool = False
+    base: bool = False
+    temporal: bool = False
+    environmental: bool = False
+    vector: str | None = None
+    vulnerability: str | None = None
 
 
 def make_clarg(args: argparse.Namespace) -> CvssArgs:
     """Build a typed CvssArgs dict from an argparse Namespace."""
-    typed: _ParsedArgs = args  # type: ignore[assignment]
+    typed: _ParsedArgs = args  # pyright: ignore[reportAssignmentType]
     return {
         "verbose": typed.verbose,
         "interactive": typed.interactive,
