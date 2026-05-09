@@ -41,6 +41,21 @@ class _ParsedArgs(argparse.Namespace):
     vulnerability: str | None
 
 
+def make_clarg(args: argparse.Namespace) -> CvssArgs:
+    """Build a typed CvssArgs dict from an argparse Namespace."""
+    typed: _ParsedArgs = args  # type: ignore[assignment]
+    return {
+        "verbose": typed.verbose,
+        "interactive": typed.interactive,
+        "all": typed.all,
+        "base": typed.base,
+        "temporal": typed.temporal,
+        "environmental": typed.environmental,
+        "vector": typed.vector,
+        "vulnerability": typed.vulnerability,
+    }
+
+
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(
         prog="cvss",
@@ -121,10 +136,7 @@ def process_cmd_line(clarg: CvssArgs) -> CVSS:
             raise RuntimeError("unreachable: main() validated base+vector")
         cvs = process_cmd_line_base(vector)
     elif clarg["vulnerability"]:
-        vulnerability = clarg["vulnerability"]
-        if vulnerability is None:
-            raise RuntimeError("unreachable: argparse requires a value")
-        cvs = process_cmd_line_vulnerability(vulnerability)
+        cvs = process_cmd_line_vulnerability(clarg["vulnerability"])
     else:
         raise RuntimeError("unreachable")
     return cvs
@@ -132,17 +144,7 @@ def process_cmd_line(clarg: CvssArgs) -> CVSS:
 
 def main() -> None:
     parser = build_parser()
-    args: _ParsedArgs = parser.parse_args()  # type: ignore[assignment]
-    clarg: CvssArgs = {
-        "verbose": args.verbose,
-        "interactive": args.interactive,
-        "all": args.all,
-        "base": args.base,
-        "temporal": args.temporal,
-        "environmental": args.environmental,
-        "vector": args.vector,
-        "vulnerability": args.vulnerability,
-    }
+    clarg = make_clarg(parser.parse_args())
 
     # Validate flag combinations.
     if clarg["base"] and not clarg["interactive"] and clarg["vector"] is None:

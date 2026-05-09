@@ -1,4 +1,4 @@
-* <2026-05-09 Sat> Findings after mutation/typed-args/guard/verbose-entries cleanup [2/4]
+* <2026-05-09 Sat> Findings after mutation/typed-args/guard/verbose-entries cleanup [3/4]
   1) [X] **`process_cmd_line_base` and `…_vulnerability` accept `CvssArgs` but only
      use one field each** — After the mutation refactor, `process_cmd_line_vulnerability`
      reads only `clarg["vulnerability"]` and `process_cmd_line_base` reads only
@@ -13,7 +13,7 @@
      `read_metrics(L: list[MetricDefinition]) -> list[str]` that returns a new
      list without requiring a `selected` input parameter.  Callers use `+=` or
      `selected.extend(read_metrics(...))` to accumulate results.
-  3) [ ] **`_make_clarg` helper would eliminate 32 remaining `reportAny` warnings**
+  3) [X] **`make_clarg` helper eliminates 32 remaining `reportAny` warnings**
      — The 8-field dict construction `clarg: CvssArgs = {"verbose": args.verbose,
      ...}` is currently inline in `main()`.  Extracting it to a private
      `_make_clarg(args: _ParsedArgs) -> CvssArgs` function makes it reusable from
