@@ -58,12 +58,9 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
-def read_and_set(L: list[MetricDefinition], selected: list[str]) -> list[str]:
-    """Read and set selected metrics."""
-    for m in L:
-        mm = select_metric_value(m)
-        selected.append(mm)
-    return selected
+def read_metrics(L: list[MetricDefinition]) -> list[str]:
+    """Interactively read metric values and return them as a list."""
+    return [select_metric_value(m) for m in L]
 
 
 def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
@@ -77,15 +74,15 @@ def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
                 print(e)
                 sys.exit(1)
         else:
-            selected = read_and_set(base_metrics(), selected)
+            selected.extend(read_metrics(base_metrics()))
     if clarg["temporal"]:
-        selected = read_and_set(temporal_metrics(), selected)
+        selected.extend(read_metrics(temporal_metrics()))
     if clarg["temporal"] and clarg["environmental"]:
-        selected = read_and_set(environmental_metrics(), selected)
+        selected.extend(read_metrics(environmental_metrics()))
     if clarg["all"]:
-        selected = read_and_set(base_metrics(), selected)
-        selected = read_and_set(temporal_metrics(), selected)
-        selected = read_and_set(environmental_metrics(), selected)
+        selected.extend(read_metrics(base_metrics()))
+        selected.extend(read_metrics(temporal_metrics()))
+        selected.extend(read_metrics(environmental_metrics()))
     cvs = cvs_factory(CommonVulnerabilityScore, selected)
     return cvs
 
