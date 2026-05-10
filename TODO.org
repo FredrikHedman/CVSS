@@ -1,3 +1,23 @@
+* <2026-05-10 Sun> Findings after orchestration refactor [0/3]
+  1) [ ] **Move `clarg["all"] = True` into `parse_and_validate()`** — `main()`
+     still contains a post-dispatch mutation (`if clarg["vulnerability"]: clarg["all"]
+     = True`) that sets output behaviour.  This semantic rule ("--vulnerability
+     always shows all scores") belongs in `cvss_parser.py` alongside the other
+     argument-interpretation logic.  After the move, `main()` is a pure
+     orchestrator: parse → dispatch → output, with no state mutation.
+  2) [ ] **Move `process_cmd_line` to `cvss_handlers.py`** — The dispatch function
+     is the last non-trivial code in `cvss.py` besides `main()`.  Moving it to
+     `cvss_handlers.py` (where all three handlers live) would make `cvss.py`
+     a minimal entry point containing only `main()` and its imports.  `cast`
+     would move with it.
+  3) [ ] **Split `cvss_interactive.py` into input and output modules** —
+     `cvss_interactive.py` now hosts two distinct concerns:
+     interactive input (`select_metric_value`, `read_metrics`,
+     `process_cmd_line_interactive`) and score output (`ScoreDisplayData`,
+     `display_score`, `generate_output`, `generate_verbose_output`).
+     Splitting into `cvss_prompt.py` (input) and `cvss_output.py` (output)
+     would give each module a single clear responsibility.
+
 * <2026-05-10 Sun> Findings after _validate_flags/read_metrics/default-drift cleanup [3/3]
   1) [X] **"no actionable flag" guard in `main()` could fold into `_validate_flags`** —
      `if not (clarg["interactive"] or clarg["base"] or clarg["vulnerability"]):`
