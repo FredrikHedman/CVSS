@@ -1,4 +1,4 @@
-"""Interactive CLI prompting for CVSS metric selection."""
+"""Interactive terminal input for CVSS metric selection."""
 
 from .metric import Metric
 from .vulnerability import MetricDefinition
