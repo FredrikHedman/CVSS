@@ -56,7 +56,7 @@ def display_score(data: ScoreDisplayData) -> None:
     display_footer_data()
 
 
-def generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
+def _generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Print requested scores."""
     entries: list[tuple[bool, ScoreEntry]] = [
         (clarg["base"] or clarg["all"],
@@ -76,7 +76,7 @@ def generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
     print()
 
 
-def generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
+def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Generate output when verbose output requested."""
     entries: list[tuple[bool, ScoreDisplayData]] = [
         (clarg["base"] or clarg["all"],
@@ -124,6 +124,6 @@ def generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
 def render_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Print scores in verbose or standard format."""
     if clarg["verbose"]:
-        generate_verbose_output(cvs, clarg)
+        _generate_verbose_output(cvs, clarg)
     else:
-        generate_output(cvs, clarg)
+        _generate_output(cvs, clarg)
