@@ -1,4 +1,4 @@
-* <2026-05-10 Sun> Findings after handler/input/render-output cleanup [2/3]
+* <2026-05-10 Sun> Findings after handler/input/render-output cleanup [3/3]
   1) [X] **`render_output` and `generate_output`/`generate_verbose_output` are in the
      same module but at different levels of abstraction** — `render_output` is the
      public entry point; the other two are implementation helpers.  Making them
@@ -10,7 +10,7 @@
      branches are mutually exclusive in practice (enforced by `_validate_flags`)
      but read as if they could all fire.  Rewriting as `if/elif/elif` makes the
      exclusivity explicit and avoids evaluating all branches on every call.
-  3) [ ] **`cvss_input.py` has no tests** — `select_metric_value` and `read_metrics`
+  3) [X] **`cvss_input.py` has no tests** — `select_metric_value` and `read_metrics`
      are the only public functions with no unit test coverage; they are exercised
      only by the interactive use-case fixture (`test_uc02_out.txt`).  Adding focused
      unit tests with `unittest.mock.patch("builtins.input", ...)` would decouple
