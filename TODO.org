@@ -1,4 +1,4 @@
-* <2026-05-10 Sun> Findings after _validate_flags/read_metrics/default-drift cleanup [2/3]
+* <2026-05-10 Sun> Findings after _validate_flags/read_metrics/default-drift cleanup [3/3]
   1) [X] **"no actionable flag" guard in `main()` could fold into `_validate_flags`** —
      `if not (clarg["interactive"] or clarg["base"] or clarg["vulnerability"]):`
      `parser.print_usage(); sys.exit(1)` is still in `main()`.  Moving it into
@@ -7,7 +7,7 @@
      output.  Note: this changes the exit code from 1 to 2 and output from
      stdout to stderr for the "no flags" case — consistent with the other
      `parser.error()` calls.  No existing test asserts on this exit code.
-  2) [ ] **`process_cmd_line_base` and `…_vulnerability` duplicate error reporting** —
+  2) [X] **`process_cmd_line_base` and `…_vulnerability` duplicate error reporting** —
      Both functions have `except (InvalidBaseVectorError, ValueError) as e:`
      `print(e); sys.exit(1)`.  Extract a `_exit_with_error(e: Exception) -> NoReturn`
      helper to make the pattern explicit and typed (`NoReturn` from `typing`).

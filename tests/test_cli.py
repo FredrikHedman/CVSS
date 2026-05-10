@@ -4,8 +4,8 @@ from unittest.mock import patch
 
 import pytest
 
-from cvss.cvss import (
-    main,
+from cvss.cvss import main
+from cvss.cvss_handlers import (
     process_cmd_line_base,
     process_cmd_line_vulnerability,
 )
@@ -72,7 +72,9 @@ def test_interactive_combined_flags() -> None:
 def test_unexpected_exception_propagates() -> None:
     """Unexpected exceptions must NOT be swallowed by process_cmd_line_base."""
     exc_to_raise = RuntimeError("oops")
-    with patch("cvss.cvss.VulnerabilityVector", side_effect=exc_to_raise):
+    with patch(
+        "cvss.cvss_handlers.VulnerabilityVector", side_effect=exc_to_raise
+    ):
         with pytest.raises(RuntimeError, match="oops"):
             _ = process_cmd_line_base("AV:N/AC:L/Au:N/C:C/I:C/A:C")
 
@@ -91,7 +93,9 @@ def test_vulnerability_bad_vector_exits(
 def test_unexpected_exception_propagates_vulnerability() -> None:
     """Unexpected exceptions must NOT be swallowed by process_cmd_line_vulnerability."""  # noqa: E501
     exc_to_raise = RuntimeError("oops")
-    with patch("cvss.cvss.VulnerabilityVector", side_effect=exc_to_raise):
+    with patch(
+        "cvss.cvss_handlers.VulnerabilityVector", side_effect=exc_to_raise
+    ):
         with pytest.raises(RuntimeError, match="oops"):
             _ = process_cmd_line_vulnerability("AV:N/AC:L/Au:N/C:C/I:C/A:C")
 
