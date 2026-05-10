@@ -15,12 +15,11 @@ from .cvss_base import CVSS
 from .cvss_interactive import (
     generate_output,
     generate_verbose_output,
-    select_metric_value,
+    read_metrics,
 )
 from .cvss_types import CvssArgs
 from .vulnerability import (
     InvalidBaseVectorError,
-    MetricDefinition,
     VulnerabilityVector,
     base_metrics,
     cvs_factory,
@@ -89,11 +88,6 @@ def _validate_flags(
                 "--environmental requires --base and --temporal"
                 + " in interactive mode"
             )
-
-
-def read_metrics(L: list[MetricDefinition]) -> list[str]:
-    """Interactively read metric values and return them as a list."""
-    return [select_metric_value(m) for m in L]
 
 
 def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:

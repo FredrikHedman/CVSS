@@ -54,6 +54,11 @@ def select_metric_value(m: MetricDefinition) -> str:
             return metric.index
 
 
+def read_metrics(L: list[MetricDefinition]) -> list[str]:
+    """Interactively read metric values and return them as a list."""
+    return [select_metric_value(m) for m in L]
+
+
 def display_score(data: ScoreDisplayData) -> None:
     """Formatted score that recreates format of the CVSS examples."""
 
