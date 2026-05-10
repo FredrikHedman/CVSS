@@ -1,4 +1,4 @@
-* <2026-05-10 Sun> Findings after private-helpers/if-elif/input-tests cleanup [2/3]
+* <2026-05-10 Sun> Findings after private-helpers/if-elif/input-tests cleanup [3/3]
   1) [X] **`_generate_output` and `_generate_verbose_output` share the same
      `clarg["X"] or clarg["all"]` flag expansion pattern** — Both functions build
      an `entries: list[tuple[bool, ...]]` with the same three flag guards
@@ -12,7 +12,7 @@
      `capsys.readouterr().out` in `test_select_valid_input` (e.g. that the
      metric name appears) would protect against accidental format regressions
      without coupling to the exact line layout.
-  3) [ ] **`render_output` is the only public function in `cvss_output.py` but
+  3) [X] **`render_output` is the only public function in `cvss_output.py` but
      has no direct unit test** — It is exercised only through the full CLI
      (`test_usecases.py`).  Adding a focused test that calls `render_output`
      directly (mocking `_generate_output` / `_generate_verbose_output` or
