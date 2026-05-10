@@ -1,3 +1,21 @@
+* <2026-05-10 Sun> Findings after _show_flags/header-assert/render_output-test cleanup [0/3]
+  1) [ ] **`_show_flags` is not directly tested** — The helper is exercised
+     indirectly through the use-case fixtures, but a focused unit test that
+     calls `_show_flags` with a crafted `CvssArgs` dict (e.g. `all=True`,
+     `base=True`) and asserts the returned triple would make its contract
+     explicit and catch any future breakage immediately.
+  2) [ ] **`_BASE_CLARG` fixture in `test_display.py` is a module-level dict** —
+     Sharing a mutable dict between tests via `{**_BASE_CLARG, ...}` spread is
+     correct but verbose.  Converting to a `pytest.fixture` returning a fresh
+     `CvssArgs` each call would be more idiomatic and remove the need for
+     callers to remember to spread.
+  3) [ ] **`display_score` in `cvss_output.py` has no unit test** — The function
+     formats a `ScoreDisplayData` into tabular stdout output.  `test_display.py`
+     constructs `ScoreDisplayData` objects but never calls `display_score`.
+     Adding a test that calls `display_score` with a minimal `ScoreDisplayData`
+     and asserts on `capsys.readouterr().out` (e.g. that the header text appears)
+     would complete unit coverage for `cvss_output.py`.
+
 * <2026-05-10 Sun> Findings after private-helpers/if-elif/input-tests cleanup [3/3]
   1) [X] **`_generate_output` and `_generate_verbose_output` share the same
      `clarg["X"] or clarg["all"]` flag expansion pattern** — Both functions build
