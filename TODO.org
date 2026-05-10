@@ -1,4 +1,4 @@
-* <2026-05-09 Sat> Findings after _ParsedArgs/e2e-tests/drift-test/cast cleanup [2/3]
+* <2026-05-09 Sat> Findings after _ParsedArgs/e2e-tests/drift-test/cast cleanup [3/3]
   1) [X] **`main()` has three distinct responsibilities** — flag validation, dispatch,
      and output rendering (~30 lines).  Extracting `_validate_flags(parser, clarg)`
      (which calls `parser.error()` and returns nothing) would make `main()` a clean
@@ -10,7 +10,7 @@
      wiring, making `cvss.py` import interactive I/O.  Moving `read_metrics` to
      `cvss_interactive.py` (and updating `process_cmd_line_interactive` to call it
      from there) would make `cvss.py` a pure CLI wiring layer.
-  3) [ ] **Default-value drift between `_ParsedArgs` and `build_parser()` is untested**
+  3) [X] **Default-value drift between `_ParsedArgs` and `build_parser()` is untested**
      — The existing `test_parser_keys_match_cvss_args` catches key-name drift but
      not default-value drift.  `_ParsedArgs` declares `verbose = False` and
      `vector = None`; if `build_parser()` changes a default, `make_clarg` would

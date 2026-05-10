@@ -1,6 +1,6 @@
 """Tests for CvssArgs TypedDict and ScoreEntry NamedTuple."""
 
-from cvss.cvss import build_parser
+from cvss.cvss import build_parser, make_clarg
 from cvss.cvss_types import CvssArgs, ScoreEntry
 
 
@@ -42,6 +42,19 @@ def test_parser_keys_match_cvss_args() -> None:
         f"Key drift: parser has {parser_keys - cvss_args_keys!r} "
         f"extra, CvssArgs has {cvss_args_keys - parser_keys!r} extra"
     )
+
+
+def test_parser_defaults_match_clarg_defaults() -> None:
+    """Verify make_clarg with no args produces the expected defaults."""
+    clarg = make_clarg(build_parser().parse_args([]))
+    assert clarg["verbose"] is False
+    assert clarg["interactive"] is False
+    assert clarg["all"] is False
+    assert clarg["base"] is False
+    assert clarg["temporal"] is False
+    assert clarg["environmental"] is False
+    assert clarg["vector"] is None
+    assert clarg["vulnerability"] is None
 
 
 def test_score_entry_named_access() -> None:
