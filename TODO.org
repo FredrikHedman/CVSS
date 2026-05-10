@@ -1,3 +1,24 @@
+* <2026-05-10 Sun> Findings after private-helpers/if-elif/input-tests cleanup [0/3]
+  1) [ ] **`_generate_output` and `_generate_verbose_output` share the same
+     `clarg["X"] or clarg["all"]` flag expansion pattern** — Both functions build
+     an `entries: list[tuple[bool, ...]]` with the same three flag guards
+     (`base or all`, `temporal or all`, `environmental or all`).  Extracting a
+     helper `_show_flags(clarg) -> tuple[bool, bool, bool]` that returns the three
+     booleans once would eliminate the duplication and make future flag changes
+     apply in one place.
+  2) [ ] **`test_input.py` does not assert on printed metric headers** —
+     `select_metric_value` prints a `+++...+++ <name> <abbrev> +++...+++` header
+     and the metric value lines before each prompt.  Adding one assertion on
+     `capsys.readouterr().out` in `test_select_valid_input` (e.g. that the
+     metric name appears) would protect against accidental format regressions
+     without coupling to the exact line layout.
+  3) [ ] **`render_output` is the only public function in `cvss_output.py` but
+     has no direct unit test** — It is exercised only through the full CLI
+     (`test_usecases.py`).  Adding a focused test that calls `render_output`
+     directly (mocking `_generate_output` / `_generate_verbose_output` or
+     capturing stdout) would give the dispatch branch independent coverage and
+     faster feedback on verbose/non-verbose routing.
+
 * <2026-05-10 Sun> Findings after handler/input/render-output cleanup [3/3]
   1) [X] **`render_output` and `generate_output`/`generate_verbose_output` are in the
      same module but at different levels of abstraction** — `render_output` is the
