@@ -2,7 +2,7 @@
 
 import pytest
 
-from cvss.cvss_interactive import ScoreDisplayData
+from cvss.cvss_output import ScoreDisplayData
 
 
 def test_score_display_data_construction() -> None:

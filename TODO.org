@@ -1,4 +1,4 @@
-* <2026-05-10 Sun> Findings after orchestration refactor [2/3]
+* <2026-05-10 Sun> Findings after orchestration refactor [3/3]
   1) [X] **Move `clarg["all"] = True` into `parse_and_validate()`** — `main()`
      still contains a post-dispatch mutation (`if clarg["vulnerability"]: clarg["all"]
      = True`) that sets output behaviour.  This semantic rule ("--vulnerability
@@ -10,7 +10,7 @@
      `cvss_handlers.py` (where all three handlers live) would make `cvss.py`
      a minimal entry point containing only `main()` and its imports.  `cast`
      would move with it.
-  3) [ ] **Split `cvss_interactive.py` into input and output modules** —
+  3) [X] **Split `cvss_interactive.py` into input and output modules** —
      `cvss_interactive.py` now hosts two distinct concerns:
      interactive input (`select_metric_value`, `read_metrics`,
      `process_cmd_line_interactive`) and score output (`ScoreDisplayData`,

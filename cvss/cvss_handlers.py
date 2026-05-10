@@ -5,7 +5,7 @@ from typing import NoReturn, cast
 
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS
-from .cvss_interactive import process_cmd_line_interactive
+from .cvss_prompt import process_cmd_line_interactive
 from .cvss_types import CvssArgs
 from .vulnerability import (
     InvalidBaseVectorError,

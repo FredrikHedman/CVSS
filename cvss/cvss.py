@@ -6,7 +6,7 @@
 """Calculate CVSS metrics based on a list of Metrics."""
 
 from .cvss_handlers import process_cmd_line
-from .cvss_interactive import generate_output, generate_verbose_output
+from .cvss_output import generate_output, generate_verbose_output
 from .cvss_parser import parse_and_validate
 
 
