@@ -119,3 +119,11 @@ def generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
     for show, data in entries:
         if show:
             display_score(data)
+
+
+def render_output(cvs: CVSS, clarg: CvssArgs) -> None:
+    """Print scores in verbose or standard format."""
+    if clarg["verbose"]:
+        generate_verbose_output(cvs, clarg)
+    else:
+        generate_output(cvs, clarg)
