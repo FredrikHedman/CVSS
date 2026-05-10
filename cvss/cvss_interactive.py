@@ -4,14 +4,24 @@
 # VERSION: 1.20.1
 # LICENSE: MIT LICENSE
 #
-"""Extracted interactive functions."""
+"""Interactive prompting, command handling, and score output."""
 
+import sys
 from dataclasses import dataclass
 
+from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS
 from .cvss_types import CvssArgs, ScoreEntry
 from .metric import Metric
-from .vulnerability import MetricDefinition
+from .vulnerability import (
+    InvalidBaseVectorError,
+    MetricDefinition,
+    VulnerabilityVector,
+    base_metrics,
+    cvs_factory,
+    environmental_metrics,
+    temporal_metrics,
+)
 
 
 @dataclass(frozen=True)
@@ -57,6 +67,29 @@ def select_metric_value(m: MetricDefinition) -> str:
 def read_metrics(L: list[MetricDefinition]) -> list[str]:
     """Interactively read metric values and return them as a list."""
     return [select_metric_value(m) for m in L]
+
+
+def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
+    selected: list[str] = []
+    if clarg["base"]:
+        if clarg["vector"]:
+            try:
+                vvec = VulnerabilityVector(clarg["vector"])
+                selected.extend(vvec.valid().complete().metric_values())
+            except (InvalidBaseVectorError, ValueError) as e:
+                print(e)
+                sys.exit(1)
+        else:
+            selected.extend(read_metrics(base_metrics()))
+    if clarg["temporal"]:
+        selected.extend(read_metrics(temporal_metrics()))
+    if clarg["temporal"] and clarg["environmental"]:
+        selected.extend(read_metrics(environmental_metrics()))
+    if clarg["all"]:
+        selected.extend(read_metrics(base_metrics()))
+        selected.extend(read_metrics(temporal_metrics()))
+        selected.extend(read_metrics(environmental_metrics()))
+    return cvs_factory(CommonVulnerabilityScore, selected)
 
 
 def display_score(data: ScoreDisplayData) -> None:

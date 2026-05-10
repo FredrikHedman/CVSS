@@ -1,4 +1,4 @@
-* <2026-05-10 Sun> Findings after _validate_flags/read_metrics/default-drift cleanup [0/3]
+* <2026-05-10 Sun> Findings after _validate_flags/read_metrics/default-drift cleanup [1/3]
   1) [ ] **"no actionable flag" guard in `main()` could fold into `_validate_flags`** —
      `if not (clarg["interactive"] or clarg["base"] or clarg["vulnerability"]):`
      `parser.print_usage(); sys.exit(1)` is still in `main()`.  Moving it into
@@ -12,7 +12,7 @@
      `print(e); sys.exit(1)`.  Extract a `_exit_with_error(e: Exception) -> NoReturn`
      helper to make the pattern explicit and typed (`NoReturn` from `typing`).
      Two call sites become single-liners.
-  3) [ ] **`process_cmd_line_interactive` belongs in `cvss_interactive.py`** — After
+  3) [X] **`process_cmd_line_interactive` belongs in `cvss_interactive.py`** — After
      moving `read_metrics`, all interactive helpers live in `cvss_interactive.py`,
      but `process_cmd_line_interactive` is still in `cvss.py`.  Moving it would
      make `cvss.py` a thin CLI layer (parser + dispatch only).  No circular

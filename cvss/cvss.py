@@ -15,16 +15,13 @@ from .cvss_base import CVSS
 from .cvss_interactive import (
     generate_output,
     generate_verbose_output,
-    read_metrics,
+    process_cmd_line_interactive,
 )
 from .cvss_types import CvssArgs
 from .vulnerability import (
     InvalidBaseVectorError,
     VulnerabilityVector,
-    base_metrics,
     cvs_factory,
-    environmental_metrics,
-    temporal_metrics,
 )
 
 VERSION = version("cvss")
@@ -88,30 +85,6 @@ def _validate_flags(
                 "--environmental requires --base and --temporal"
                 + " in interactive mode"
             )
-
-
-def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
-    selected: list[str] = []
-    if clarg["base"]:
-        if clarg["vector"]:
-            try:
-                vvec = VulnerabilityVector(clarg["vector"])
-                selected.extend(vvec.valid().complete().metric_values())
-            except (InvalidBaseVectorError, ValueError) as e:
-                print(e)
-                sys.exit(1)
-        else:
-            selected.extend(read_metrics(base_metrics()))
-    if clarg["temporal"]:
-        selected.extend(read_metrics(temporal_metrics()))
-    if clarg["temporal"] and clarg["environmental"]:
-        selected.extend(read_metrics(environmental_metrics()))
-    if clarg["all"]:
-        selected.extend(read_metrics(base_metrics()))
-        selected.extend(read_metrics(temporal_metrics()))
-        selected.extend(read_metrics(environmental_metrics()))
-    cvs = cvs_factory(CommonVulnerabilityScore, selected)
-    return cvs
 
 
 def process_cmd_line_base(vector: str) -> CVSS:
