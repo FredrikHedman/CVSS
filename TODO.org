@@ -1,3 +1,25 @@
+* <2026-05-10 Sun> Findings after vulnerability-rule/dispatch/split cleanup [0/3]
+  1) [ ] **`process_cmd_line_interactive` in `cvss_prompt.py` is a handler, not a
+     prompt** — `cvss_prompt.py` currently imports `CommonVulnerabilityScore`,
+     `cvs_factory`, and all vulnerability accessors to support
+     `process_cmd_line_interactive`.  These are scoring-layer imports, not prompting.
+     Moving `process_cmd_line_interactive` to `cvss_handlers.py` (alongside the
+     other two mode handlers) would leave `cvss_prompt.py` as a pure interactive
+     selection library (`select_metric_value`, `read_metrics` only) with no scoring
+     imports, and eliminate the `cvss_handlers → cvss_prompt` cross-module
+     dependency for a single function.
+  2) [ ] **`main()` still branches on `verbose` inline** — The
+     `if clarg["verbose"]: generate_verbose_output(...) else: generate_output(...)`
+     pattern is the only conditional left in `main()`.  Extracting
+     `render_output(cvs, clarg)` in `cvss_output.py` (which makes the
+     verbose/non-verbose choice internally) would reduce `main()` to three
+     statements: parse → dispatch → render.
+  3) [ ] **`cvss_prompt.py` name no longer fits after item 1** — Once
+     `process_cmd_line_interactive` moves out, `cvss_prompt.py` contains only
+     `select_metric_value` and `read_metrics`.  Renaming to `cvss_input.py`
+     better describes pure terminal-input functions and removes the implication
+     that the module contains a handler.
+
 * <2026-05-10 Sun> Findings after orchestration refactor [3/3]
   1) [X] **Move `clarg["all"] = True` into `parse_and_validate()`** — `main()`
      still contains a post-dispatch mutation (`if clarg["vulnerability"]: clarg["all"]
