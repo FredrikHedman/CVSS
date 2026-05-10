@@ -1,11 +1,11 @@
-* <2026-05-10 Sun> Findings after orchestration refactor [1/3]
+* <2026-05-10 Sun> Findings after orchestration refactor [2/3]
   1) [X] **Move `clarg["all"] = True` into `parse_and_validate()`** — `main()`
      still contains a post-dispatch mutation (`if clarg["vulnerability"]: clarg["all"]
      = True`) that sets output behaviour.  This semantic rule ("--vulnerability
      always shows all scores") belongs in `cvss_parser.py` alongside the other
      argument-interpretation logic.  After the move, `main()` is a pure
      orchestrator: parse → dispatch → output, with no state mutation.
-  2) [ ] **Move `process_cmd_line` to `cvss_handlers.py`** — The dispatch function
+  2) [X] **Move `process_cmd_line` to `cvss_handlers.py`** — The dispatch function
      is the last non-trivial code in `cvss.py` besides `main()`.  Moving it to
      `cvss_handlers.py` (where all three handlers live) would make `cvss.py`
      a minimal entry point containing only `main()` and its imports.  `cast`
