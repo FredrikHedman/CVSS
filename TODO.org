@@ -1,11 +1,11 @@
-* <2026-05-10 Sun> Findings after handler/input/render-output cleanup [1/3]
+* <2026-05-10 Sun> Findings after handler/input/render-output cleanup [2/3]
   1) [X] **`render_output` and `generate_output`/`generate_verbose_output` are in the
      same module but at different levels of abstraction** — `render_output` is the
      public entry point; the other two are implementation helpers.  Making them
      private (`_generate_output`, `_generate_verbose_output`) would signal that
      callers should use `render_output` only, and prevent external code from
      bypassing the verbose/non-verbose branching.
-  2) [ ] **`process_cmd_line_interactive` has an implicit ordering dependency** —
+  2) [X] **`process_cmd_line_interactive` has an implicit ordering dependency** —
      The `if clarg["base"]: ... if clarg["temporal"]: ... if clarg["all"]: ...`
      branches are mutually exclusive in practice (enforced by `_validate_flags`)
      but read as if they could all fire.  Rewriting as `if/elif/elif` makes the

@@ -46,7 +46,11 @@ def process_cmd_line_vulnerability(vulnerability: str) -> CVSS:
 
 def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
     selected: list[str] = []
-    if clarg["base"]:
+    if clarg["all"]:
+        selected.extend(read_metrics(base_metrics()))
+        selected.extend(read_metrics(temporal_metrics()))
+        selected.extend(read_metrics(environmental_metrics()))
+    elif clarg["base"]:
         if clarg["vector"]:
             try:
                 vvec = VulnerabilityVector(clarg["vector"])
@@ -55,14 +59,10 @@ def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
                 _exit_with_error(e)
         else:
             selected.extend(read_metrics(base_metrics()))
-    if clarg["temporal"]:
-        selected.extend(read_metrics(temporal_metrics()))
-    if clarg["temporal"] and clarg["environmental"]:
-        selected.extend(read_metrics(environmental_metrics()))
-    if clarg["all"]:
-        selected.extend(read_metrics(base_metrics()))
-        selected.extend(read_metrics(temporal_metrics()))
-        selected.extend(read_metrics(environmental_metrics()))
+        if clarg["temporal"]:
+            selected.extend(read_metrics(temporal_metrics()))
+            if clarg["environmental"]:
+                selected.extend(read_metrics(environmental_metrics()))
     return cvs_factory(CommonVulnerabilityScore, selected)
 
 
