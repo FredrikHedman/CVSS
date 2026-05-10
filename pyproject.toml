@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "cvss"
 version = "2.0.0"
 description = "CVSS calculator for CVSS version 2.10"
-readme = "README.rst"
+readme = "README.md"
 license = "MIT"
 authors = [
     { name = "Fredrik Hedman", email = "cvss@noruna.se" },

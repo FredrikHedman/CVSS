@@ -44,11 +44,12 @@ This is a CLI tool (`cvss` entry point → `cvss/cvss.py:main`) that computes CV
 **Metric layer** (`cvss/metric.py`, `cvss/metric_value.py`):
 - `Metric` wraps a named set of `MetricValue` options and tracks the currently selected one. `float(metric)` returns the weight of the selected value.
 
-**CLI layer** (`cvss/cvss.py`, `cvss/cvss_interactive.py`, `cvss/cvss_types.py`):
-- `CvssArgs` (`cvss_types.py`) is a `TypedDict` mirroring the argparse `Namespace` — cast once in `main()`, then passed everywhere typed.
+**CLI layer** (`cvss/cvss.py`, `cvss/cvss_parser.py`, `cvss/cvss_handlers.py`, `cvss/cvss_input.py`, `cvss/cvss_output.py`, `cvss/cvss_types.py`):
+- `CvssArgs` (`cvss_types.py`) is a `TypedDict` mirroring the argparse `Namespace` — built in `make_clarg()`, then passed everywhere typed.
 - `ScoreEntry` is a `NamedTuple(name, value, vector)` used by `generate_output`.
-- Three entry paths in `process_cmd_line`: `process_cmd_line_interactive` (reads from stdin), `process_cmd_line_base` (vector from CLI arg), `process_cmd_line_vulnerability` (full vector via `--vulnerability`).
-- Display helpers (`generate_output`, `generate_verbose_output`, `display_score`, `ScoreDisplayData`) live in `cvss_interactive.py`.
+- `cvss_handlers.py` contains all three mode handlers (`process_cmd_line_interactive`, `process_cmd_line_base`, `process_cmd_line_vulnerability`) and the `process_cmd_line` dispatcher.
+- `cvss_input.py` contains only `select_metric_value` and `read_metrics` — pure terminal I/O with no scoring imports.
+- Display helpers (`render_output`, `generate_output`, `generate_verbose_output`, `display_score`, `ScoreDisplayData`) live in `cvss_output.py`.
 
 **Tests** (`tests/`):
 - `test_usecases.py` drives the shell-script use-case fixtures (`tests/test_uc*.txt`).
