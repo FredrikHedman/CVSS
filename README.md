@@ -1,6 +1,6 @@
 # CVSS Calculator
 
-CVSS calculator for [CVSS version 2.10](http://www.first.org/cvss/cvss-guide.html).
+CVSS calculator for [CVSS version 2](https://www.first.org/cvss/v2/guide).
 
 ## Installation
 
@@ -26,13 +26,13 @@ development dependencies, and ensures `uv.lock` is in sync with
 
 ## Status
 
-| Item | Detail |
-|------|--------|
-| Version | 2.0.0 |
-| Python | ≥ 3.12 |
-| License | MIT |
+| Item         | Detail              |
+|--------------|---------------------|
+| Version      | 2.0.0               |
+| Python       | ≥ 3.12              |
+| License      | MIT                 |
 | Type-checked | basedpyright strict |
-| Linter | ruff |
+| Linter       | ruff                |
 
 **What's new in 2.0.0**: Modernised packaging (uv + pyproject.toml),
 replaced flake8/pep8 with ruff, replaced shell-script test runners with
@@ -41,19 +41,20 @@ single-responsibility modules.
 
 ## Code Structure
 
-| Module | Responsibility |
-|--------|----------------|
-| `cvss/cvss.py` | Entry point — `main()` only |
-| `cvss/cvss_parser.py` | Argument parsing and flag validation |
-| `cvss/cvss_handlers.py` | Mode handlers (`--base`, `--vulnerability`, `--interactive`) and dispatch |
-| `cvss/cvss_input.py` | Interactive terminal input (`select_metric_value`, `read_metrics`) |
-| `cvss/cvss_output.py` | Score output formatting (`render_output`, `generate_output`, `generate_verbose_output`) |
-| `cvss/cvss_types.py` | Shared types (`CvssArgs`, `ScoreEntry`) |
-| `cvss/cvss_base.py` | Abstract scoring base class (`CVSS`) |
-| `cvss/cvss_210.py` | Concrete CVSS v2.10 implementation |
-| `cvss/vulnerability.py` | Metric definitions, vector parsing, factory |
-| `cvss/metric.py` | `Metric` class |
-| `cvss/metric_value.py` | `MetricValue` class |
+| Module                  | Responsibility                                                     |
+|-------------------------|--------------------------------------------------------------------|
+| `cvss/cvss.py`          | Entry point — `main()` only                                        |
+| `cvss/cvss_parser.py`   | Argument parsing and flag validation                               |
+| `cvss/cvss_handlers.py` | Mode handlers (`--base`, `--vulnerability`,                        |
+|                         | `--interactive`) and dispatch                                      |
+| `cvss/cvss_input.py`    | Interactive terminal input (`select_metric_value`, `read_metrics`) |
+| `cvss/cvss_output.py`   | Score output formatting; public API: `render_output`, `ScoreDisplayData` |
+| `cvss/cvss_types.py`    | Shared types (`CvssArgs`, `ScoreEntry`)                            |
+| `cvss/cvss_base.py`     | Abstract scoring base class (`CVSS`)                               |
+| `cvss/cvss_210.py`      | Concrete CVSS v2.10 implementation                                 |
+| `cvss/vulnerability.py` | Metric definitions, vector parsing, factory                        |
+| `cvss/metric.py`        | `Metric` class                                                     |
+| `cvss/metric_value.py`  | `MetricValue` class                                                |
 
 ## Development Flow
 

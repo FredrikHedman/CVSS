@@ -56,15 +56,24 @@ def display_score(data: ScoreDisplayData) -> None:
     display_footer_data()
 
 
+def _show_flags(clarg: CvssArgs) -> tuple[bool, bool, bool]:
+    return (
+        clarg["base"] or clarg["all"],
+        clarg["temporal"] or clarg["all"],
+        clarg["environmental"] or clarg["all"],
+    )
+
+
 def _generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Print requested scores."""
+    show_base, show_temporal, show_env = _show_flags(clarg)
     entries: list[tuple[bool, ScoreEntry]] = [
-        (clarg["base"] or clarg["all"],
+        (show_base,
          ScoreEntry("Base", cvs.base_score, cvs.base_vulnerability_vector)),
-        (clarg["temporal"] or clarg["all"],
+        (show_temporal,
          ScoreEntry("Temporal", cvs.temporal_score,
                     cvs.temporal_vulnerability_vector)),
-        (clarg["environmental"] or clarg["all"],
+        (show_env,
          ScoreEntry("Environmental", cvs.environmental_score,
                     cvs.environmental_vulnerability_vector)),
     ]
@@ -78,8 +87,9 @@ def _generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
 
 def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
     """Generate output when verbose output requested."""
+    show_base, show_temporal, show_env = _show_flags(clarg)
     entries: list[tuple[bool, ScoreDisplayData]] = [
-        (clarg["base"] or clarg["all"],
+        (show_base,
          ScoreDisplayData(
              header=("BASE METRIC", "EVALUATION", "SCORE"),
              footer_labels=["FORMULA", "BASE SCORE"],
@@ -91,7 +101,7 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
              ],
              vector_label=("Base", cvs.base_vulnerability_vector),
          )),
-        (clarg["temporal"] or clarg["all"],
+        (show_temporal,
          ScoreDisplayData(
              header=("TEMPORAL METRIC", "EVALUATION", "SCORE"),
              footer_labels=["FORMULA", "TEMPORAL SCORE"],
@@ -99,7 +109,7 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
              footer_data=[("Temporal Score", cvs.temporal_score)],
              vector_label=("Temporal", cvs.temporal_vulnerability_vector),
          )),
-        (clarg["environmental"] or clarg["all"],
+        (show_env,
          ScoreDisplayData(
              header=("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
              footer_labels=["FORMULA", "ENIRONMENTAL SCORE"],
