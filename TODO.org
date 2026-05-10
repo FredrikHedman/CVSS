@@ -1,4 +1,4 @@
-* <2026-05-10 Sun> Findings after private-helpers/if-elif/input-tests cleanup [1/3]
+* <2026-05-10 Sun> Findings after private-helpers/if-elif/input-tests cleanup [2/3]
   1) [X] **`_generate_output` and `_generate_verbose_output` share the same
      `clarg["X"] or clarg["all"]` flag expansion pattern** — Both functions build
      an `entries: list[tuple[bool, ...]]` with the same three flag guards
@@ -6,7 +6,7 @@
      helper `_show_flags(clarg) -> tuple[bool, bool, bool]` that returns the three
      booleans once would eliminate the duplication and make future flag changes
      apply in one place.
-  2) [ ] **`test_input.py` does not assert on printed metric headers** —
+  2) [X] **`test_input.py` does not assert on printed metric headers** —
      `select_metric_value` prints a `+++...+++ <name> <abbrev> +++...+++` header
      and the metric value lines before each prompt.  Adding one assertion on
      `capsys.readouterr().out` in `test_select_valid_input` (e.g. that the

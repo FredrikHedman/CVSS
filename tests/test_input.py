@@ -8,10 +8,12 @@ from cvss.cvss_input import read_metrics, select_metric_value
 from cvss.vulnerability import base_metrics
 
 
-def test_select_valid_input() -> None:
+def test_select_valid_input(capsys: pytest.CaptureFixture[str]) -> None:
     m = base_metrics()[0]  # AccessVector: L / A / N
     with patch("builtins.input", return_value="N"):
-        assert select_metric_value(m) == "N"
+        result = select_metric_value(m)
+    assert result == "N"
+    assert "Access Vector" in capsys.readouterr().out
 
 
 def test_select_empty_uses_default() -> None:
