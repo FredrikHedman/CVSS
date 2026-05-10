@@ -1,5 +1,23 @@
-* <2026-05-10 Sun> Findings after vulnerability-rule/dispatch/split cleanup [0/3]
-  1) [ ] **`process_cmd_line_interactive` in `cvss_prompt.py` is a handler, not a
+* <2026-05-10 Sun> Findings after handler/input/render-output cleanup [0/3]
+  1) [ ] **`render_output` and `generate_output`/`generate_verbose_output` are in the
+     same module but at different levels of abstraction** — `render_output` is the
+     public entry point; the other two are implementation helpers.  Making them
+     private (`_generate_output`, `_generate_verbose_output`) would signal that
+     callers should use `render_output` only, and prevent external code from
+     bypassing the verbose/non-verbose branching.
+  2) [ ] **`process_cmd_line_interactive` has an implicit ordering dependency** —
+     The `if clarg["base"]: ... if clarg["temporal"]: ... if clarg["all"]: ...`
+     branches are mutually exclusive in practice (enforced by `_validate_flags`)
+     but read as if they could all fire.  Rewriting as `if/elif/elif` makes the
+     exclusivity explicit and avoids evaluating all branches on every call.
+  3) [ ] **`cvss_input.py` has no tests** — `select_metric_value` and `read_metrics`
+     are the only public functions with no unit test coverage; they are exercised
+     only by the interactive use-case fixture (`test_uc02_out.txt`).  Adding focused
+     unit tests with `unittest.mock.patch("builtins.input", ...)` would decouple
+     input-logic correctness from CLI integration testing.
+
+* <2026-05-10 Sun> Findings after vulnerability-rule/dispatch/split cleanup [3/3]
+  1) [X] **`process_cmd_line_interactive` in `cvss_prompt.py` is a handler, not a
      prompt** — `cvss_prompt.py` currently imports `CommonVulnerabilityScore`,
      `cvs_factory`, and all vulnerability accessors to support
      `process_cmd_line_interactive`.  These are scoring-layer imports, not prompting.
@@ -8,13 +26,13 @@
      selection library (`select_metric_value`, `read_metrics` only) with no scoring
      imports, and eliminate the `cvss_handlers → cvss_prompt` cross-module
      dependency for a single function.
-  2) [ ] **`main()` still branches on `verbose` inline** — The
+  2) [X] **`main()` still branches on `verbose` inline** — The
      `if clarg["verbose"]: generate_verbose_output(...) else: generate_output(...)`
      pattern is the only conditional left in `main()`.  Extracting
      `render_output(cvs, clarg)` in `cvss_output.py` (which makes the
      verbose/non-verbose choice internally) would reduce `main()` to three
      statements: parse → dispatch → render.
-  3) [ ] **`cvss_prompt.py` name no longer fits after item 1** — Once
+  3) [X] **`cvss_prompt.py` name no longer fits after item 1** — Once
      `process_cmd_line_interactive` moves out, `cvss_prompt.py` contains only
      `select_metric_value` and `read_metrics`.  Renaming to `cvss_input.py`
      better describes pure terminal-input functions and removes the implication
