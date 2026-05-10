@@ -5,12 +5,15 @@ from typing import NoReturn, cast
 
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS
-from .cvss_prompt import process_cmd_line_interactive
+from .cvss_prompt import read_metrics
 from .cvss_types import CvssArgs
 from .vulnerability import (
     InvalidBaseVectorError,
     VulnerabilityVector,
+    base_metrics,
     cvs_factory,
+    environmental_metrics,
+    temporal_metrics,
 )
 
 
@@ -39,6 +42,28 @@ def process_cmd_line_vulnerability(vulnerability: str) -> CVSS:
     except (InvalidBaseVectorError, ValueError) as e:
         _exit_with_error(e)
     return cvs
+
+
+def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
+    selected: list[str] = []
+    if clarg["base"]:
+        if clarg["vector"]:
+            try:
+                vvec = VulnerabilityVector(clarg["vector"])
+                selected.extend(vvec.valid().complete().metric_values())
+            except (InvalidBaseVectorError, ValueError) as e:
+                _exit_with_error(e)
+        else:
+            selected.extend(read_metrics(base_metrics()))
+    if clarg["temporal"]:
+        selected.extend(read_metrics(temporal_metrics()))
+    if clarg["temporal"] and clarg["environmental"]:
+        selected.extend(read_metrics(environmental_metrics()))
+    if clarg["all"]:
+        selected.extend(read_metrics(base_metrics()))
+        selected.extend(read_metrics(temporal_metrics()))
+        selected.extend(read_metrics(environmental_metrics()))
+    return cvs_factory(CommonVulnerabilityScore, selected)
 
 
 def process_cmd_line(clarg: CvssArgs) -> CVSS:
