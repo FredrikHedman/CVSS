@@ -1,6 +1,6 @@
 """Tests for CvssArgs TypedDict and ScoreEntry NamedTuple."""
 
-from cvss.cvss import build_parser, make_clarg
+from cvss.cvss_parser import build_parser, make_clarg
 from cvss.cvss_types import CvssArgs, ScoreEntry
 
 

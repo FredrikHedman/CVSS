@@ -5,12 +5,11 @@ from unittest.mock import patch
 import pytest
 
 from cvss.cvss import (
-    make_clarg,
-    build_parser,
     main,
     process_cmd_line_base,
     process_cmd_line_vulnerability,
 )
+from cvss.cvss_parser import build_parser, make_clarg
 
 
 def test_no_args_shows_usage(capsys: pytest.CaptureFixture[str]) -> None:
