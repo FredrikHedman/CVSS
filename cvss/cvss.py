@@ -74,6 +74,23 @@ def build_parser() -> argparse.ArgumentParser:
     return p
 
 
+def _validate_flags(
+    parser: argparse.ArgumentParser, clarg: CvssArgs
+) -> None:
+    if clarg["base"] and not clarg["interactive"] and clarg["vector"] is None:
+        parser.error("--base requires a vector argument")
+    if clarg["interactive"]:
+        if clarg["temporal"] and not clarg["base"]:
+            parser.error("--temporal requires --base in interactive mode")
+        if clarg["environmental"] and not (
+            clarg["base"] and clarg["temporal"]
+        ):
+            parser.error(
+                "--environmental requires --base and --temporal"
+                + " in interactive mode"
+            )
+
+
 def read_metrics(L: list[MetricDefinition]) -> list[str]:
     """Interactively read metric values and return them as a list."""
     return [select_metric_value(m) for m in L]
@@ -141,20 +158,7 @@ def process_cmd_line(clarg: CvssArgs) -> CVSS:
 def main() -> None:
     parser = build_parser()
     clarg = make_clarg(parser.parse_args())
-
-    # Validate flag combinations.
-    if clarg["base"] and not clarg["interactive"] and clarg["vector"] is None:
-        parser.error("--base requires a vector argument")
-    if clarg["interactive"]:
-        if clarg["temporal"] and not clarg["base"]:
-            parser.error("--temporal requires --base in interactive mode")
-        if clarg["environmental"] and not (
-            clarg["base"] and clarg["temporal"]
-        ):
-            parser.error(
-                "--environmental requires --base and --temporal"
-                + " in interactive mode"
-            )
+    _validate_flags(parser, clarg)
 
     # No actionable flag provided → show usage.
     if not (clarg["interactive"] or clarg["base"] or clarg["vulnerability"]):
