@@ -1,3 +1,24 @@
+* <2026-05-10 Sun> Findings after _validate_flags/read_metrics/default-drift cleanup [0/3]
+  1) [ ] **"no actionable flag" guard in `main()` could fold into `_validate_flags`** —
+     `if not (clarg["interactive"] or clarg["base"] or clarg["vulnerability"]):`
+     `parser.print_usage(); sys.exit(1)` is still in `main()`.  Moving it into
+     `_validate_flags` (using `parser.error()` instead for consistency) would
+     make `main()` a true 7-line orchestrator: parse → validate → dispatch →
+     output.  Note: this changes the exit code from 1 to 2 and output from
+     stdout to stderr for the "no flags" case — consistent with the other
+     `parser.error()` calls.  No existing test asserts on this exit code.
+  2) [ ] **`process_cmd_line_base` and `…_vulnerability` duplicate error reporting** —
+     Both functions have `except (InvalidBaseVectorError, ValueError) as e:`
+     `print(e); sys.exit(1)`.  Extract a `_exit_with_error(e: Exception) -> NoReturn`
+     helper to make the pattern explicit and typed (`NoReturn` from `typing`).
+     Two call sites become single-liners.
+  3) [ ] **`process_cmd_line_interactive` belongs in `cvss_interactive.py`** — After
+     moving `read_metrics`, all interactive helpers live in `cvss_interactive.py`,
+     but `process_cmd_line_interactive` is still in `cvss.py`.  Moving it would
+     make `cvss.py` a thin CLI layer (parser + dispatch only).  No circular
+     import: `cvss_210` does not import from `cvss_interactive`, so adding
+     `CommonVulnerabilityScore` to `cvss_interactive.py`'s imports is safe.
+
 * <2026-05-09 Sat> Findings after _ParsedArgs/e2e-tests/drift-test/cast cleanup [3/3]
   1) [X] **`main()` has three distinct responsibilities** — flag validation, dispatch,
      and output rendering (~30 lines).  Extracting `_validate_flags(parser, clarg)`
