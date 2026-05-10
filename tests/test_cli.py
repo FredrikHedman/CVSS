@@ -22,12 +22,13 @@ def test_no_args_shows_usage(capsys: pytest.CaptureFixture[str]) -> None:
 
 
 def test_version(capsys: pytest.CaptureFixture[str]) -> None:
+    from importlib.metadata import version
     parser = build_parser()
     with pytest.raises(SystemExit) as exc:
         _ = parser.parse_args(["--version"])
     assert exc.value.code == 0
     captured = capsys.readouterr()
-    assert "2.0.0" in captured.out
+    assert version("cvss") in captured.out
 
 
 def test_help_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
