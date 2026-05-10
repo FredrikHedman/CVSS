@@ -77,4 +77,6 @@ def parse_and_validate() -> CvssArgs:
     parser = build_parser()
     clarg = make_clarg(parser.parse_args())
     _validate_flags(parser, clarg)
+    if clarg["vulnerability"]:  # --vulnerability always shows all scores
+        clarg["all"] = True
     return clarg

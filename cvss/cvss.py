@@ -35,11 +35,6 @@ def process_cmd_line(clarg: CvssArgs) -> CVSS:
 def main() -> None:
     clarg = parse_and_validate()
     cvs = process_cmd_line(clarg)
-
-    # --vulnerability always shows all three scores
-    if clarg["vulnerability"]:
-        clarg["all"] = True
-
     if clarg["verbose"]:
         generate_verbose_output(cvs, clarg)
     else:
