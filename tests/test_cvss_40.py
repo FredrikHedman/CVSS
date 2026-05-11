@@ -54,6 +54,11 @@ def test_defaults_absent_optional_to_x() -> None:
     assert v.parsed["MAV"] == "X"
 
 
+def test_parsed_is_cached() -> None:
+    v = VulnerabilityVector40(_VALID_BASE)
+    assert v.parsed is v.parsed
+
+
 def test_parse_rejects_duplicate_metric() -> None:
     dup = (
         "CVSS:4.0/AV:N/AV:L/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"

@@ -18,7 +18,7 @@
      respectively. Removes the last structural duplication between the two
      interactive paths.
 
-  3) [ ] **`VulnerabilityVector40.parsed` should be a `cached_property`** —
+  3) [X] **`VulnerabilityVector40.parsed` should be a `cached_property`** —
      The `parsed` property iterates over all four metric-definition tuples on
      every call to build a complete dict with absent optionals set to `"X"`.
      Since `_raw` is assigned once in `__init__` and never mutated, the result
