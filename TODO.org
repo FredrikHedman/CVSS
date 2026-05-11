@@ -1,3 +1,33 @@
+* <2026-05-11 Sun> Findings after v4.0 handler/scoring refactors [0/3]
+  1) [ ] **`_eq_levels()` should return a `NamedTuple`** — `_eq_levels()` returns
+     `tuple[int, int, int, int, int, int]`. In `base_score` it is destructured
+     as `eq1, eq2, eq3, eq4, eq5, eq6 = self._eq_levels()` and six positional
+     integers are passed to `_eq3eq6_contrib`. A `NamedTuple`:
+     `class _EQLevels(NamedTuple): eq1:int; eq2:int; eq3:int; eq4:int; eq5:int; eq6:int`
+     makes positional swap bugs impossible, the lookup key becomes
+     `_LOOKUP[tuple(levels)]`, and callsites gain named access. High readability
+     benefit relative to low implementation cost.
+
+  2) [ ] **Extract `_accumulate_groups` to unify both interactive paths** —
+     (carry-over from 2026-05-11 item 5). `_interactive_v40` and the v2.10
+     branch of `process_cmd_line_interactive` both use the same
+     `if clarg["all"]: extend × N / elif clarg["base"]: extend; if temporal:
+     extend; if environmental: extend` pattern. Extract
+     `_accumulate_groups(clarg, groups)` where `groups` is a list of
+     `(flag_key, metric_fn)` pairs, called with v4.0 and v2.10 metric accessors
+     respectively. Removes the last structural duplication between the two
+     interactive paths.
+
+  3) [ ] **`VulnerabilityVector40.parsed` should be a `cached_property`** —
+     The `parsed` property iterates over all four metric-definition tuples on
+     every call to build a complete dict with absent optionals set to `"X"`.
+     Since `_raw` is assigned once in `__init__` and never mutated, the result
+     is identical on every call. Replace `@property` with
+     `@functools.cached_property`; the first call pays the iteration cost, all
+     subsequent calls return the cached dict. Eliminates redundant work when
+     handlers chain `.complete().parsed` after `_interactive_v40` builds its
+     own `parsed` dict.
+
 * <2026-05-11 Sun> Findings after v4.0 scoring/handlers/output addition [0/5]
   1) [X] **Duplicate vector dispatch in `cvss_handlers.py`** — `process_cmd_line_base`
      and `process_cmd_line_vulnerability` share identical structure: check
