@@ -37,9 +37,7 @@ def process_cmd_line_base(vector: str) -> CVSSResult:
     if vector.startswith(_V40_PREFIX):
         try:
             vvec = VulnerabilityVector40(vector)
-            return CommonVulnerabilityScore40(
-                vvec.valid().complete().parsed
-            )
+            return CommonVulnerabilityScore40(vvec.complete().parsed)
         except (InvalidVectorError, ValueError) as e:
             _exit_with_error(e)
     else:
@@ -47,7 +45,7 @@ def process_cmd_line_base(vector: str) -> CVSSResult:
             vvec = VulnerabilityVector(vector)
             cvs: CVSS = cvs_factory(
                 CommonVulnerabilityScore,
-                vvec.valid().complete().metric_values(),
+                vvec.complete().metric_values(),
             )
         except (InvalidBaseVectorError, ValueError) as e:
             _exit_with_error(e)
@@ -58,7 +56,7 @@ def process_cmd_line_vulnerability(vulnerability: str) -> CVSSResult:
     if vulnerability.startswith(_V40_PREFIX):
         try:
             vvec = VulnerabilityVector40(vulnerability)
-            return CommonVulnerabilityScore40(vvec.valid().complete().parsed)
+            return CommonVulnerabilityScore40(vvec.complete().parsed)
         except (InvalidVectorError, ValueError) as e:
             _exit_with_error(e)
     else:
@@ -90,7 +88,7 @@ def _interactive_v40(clarg: CvssArgs) -> CVSSResult:
             try:
                 vvec = VulnerabilityVector40(clarg["vector"])
                 return CommonVulnerabilityScore40(
-                    vvec.valid().complete().parsed
+                    vvec.complete().parsed
                 )
             except (InvalidVectorError, ValueError) as e:
                 _exit_with_error(e)
@@ -120,7 +118,7 @@ def process_cmd_line_interactive(clarg: CvssArgs) -> CVSSResult:
         if clarg["vector"]:
             try:
                 vvec = VulnerabilityVector(clarg["vector"])
-                selected.extend(vvec.valid().complete().metric_values())
+                selected.extend(vvec.complete().metric_values())
             except (InvalidBaseVectorError, ValueError) as e:
                 _exit_with_error(e)
         else:

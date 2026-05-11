@@ -7,7 +7,7 @@
      to remove the duplication; `process_cmd_line_vulnerability` passes
      `require_complete=False` since it accepts partial vectors.
 
-  2) [ ] **Redundant `.valid()` before `.complete()` in handler call sites** —
+  2) [X] **Redundant `.valid()` before `.complete()` in handler call sites** —
      `VulnerabilityVector40.complete()` already calls `self.valid()` internally.
      All v4.0 handler call sites use `.valid().complete().parsed`, running
      validation twice. Remove the leading `.valid()` from every v4.0 call site
