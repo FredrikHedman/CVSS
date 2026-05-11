@@ -1,3 +1,27 @@
+* <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [0/3]
+  1) [ ] **Add accessor tests for `CommonVulnerabilityScore40`** — (MEDIUM)
+     `threat_metrics()`, `environmental_metrics()`, and `supplemental_metrics()`
+     are public accessors with no tests. Only `len(cvs.base_metrics()) == 11`
+     is covered in `test_cvss_40.py`. Add parametrized tests asserting counts
+     (1 threat, 14 environmental, 6 supplemental) and that the returned `Metric`
+     objects carry the correct abbreviations (e.g. first threat metric abbrev is
+     `"E"`). Fills a coverage gap in the v4.0 public API.
+
+  2) [ ] **`_BASE_CLARG` as a pytest fixture in `test_display.py`** — (LOW)
+     `_BASE_CLARG` is a module-level dict spread via `{**_BASE_CLARG, ...}` at
+     every call site. Converting to a `@pytest.fixture` returning a fresh
+     `CvssArgs` each call is more idiomatic, removes the need for callers to
+     remember to spread, and is consistent with how other test files use
+     fixtures. No behavioural change; pure test-hygiene improvement.
+
+  3) [ ] **Add a unit test for `display_score()` in `test_display.py`** — (LOW)
+     `display_score` in `cvss_output.py` is exercised only indirectly through
+     the full use-case CLI fixtures (`test_usecases.py`). Adding a focused test
+     that calls `display_score(minimal_ScoreDisplayData)` and asserts on
+     `capsys.readouterr().out` (e.g. that the header text appears) would
+     complete unit coverage for `cvss_output.py` and decouple output-format
+     verification from the CLI integration layer.
+
 * <2026-05-11 Sun> Findings after v4.0 handler/scoring refactors [0/3]
   1) [X] **`_eq_levels()` should return a `NamedTuple`** — `_eq_levels()` returns
      `tuple[int, int, int, int, int, int]`. In `base_score` it is destructured
