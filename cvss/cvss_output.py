@@ -145,7 +145,7 @@ def qualitative_rating(score: float) -> str:
     return "Critical"
 
 
-def _render_v40(cvs: CVSSResult, clarg: CvssArgs) -> None:
+def _render_v40(cvs: CVSSResult) -> None:
     print()
     print(f"CVSS v4.0 Score = {cvs.base_score}")
     print(f"Severity = {qualitative_rating(cvs.base_score)}")
@@ -157,7 +157,7 @@ def _render_v40(cvs: CVSSResult, clarg: CvssArgs) -> None:
 def render_output(cvs: CVSSResult, clarg: CvssArgs) -> None:
     """Print scores in verbose or standard format."""
     if cvs.version == "4.0":
-        _render_v40(cvs, clarg)
+        _render_v40(cvs)
     elif clarg["verbose"]:
         _generate_verbose_output(cast(CVSS, cvs), clarg)
     else:

@@ -101,7 +101,7 @@ def test_render_output_v40_dispatches_to_render_v40() -> None:
     with patch("cvss.cvss_output._render_v40") as mock_v40, \
          patch("cvss.cvss_output._generate_output") as mock_out:
         render_output(cvs, clarg)
-    mock_v40.assert_called_once_with(cvs, clarg)
+    mock_v40.assert_called_once_with(cvs)
     mock_out.assert_not_called()
 
 
