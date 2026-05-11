@@ -1,5 +1,5 @@
 * <2026-05-11 Sun> Findings after v4.0 scoring/handlers/output addition [0/5]
-  1) [ ] **Duplicate vector dispatch in `cvss_handlers.py`** — `process_cmd_line_base`
+  1) [X] **Duplicate vector dispatch in `cvss_handlers.py`** — `process_cmd_line_base`
      and `process_cmd_line_vulnerability` share identical structure: check
      `startswith(_V40_PREFIX)`, try `VulnerabilityVector40` / fall back to
      `VulnerabilityVector`, handle the same two exception types. Extract

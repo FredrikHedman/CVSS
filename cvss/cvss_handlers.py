@@ -33,7 +33,9 @@ def _exit_with_error(e: Exception) -> NoReturn:
     sys.exit(1)
 
 
-def process_cmd_line_base(vector: str) -> CVSSResult:
+def _cvs_from_vector(
+    vector: str, require_complete: bool = True
+) -> CVSSResult:
     if vector.startswith(_V40_PREFIX):
         try:
             vvec = VulnerabilityVector40(vector)
@@ -43,31 +45,23 @@ def process_cmd_line_base(vector: str) -> CVSSResult:
     else:
         try:
             vvec = VulnerabilityVector(vector)
-            cvs: CVSS = cvs_factory(
-                CommonVulnerabilityScore,
-                vvec.complete().metric_values(),
+            mvs = (
+                vvec.complete().metric_values()
+                if require_complete
+                else vvec.valid().metric_values()
             )
+            cvs: CVSS = cvs_factory(CommonVulnerabilityScore, mvs)
         except (InvalidBaseVectorError, ValueError) as e:
             _exit_with_error(e)
         return cvs
+
+
+def process_cmd_line_base(vector: str) -> CVSSResult:
+    return _cvs_from_vector(vector, require_complete=True)
 
 
 def process_cmd_line_vulnerability(vulnerability: str) -> CVSSResult:
-    if vulnerability.startswith(_V40_PREFIX):
-        try:
-            vvec = VulnerabilityVector40(vulnerability)
-            return CommonVulnerabilityScore40(vvec.complete().parsed)
-        except (InvalidVectorError, ValueError) as e:
-            _exit_with_error(e)
-    else:
-        try:
-            vvec = VulnerabilityVector(vulnerability)
-            cvs: CVSS = cvs_factory(
-                CommonVulnerabilityScore, vvec.valid().metric_values()
-            )
-        except (InvalidBaseVectorError, ValueError) as e:
-            _exit_with_error(e)
-        return cvs
+    return _cvs_from_vector(vulnerability, require_complete=False)
 
 
 def _interactive_v40(clarg: CvssArgs) -> CVSSResult:
