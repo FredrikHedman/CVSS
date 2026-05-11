@@ -1,3 +1,43 @@
+* <2026-05-11 Sun> Findings after v4.0 scoring/handlers/output addition [0/5]
+  1) [ ] **Duplicate vector dispatch in `cvss_handlers.py`** — `process_cmd_line_base`
+     and `process_cmd_line_vulnerability` share identical structure: check
+     `startswith(_V40_PREFIX)`, try `VulnerabilityVector40` / fall back to
+     `VulnerabilityVector`, handle the same two exception types. Extract
+     `_cvs_from_vector(vector: str, require_complete: bool = True) -> CVSSResult`
+     to remove the duplication; `process_cmd_line_vulnerability` passes
+     `require_complete=False` since it accepts partial vectors.
+
+  2) [ ] **Redundant `.valid()` before `.complete()` in handler call sites** —
+     `VulnerabilityVector40.complete()` already calls `self.valid()` internally.
+     All v4.0 handler call sites use `.valid().complete().parsed`, running
+     validation twice. Remove the leading `.valid()` from every v4.0 call site
+     in `cvss_handlers.py`. The same double-call exists in the v2.10 path
+     (`vvec.valid().complete()`) and should be fixed there too.
+
+  3) [ ] **Data-driven `_dist_eq*` methods in `cvss_40.py`** — Six distance
+     methods (`_dist_eq1` through `_dist_eq5`, `_dist_eq3eq6`) total ~80 lines
+     with near-identical structure: look up effective metric value, sum float
+     differences against a candidate vector dict, return `None` on any negative.
+     Replace with a `_metric_diff(abbrev, level_dict, mv, eff_val)` helper and
+     encode per-EQ metric→dict mappings in a module-level table. Reduces ~60
+     lines of boilerplate and makes the per-EQ metric set explicit.
+
+  4) [ ] **Missing accessor tests in `test_cvss_40.py`** — `CommonVulnerabilityScore40`
+     exposes `threat_metrics()`, `environmental_metrics()`, and
+     `supplemental_metrics()` but none are tested. Only
+     `len(cvs.base_metrics()) == 11` appears in the suite. Add parametrized
+     tests asserting counts (1 threat, 14 environmental, 6 supplemental) and
+     that the returned `Metric` objects carry the correct abbreviations
+     (e.g. `E` for `threat_metrics()[0].name`).
+
+  5) [ ] **Shared metric-group accumulation in `_interactive_v40`** — The
+     `if clarg["all"]: extend + extend + extend + extend` /
+     `elif clarg["base"]: extend; if clarg["temporal"]: extend; if clarg["environmental"]:
+     extend` structure in `_interactive_v40` is structurally identical to the
+     v2.10 path in `process_cmd_line_interactive`. Extract an
+     `_accumulate_groups(clarg, groups)` helper (where `groups` is a list of
+     `(condition_key, metric_fn)` pairs) and call it from both interactive paths.
+
 * <2026-05-10 Sun> Findings after _show_flags/header-assert/render_output-test cleanup [0/3]
   1) [ ] **`_show_flags` is not directly tested** — The helper is exercised
      indirectly through the use-case fixtures, but a focused unit test that
