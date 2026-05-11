@@ -26,23 +26,25 @@ def test_parse_valid_base_vector() -> None:
 
 def test_parse_rejects_missing_prefix() -> None:
     with pytest.raises(InvalidVectorError, match="CVSS:4.0/"):
-        VulnerabilityVector40("AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N")
+        _ = VulnerabilityVector40(
+            "AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+        )
 
 
 def test_parse_rejects_bad_metric_key() -> None:
     with pytest.raises(InvalidVectorError):
-        VulnerabilityVector40(_VALID_BASE.replace("AV:N", "XX:N")).valid()
+        _ = VulnerabilityVector40(_VALID_BASE.replace("AV:N", "XX:N")).valid()
 
 
 def test_parse_rejects_bad_value() -> None:
     with pytest.raises(InvalidVectorError):
-        VulnerabilityVector40(_VALID_BASE.replace("AV:N", "AV:Z")).valid()
+        _ = VulnerabilityVector40(_VALID_BASE.replace("AV:N", "AV:Z")).valid()
 
 
 def test_parse_rejects_missing_base_metric() -> None:
     incomplete = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N"
     with pytest.raises(InvalidVectorError, match="Missing"):
-        VulnerabilityVector40(incomplete).complete()
+        _ = VulnerabilityVector40(incomplete).complete()
 
 
 def test_defaults_absent_optional_to_x() -> None:
@@ -53,9 +55,11 @@ def test_defaults_absent_optional_to_x() -> None:
 
 
 def test_parse_rejects_duplicate_metric() -> None:
-    dup = "CVSS:4.0/AV:N/AV:L/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+    dup = (
+        "CVSS:4.0/AV:N/AV:L/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+    )
     with pytest.raises(InvalidVectorError, match="Duplicate"):
-        VulnerabilityVector40(dup)
+        _ = VulnerabilityVector40(dup)
 
 
 # ---------------------------------------------------------------------------
@@ -86,7 +90,10 @@ def test_parse_rejects_duplicate_metric() -> None:
     # CVE-2018-3652 (Intel DCI physical access)
     ("CVSS:4.0/AV:P/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N", 8.5),
     # CVE-2024-6387 (regreSSHion OpenSSH — examples page shows E:P explicitly)
-    ("CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:P", 8.2),
+    (
+        "CVSS:4.0/AV:N/AC:H/AT:P/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:P",
+        8.2,
+    ),
     # CVE-2013-6014 (Juniper Proxy ARP)
     ("CVSS:4.0/AV:A/AC:L/AT:N/PR:N/UI:N/VC:N/VI:L/VA:N/SC:H/SI:N/SA:H", 6.4),
     # With Threat metric

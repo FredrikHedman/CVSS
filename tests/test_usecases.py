@@ -52,12 +52,18 @@ def test_uc01_help_short():
 
 
 def test_uc02_interactive_base():
-    out = run(["-ib"], stdin_file=TESTS_DIR / "test_uc02_in.txt")
+    out = run(
+        ["-ib", "--cvss-version", "2.10"],
+        stdin_file=TESTS_DIR / "test_uc02_in.txt",
+    )
     assert out == expected("test_uc02_out.txt")
 
 
 def test_uc02_interactive_base_verbose():
-    out = run(["-ivb"], stdin_file=TESTS_DIR / "test_uc02_in.txt")
+    out = run(
+        ["-ivb", "--cvss-version", "2.10"],
+        stdin_file=TESTS_DIR / "test_uc02_in.txt",
+    )
     assert out == expected("test_uc02_verbose_out.txt")
 
 
@@ -66,30 +72,41 @@ def test_uc02_interactive_base_verbose():
 # ---------------------------------------------------------------------------
 
 
+_V2 = ["--cvss-version", "2.10"]
+
+
 def test_uc03_bad_key():
-    assert run(["-ib", "a:b/c:d"]) == expected("test_uc03_bad_key_out2.txt")
+    assert run(["-ib", *_V2, "a:b/c:d"]) == expected(
+        "test_uc03_bad_key_out2.txt"
+    )
 
 
 def test_uc03_empty_key():
-    assert run(["-ib", "a:b/:d"]) == expected("test_uc03_bad_key_out2.txt")
+    assert run(["-ib", *_V2, "a:b/:d"]) == expected(
+        "test_uc03_bad_key_out2.txt"
+    )
 
 
 def test_uc03_empty_value():
-    assert run(["-ib", "a:/c:d"]) == expected("test_uc03_bad_key_out2.txt")
+    assert run(["-ib", *_V2, "a:/c:d"]) == expected(
+        "test_uc03_bad_key_out2.txt"
+    )
 
 
 def test_uc03_empty_component():
-    assert run(["-ib", "a:b//c:d"]) == expected("test_uc03_empty_out.txt")
+    assert run(["-ib", *_V2, "a:b//c:d"]) == expected(
+        "test_uc03_empty_out.txt"
+    )
 
 
 def test_uc03_bad_value():
-    assert run(["-ib", "AV:A/AC:M/Au:M/C:P/I:P/A:X"]) == expected(
+    assert run(["-ib", *_V2, "AV:A/AC:M/Au:M/C:P/I:P/A:X"]) == expected(
         "test_uc03_bad_value_out.txt"
     )
 
 
 def test_uc03_not_enough_keys():
-    assert run(["-ib", "AV:A/AC:M/Au:M/C:P/I:P"]) == expected(
+    assert run(["-ib", *_V2, "AV:A/AC:M/Au:M/C:P/I:P"]) == expected(
         "test_uc03_not_enough_keys_out.txt"
     )
 
@@ -101,10 +118,9 @@ def test_uc03_duplicate_keys():
 
 
 def test_uc03_bad_order():
-    assert run(["-ib", "AV:A/A:P/AC:M/Au:M/C:P/I:P"]) == expected(
+    assert run(["-ib", *_V2, "AV:A/A:P/AC:M/Au:M/C:P/I:P"]) == expected(
         "test_uc03_bad_order_out.txt"
     )
-
 
 
 def test_uc03_base_only():
@@ -115,7 +131,7 @@ def test_uc03_base_only():
 
 def test_uc03_temporal():
     out = run(
-        ["-it", "--base", "AV:A/AC:M/Au:S/C:C/I:P/A:C"],
+        ["-it", *_V2, "--base", "AV:A/AC:M/Au:S/C:C/I:P/A:C"],
         stdin_file=TESTS_DIR / "test_uc03_temporal_in.txt",
     )
     assert out == expected("test_uc03_temporal_out.txt")
@@ -123,7 +139,7 @@ def test_uc03_temporal():
 
 def test_uc03_environmental():
     out = run(
-        ["-ite", "--base", "AV:A/AC:M/Au:S/C:C/I:P/A:C"],
+        ["-ite", *_V2, "--base", "AV:A/AC:M/Au:S/C:C/I:P/A:C"],
         stdin_file=TESTS_DIR / "test_uc03_environmental_in.txt",
     )
     assert out == expected("test_uc03_environmental_out.txt")
@@ -135,11 +151,15 @@ def test_uc03_environmental():
 
 
 def test_uc04_empty_end():
-    assert run(["-ib", "a:b/c:d/"]) == expected("test_uc03_empty_end_out.txt")
+    assert run(["-ib", *_V2, "a:b/c:d/"]) == expected(
+        "test_uc03_empty_end_out.txt"
+    )
 
 
 def test_uc04_bad_key():
-    assert run(["-ib", "a:b/c:d/"]) == expected("test_uc03_bad_key_out.txt")
+    assert run(["-ib", *_V2, "a:b/c:d/"]) == expected(
+        "test_uc03_bad_key_out.txt"
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -148,12 +168,16 @@ def test_uc04_bad_key():
 
 
 def test_uc06_interactive_all():
-    out = run(["-ia"], stdin_file=TESTS_DIR / "test_uc06_in.txt")
+    out = run(
+        ["-ia", *_V2], stdin_file=TESTS_DIR / "test_uc06_in.txt"
+    )
     assert out == expected("test_uc06_out.txt")
 
 
 def test_uc06_interactive_all_verbose():
-    out = run(["-iav"], stdin_file=TESTS_DIR / "test_uc06_in.txt")
+    out = run(
+        ["-iav", *_V2], stdin_file=TESTS_DIR / "test_uc06_in.txt"
+    )
     assert out == expected("test_uc06_verbose_out.txt")
 
 

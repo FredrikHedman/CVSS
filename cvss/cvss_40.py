@@ -270,7 +270,7 @@ class CommonVulnerabilityScore40:
     """CVSS v4.0 scorer: MacroVector lookup + interpolation (Spec §7–§8)."""
 
     def __init__(self, parsed: dict[str, str]) -> None:
-        self._p = parsed
+        self._p: dict[str, str] = parsed
         self._metrics: dict[str, Metric] = {}
         all_defs = (
             list(BASE40_DEFINITIONS)
@@ -424,6 +424,45 @@ class CommonVulnerabilityScore40:
                 return d
         return 0.0
 
+    def _eq_contrib(
+        self,
+        next_score: float | None,
+        mv: float,
+        max_vecs: list[str],
+        dist_fn: Callable[[dict[str, str]], float | None],
+        max_sev: int,
+    ) -> tuple[float, int]:
+        if next_score is None:
+            return 0.0, 0
+        avail = mv - next_score
+        d = self._find_dist(max_vecs, dist_fn)
+        ms = max_sev * 0.1
+        return (d / ms if ms else 0.0) * avail, 1
+
+    def _eq3eq6_contrib(
+        self,
+        eq1: int, eq2: int, eq3: int, eq4: int, eq5: int, eq6: int,
+        mv: float,
+    ) -> tuple[float, int]:
+        """EQ3+EQ6 combined contribution (Spec §8.3)."""
+        opts: list[float] = []
+        if eq3 < 2:
+            nq6 = 1 if eq3 + 1 == 2 else eq6
+            s = _LOOKUP.get((eq1, eq2, eq3 + 1, eq4, eq5, nq6))
+            if s is not None:
+                opts.append(s)
+        if eq6 < 1 and eq3 != 2:
+            s = _LOOKUP.get((eq1, eq2, eq3, eq4, eq5, eq6 + 1))
+            if s is not None:
+                opts.append(s)
+        if not opts:
+            return 0.0, 0
+        avail = mv - max(opts)
+        cands = _EQ3EQ6_MAX[str(eq3)][str(eq6)]
+        d = self._find_dist(cands, self._dist_eq3eq6)
+        ms = _SEV_EQ3EQ6.get((eq3, eq6), 0) * 0.1
+        return (d / ms if ms else 0.0) * avail, 1
+
     # ------------------------------------------------------------------
     # Score computation (Spec §8)
     # ------------------------------------------------------------------
@@ -441,73 +480,37 @@ class CommonVulnerabilityScore40:
         if mv is None:
             raise ValueError(f"No lookup entry for EQ levels {key}")
 
-        n_lower = 0
-        total = 0.0
-
-        # EQ1
-        nxt = _LOOKUP.get((eq1 + 1, eq2, eq3, eq4, eq5, eq6)) if eq1 < 2 else None
-        if nxt is not None:
-            n_lower += 1
-            avail = mv - nxt
-            d = self._find_dist(_EQ1_MAX[str(eq1)], self._dist_eq1)
-            ms = _SEV_EQ1[eq1] * 0.1
-            total += (d / ms if ms else 0.0) * avail
-
-        # EQ2
-        nxt = _LOOKUP.get((eq1, eq2 + 1, eq3, eq4, eq5, eq6)) if eq2 < 1 else None
-        if nxt is not None:
-            n_lower += 1
-            avail = mv - nxt
-            d = self._find_dist(_EQ2_MAX[str(eq2)], self._dist_eq2)
-            ms = _SEV_EQ2[eq2] * 0.1
-            total += (d / ms if ms else 0.0) * avail
-
-        # EQ3eq6 (combined — Spec §8.3)
-        opts: list[float] = []
-        if eq3 < 2:
-            nq6 = 1 if eq3 + 1 == 2 else eq6
-            s = _LOOKUP.get((eq1, eq2, eq3 + 1, eq4, eq5, nq6))
-            if s is not None:
-                opts.append(s)
-        if eq6 < 1 and eq3 != 2:
-            s = _LOOKUP.get((eq1, eq2, eq3, eq4, eq5, eq6 + 1))
-            if s is not None:
-                opts.append(s)
-        if opts:
-            nxt = max(opts)
-            n_lower += 1
-            avail = mv - nxt
-            cands = _EQ3EQ6_MAX[str(eq3)][str(eq6)]
-            d = self._find_dist(cands, self._dist_eq3eq6)
-            ms = _SEV_EQ3EQ6.get((eq3, eq6), 0) * 0.1
-            total += (d / ms if ms else 0.0) * avail
-
-        # EQ4
-        nxt = _LOOKUP.get((eq1, eq2, eq3, eq4 + 1, eq5, eq6)) if eq4 < 2 else None
-        if nxt is not None:
-            n_lower += 1
-            avail = mv - nxt
-            d = self._find_dist(_EQ4_MAX[str(eq4)], self._dist_eq4)
-            ms = _SEV_EQ4[eq4] * 0.1
-            total += (d / ms if ms else 0.0) * avail
-
-        # EQ5
-        nxt = _LOOKUP.get((eq1, eq2, eq3, eq4, eq5 + 1, eq6)) if eq5 < 2 else None
-        if nxt is not None:
-            n_lower += 1
-            avail = mv - nxt
-            d = self._find_dist(_EQ5_MAX[str(eq5)], self._dist_eq5)
-            ms = _SEV_EQ5[eq5] * 0.1
-            total += (d / ms if ms else 0.0) * avail
-
-        if n_lower == 0:
-            value = mv
-        else:
-            value = mv - total / n_lower
-
+        contribs: list[tuple[float, int]] = [
+            self._eq_contrib(
+                _LOOKUP.get((eq1 + 1, eq2, eq3, eq4, eq5, eq6))
+                if eq1 < 2 else None,
+                mv, _EQ1_MAX[str(eq1)], self._dist_eq1, _SEV_EQ1[eq1],
+            ),
+            self._eq_contrib(
+                _LOOKUP.get((eq1, eq2 + 1, eq3, eq4, eq5, eq6))
+                if eq2 < 1 else None,
+                mv, _EQ2_MAX[str(eq2)], self._dist_eq2, _SEV_EQ2[eq2],
+            ),
+            self._eq3eq6_contrib(eq1, eq2, eq3, eq4, eq5, eq6, mv),
+            self._eq_contrib(
+                _LOOKUP.get((eq1, eq2, eq3, eq4 + 1, eq5, eq6))
+                if eq4 < 2 else None,
+                mv, _EQ4_MAX[str(eq4)], self._dist_eq4, _SEV_EQ4[eq4],
+            ),
+            self._eq_contrib(
+                _LOOKUP.get((eq1, eq2, eq3, eq4, eq5 + 1, eq6))
+                if eq5 < 2 else None,
+                mv, _EQ5_MAX[str(eq5)], self._dist_eq5, _SEV_EQ5[eq5],
+            ),
+        ]
+        total = sum(c for c, _ in contribs)
+        n_lower = sum(n for _, n in contribs)
+        value = mv if n_lower == 0 else mv - total / n_lower
         value = max(0.0, min(10.0, value))
         return float(
-            Decimal(str(value)).quantize(Decimal("0.1"), rounding=ROUND_HALF_UP)
+            Decimal(str(value)).quantize(
+                Decimal("0.1"), rounding=ROUND_HALF_UP
+            )
         )
 
     @property
