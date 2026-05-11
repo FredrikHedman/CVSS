@@ -121,14 +121,22 @@ Base Vulnerability Vector: AV:N/AC:L/Au:N/C:C/I:C/A:C
 
 ## Status
 
-| Item          | Detail                  |
-|---------------|-------------------------|
-| Version       | 2.1.0                   |
-| CVSS versions | 2.10, 4.0 (default)     |
-| Python        | ≥ 3.12                  |
-| License       | MIT                     |
-| Type-checked  | basedpyright strict     |
-| Linter        | ruff                    |
+| Item           | Detail                                    |
+|----------------|-------------------------------------------|
+| Version        | 2.1.0                                     |
+| CVSS versions  | 2.10, 4.0 (default)                       |
+| v4.0 scoring   | MacroVector lookup table (Spec §7–§8)     |
+| Python         | ≥ 3.12                                    |
+| License        | MIT                                       |
+| Type-checked   | basedpyright strict                       |
+| Linter         | ruff                                      |
+| Tests          | 112 passing                               |
+
+**What's new in 2.1.0**: Added CVSS v4.0 support (MacroVector lookup-table
+scoring, Spec §7–§8). v4.0 is the new default; version auto-detected from the
+`CVSS:4.0/` vector prefix. Interactive mode selects the version via
+`--cvss-version`. Qualitative severity ratings (None/Low/Medium/High/Critical,
+Spec §9).
 
 **What's new in 2.0.0**: Modernised packaging (uv + pyproject.toml),
 replaced flake8/pep8 with ruff, replaced shell-script test runners with
