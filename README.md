@@ -34,6 +34,91 @@ development dependencies, and ensures `uv.lock` is in sync with
     # Explicit version selection for interactive mode
     cvss --cvss-version 2.10 --interactive --base
 
+## Examples
+
+### CVSS v4.0
+
+**Log4Shell (CVE-2021-44228) — Exploit Maturity: Attacked**
+
+```bash
+$ cvss --vulnerability "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:A"
+
+CVSS v4.0 Score = 9.3
+Severity = Critical
+CVSS v4.0 Vulnerability Vector = CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:A
+```
+
+**CVE-2020-3549 (Cisco Firepower) — base metrics only**
+
+Absent Exploit Maturity (E) defaults to Attacked for scoring (Spec §7.4).
+
+```bash
+$ cvss --vulnerability "CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+
+CVSS v4.0 Score = 7.7
+Severity = High
+CVSS v4.0 Vulnerability Vector = CVSS:4.0/AV:N/AC:L/AT:P/PR:N/UI:P/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N
+```
+
+**Using `--base` directly**
+
+```bash
+$ cvss --base "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+
+CVSS v4.0 Score = 9.3
+Severity = Critical
+CVSS v4.0 Vulnerability Vector = CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N
+```
+
+### CVSS v2.10
+
+**`--vulnerability` — outputs Base, Temporal, and Environmental scores**
+
+```bash
+$ cvss --vulnerability "AV:N/AC:L/Au:N/C:C/I:C/A:C"
+
+Base Score = 10.0
+Base Vulnerability Vector = AV:N/AC:L/Au:N/C:C/I:C/A:C
+Temporal Score = 10.0
+Temporal Vulnerability Vector = E:ND/RL:ND/RC:ND
+Environmental Score = 10.0
+Environmental Vulnerability Vector = CDP:ND/TD:ND/CR:ND/IR:ND/AR:ND
+```
+
+**`--base` — outputs Base score only**
+
+```bash
+$ cvss --base "AV:N/AC:M/Au:S/C:C/I:P/A:C"
+
+Base Score = 8.2
+Base Vulnerability Vector = AV:N/AC:M/Au:S/C:C/I:P/A:C
+```
+
+**`--verbose` — tabular output with per-metric weights**
+
+```bash
+$ cvss -v --vulnerability "AV:N/AC:L/Au:N/C:C/I:C/A:C"
+
+=================================================================
+BASE METRIC                   EVALUATION                    SCORE
+=================================================================
+Access Vector                 Network                        1.00
+Access Complexity             Low                            0.71
+Authentication                None                           0.70
+Confidentiality Impact        Complete                       0.66
+Integrity Impact              Complete                       0.66
+Availability Impact           Complete                       0.66
+=================================================================
+FORMULA                                                BASE SCORE
+=================================================================
+Impact =                                                    10.00
+Exploitability =                                            10.00
+Base Score =                                                10.00
+Base Vulnerability Vector: AV:N/AC:L/Au:N/C:C/I:C/A:C
+=================================================================
+# ... temporal and environmental tables follow
+```
+
 ## Status
 
 | Item          | Detail                  |
