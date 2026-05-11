@@ -1,5 +1,5 @@
 * <2026-05-11 Sun> Findings after v4.0 handler/scoring refactors [0/3]
-  1) [ ] **`_eq_levels()` should return a `NamedTuple`** — `_eq_levels()` returns
+  1) [X] **`_eq_levels()` should return a `NamedTuple`** — `_eq_levels()` returns
      `tuple[int, int, int, int, int, int]`. In `base_score` it is destructured
      as `eq1, eq2, eq3, eq4, eq5, eq6 = self._eq_levels()` and six positional
      integers are passed to `_eq3eq6_contrib`. A `NamedTuple`:

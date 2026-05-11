@@ -12,7 +12,7 @@ a lookup-table approach rather than closed-form formulas. See README
 
 from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
-from typing import Callable
+from typing import Callable, NamedTuple
 
 from .metric import Metric
 from .vulnerability_40 import (
@@ -307,6 +307,16 @@ def _parse_vec(vec_str: str) -> dict[str, str]:
     return result
 
 
+class _EQLevels(NamedTuple):
+    """Six Equivalence Set levels, one per EQ dimension (Spec §7.5)."""
+    eq1: int
+    eq2: int
+    eq3: int
+    eq4: int
+    eq5: int
+    eq6: int
+
+
 class CommonVulnerabilityScore40:
     """CVSS v4.0 scorer: MacroVector lookup + interpolation (Spec §7–§8)."""
 
@@ -390,8 +400,8 @@ class CommonVulnerabilityScore40:
             return 0
         return 1
 
-    def _eq_levels(self) -> tuple[int, int, int, int, int, int]:
-        return (
+    def _eq_levels(self) -> _EQLevels:
+        return _EQLevels(
             self._eq1(), self._eq2(), self._eq3(),
             self._eq4(), self._eq5(), self._eq6(),
         )
@@ -459,10 +469,11 @@ class CommonVulnerabilityScore40:
 
     def _eq3eq6_contrib(
         self,
-        eq1: int, eq2: int, eq3: int, eq4: int, eq5: int, eq6: int,
+        levels: _EQLevels,
         mv: float,
     ) -> tuple[float, int]:
         """EQ3+EQ6 combined contribution (Spec §8.3)."""
+        eq1, eq2, eq3, eq4, eq5, eq6 = levels
         opts: list[float] = []
         if eq3 < 2:
             nq6 = 1 if eq3 + 1 == 2 else eq6
@@ -492,11 +503,11 @@ class CommonVulnerabilityScore40:
     @property
     def base_score(self) -> float:
         """CVSS-BTE score (all available metrics, Spec §8)."""
-        eq1, eq2, eq3, eq4, eq5, eq6 = self._eq_levels()
-        key = (eq1, eq2, eq3, eq4, eq5, eq6)
-        mv = _LOOKUP.get(key)
+        levels = self._eq_levels()
+        mv = _LOOKUP.get(levels)
         if mv is None:
-            raise ValueError(f"No lookup entry for EQ levels {key}")
+            raise ValueError(f"No lookup entry for EQ levels {levels}")
+        eq1, eq2, eq3, eq4, eq5, eq6 = levels
 
         contribs: list[tuple[float, int]] = [
             self._eq_contrib(
@@ -509,7 +520,7 @@ class CommonVulnerabilityScore40:
                 if eq2 < 1 else None,
                 mv, _EQ2_MAX[str(eq2)], self._dist_eq2, _SEV_EQ2[eq2],
             ),
-            self._eq3eq6_contrib(eq1, eq2, eq3, eq4, eq5, eq6, mv),
+            self._eq3eq6_contrib(levels, mv),
             self._eq_contrib(
                 _LOOKUP.get((eq1, eq2, eq3, eq4 + 1, eq5, eq6))
                 if eq4 < 2 else None,
