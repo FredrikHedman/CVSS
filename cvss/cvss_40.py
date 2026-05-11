@@ -10,6 +10,7 @@ a lookup-table approach rather than closed-form formulas. See README
 §Architecture for rationale.
 """
 
+from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Callable
 
@@ -40,6 +41,46 @@ _CR = {"H": 0.0, "M": 0.1, "L": 0.2}
 _IR = {"H": 0.0, "M": 0.1, "L": 0.2}
 _AR = {"H": 0.0, "M": 0.1, "L": 0.2}
 _E  = {"A": 0.0, "P": 0.1, "U": 0.2}   # X is mapped to A before lookup
+
+# ---------------------------------------------------------------------------
+# _DistSpec: declarative per-metric distance specification
+# ---------------------------------------------------------------------------
+
+
+@dataclass
+class _DistSpec:
+    key: str
+    ldict: dict[str, float]
+    mv_default: str        # most-severe value used in MAX_COMPOSED candidates
+    mod: str | None = None   # modifier key: use _eff(mod, key) not _v(key)
+    x_sub: str | None = None  # if effective value == "X", substitute this
+
+
+_EQ1_SPECS: list[_DistSpec] = [
+    _DistSpec("AV", _AV, "N"),
+    _DistSpec("PR", _PR, "N"),
+    _DistSpec("UI", _UI, "N"),
+]
+_EQ2_SPECS: list[_DistSpec] = [
+    _DistSpec("AC", _AC, "L"),
+    _DistSpec("AT", _AT, "N"),
+]
+_EQ3EQ6_SPECS: list[_DistSpec] = [
+    _DistSpec("VC", _VC, "H", mod="MVC"),
+    _DistSpec("VI", _VI, "H", mod="MVI"),
+    _DistSpec("VA", _VA, "H", mod="MVA"),
+    _DistSpec("CR", _CR, "H", x_sub="H"),   # X → H (high requirement)
+    _DistSpec("IR", _IR, "H", x_sub="H"),
+    _DistSpec("AR", _AR, "H", x_sub="H"),
+]
+_EQ4_SPECS: list[_DistSpec] = [
+    _DistSpec("SC", _SC, "H", mod="MSC"),
+    _DistSpec("SI", _SI, "H", mod="MSI"),
+    _DistSpec("SA", _SA, "H", mod="MSA"),
+]
+_EQ5_SPECS: list[_DistSpec] = [
+    _DistSpec("E", _E, "A", x_sub="A"),     # X → A (Attacked, Spec §7.4)
+]
 
 # ---------------------------------------------------------------------------
 # MAX_COMPOSED: canonical highest-severity vectors per EQ level
@@ -359,59 +400,36 @@ class CommonVulnerabilityScore40:
     # Per-EQ severity distance helpers
     # ------------------------------------------------------------------
 
-    def _dist_eq1(self, mv: dict[str, str]) -> float | None:
-        d_av = _AV.get(self._v("AV"), 0.0) - _AV.get(mv.get("AV", "N"), 0.0)
-        d_pr = _PR.get(self._v("PR"), 0.0) - _PR.get(mv.get("PR", "N"), 0.0)
-        d_ui = _UI.get(self._v("UI"), 0.0) - _UI.get(mv.get("UI", "N"), 0.0)
-        if d_av < 0 or d_pr < 0 or d_ui < 0:
-            return None
-        return d_av + d_pr + d_ui
+    def _metric_eff(self, spec: _DistSpec) -> str:
+        v = self._eff(spec.mod, spec.key) if spec.mod else self._v(spec.key)
+        return spec.x_sub if spec.x_sub and v == "X" else v
 
-    def _dist_eq2(self, mv: dict[str, str]) -> float | None:
-        d_ac = _AC.get(self._v("AC"), 0.0) - _AC.get(mv.get("AC", "L"), 0.0)
-        d_at = _AT.get(self._v("AT"), 0.0) - _AT.get(mv.get("AT", "N"), 0.0)
-        if d_ac < 0 or d_at < 0:
-            return None
-        return d_ac + d_at
-
-    def _dist_eq3eq6(self, mv: dict[str, str]) -> float | None:
-        eff_vc = self._eff("MVC", "VC")
-        eff_vi = self._eff("MVI", "VI")
-        eff_va = self._eff("MVA", "VA")
-        cr, ir, ar = self._v("CR"), self._v("IR"), self._v("AR")
-        eff_cr = "H" if cr == "X" else cr
-        eff_ir = "H" if ir == "X" else ir
-        eff_ar = "H" if ar == "X" else ar
+    def _dist_from_specs(
+        self, mv: dict[str, str], specs: list[_DistSpec]
+    ) -> float | None:
         diffs = [
-            _VC.get(eff_vc, 0.0) - _VC.get(mv.get("VC", "H"), 0.0),
-            _VI.get(eff_vi, 0.0) - _VI.get(mv.get("VI", "H"), 0.0),
-            _VA.get(eff_va, 0.0) - _VA.get(mv.get("VA", "H"), 0.0),
-            _CR.get(eff_cr, 0.0) - _CR.get(mv.get("CR", "H"), 0.0),
-            _IR.get(eff_ir, 0.0) - _IR.get(mv.get("IR", "H"), 0.0),
-            _AR.get(eff_ar, 0.0) - _AR.get(mv.get("AR", "H"), 0.0),
+            spec.ldict.get(self._metric_eff(spec), 0.0)
+            - spec.ldict.get(mv.get(spec.key, spec.mv_default), 0.0)
+            for spec in specs
         ]
         if any(d < 0 for d in diffs):
             return None
         return sum(diffs)
 
+    def _dist_eq1(self, mv: dict[str, str]) -> float | None:
+        return self._dist_from_specs(mv, _EQ1_SPECS)
+
+    def _dist_eq2(self, mv: dict[str, str]) -> float | None:
+        return self._dist_from_specs(mv, _EQ2_SPECS)
+
+    def _dist_eq3eq6(self, mv: dict[str, str]) -> float | None:
+        return self._dist_from_specs(mv, _EQ3EQ6_SPECS)
+
     def _dist_eq4(self, mv: dict[str, str]) -> float | None:
-        eff_sc = self._eff("MSC", "SC")
-        eff_si = self._eff("MSI", "SI")
-        eff_sa = self._eff("MSA", "SA")
-        d_sc = _SC.get(eff_sc, 0.0) - _SC.get(mv.get("SC", "H"), 0.0)
-        d_si = _SI.get(eff_si, 0.0) - _SI.get(mv.get("SI", "H"), 0.0)
-        d_sa = _SA.get(eff_sa, 0.0) - _SA.get(mv.get("SA", "H"), 0.0)
-        if d_sc < 0 or d_si < 0 or d_sa < 0:
-            return None
-        return d_sc + d_si + d_sa
+        return self._dist_from_specs(mv, _EQ4_SPECS)
 
     def _dist_eq5(self, mv: dict[str, str]) -> float | None:
-        e = self._v("E")
-        eff_e = "A" if e == "X" else e
-        d = _E.get(eff_e, 0.0) - _E.get(mv.get("E", "A"), 0.0)
-        if d < 0:
-            return None
-        return d
+        return self._dist_from_specs(mv, _EQ5_SPECS)
 
     def _find_dist(
         self,

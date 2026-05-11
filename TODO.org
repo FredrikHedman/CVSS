@@ -14,7 +14,7 @@
      in `cvss_handlers.py`. The same double-call exists in the v2.10 path
      (`vvec.valid().complete()`) and should be fixed there too.
 
-  3) [ ] **Data-driven `_dist_eq*` methods in `cvss_40.py`** — Six distance
+  3) [X] **Data-driven `_dist_eq*` methods in `cvss_40.py`** — Six distance
      methods (`_dist_eq1` through `_dist_eq5`, `_dist_eq3eq6`) total ~80 lines
      with near-identical structure: look up effective metric value, sum float
      differences against a candidate vector dict, return `None` on any negative.
