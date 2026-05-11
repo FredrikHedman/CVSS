@@ -18,6 +18,7 @@ class _ParsedArgs(argparse.Namespace):
     environmental: bool = False
     vector: str | None = None
     vulnerability: str | None = None
+    cvss_version: str = "4.0"
 
 
 def make_clarg(args: argparse.Namespace) -> CvssArgs:
@@ -32,6 +33,7 @@ def make_clarg(args: argparse.Namespace) -> CvssArgs:
         "environmental": typed.environmental,
         "vector": typed.vector,
         "vulnerability": typed.vulnerability,
+        "cvss_version": typed.cvss_version,
     }
 
 
@@ -48,6 +50,13 @@ def build_parser() -> argparse.ArgumentParser:
     _ = p.add_argument("-e", "--environmental", action="store_true")
     _ = p.add_argument("vector", nargs="?", default=None)
     _ = p.add_argument("--vulnerability", metavar="vector", default=None)
+    _ = p.add_argument(
+        "--cvss-version",
+        choices=["2.10", "4.0"],
+        default="4.0",
+        dest="cvss_version",
+        help="CVSS version to use (default: 4.0)",
+    )
     _ = p.add_argument("--version", action="version", version=VERSION)
     return p
 

@@ -5,7 +5,9 @@
 #
 """Shared type definitions for the cvss CLI."""
 
-from typing import NamedTuple, TypedDict
+from typing import NamedTuple, Protocol, TypedDict
+
+from .metric import Metric
 
 
 class ScoreEntry(NamedTuple):
@@ -27,3 +29,19 @@ class CvssArgs(TypedDict):
     environmental: bool
     vector: str | None
     vulnerability: str | None
+    cvss_version: str
+
+
+class CVSSResult(Protocol):
+    """Common interface satisfied by both v2.10 and v4.0 scorers."""
+
+    @property
+    def version(self) -> str: ...
+
+    @property
+    def base_score(self) -> float: ...
+
+    @property
+    def base_vulnerability_vector(self) -> str: ...
+
+    def base_metrics(self) -> list[Metric]: ...
