@@ -8,7 +8,7 @@
      `_LOOKUP[tuple(levels)]`, and callsites gain named access. High readability
      benefit relative to low implementation cost.
 
-  2) [ ] **Extract `_accumulate_groups` to unify both interactive paths** —
+  2) [X] **Extract `_accumulate_groups` to unify both interactive paths** —
      (carry-over from 2026-05-11 item 5). `_interactive_v40` and the v2.10
      branch of `process_cmd_line_interactive` both use the same
      `if clarg["all"]: extend × N / elif clarg["base"]: extend; if temporal:

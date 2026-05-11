@@ -1,6 +1,7 @@
 """CVSS command handlers and dispatch for all CLI modes."""
 
 import sys
+from collections.abc import Callable
 from typing import NoReturn, cast
 
 from .cvss_210 import CommonVulnerabilityScore
@@ -10,6 +11,7 @@ from .cvss_input import read_metrics
 from .cvss_types import CVSSResult, CvssArgs
 from .vulnerability import (
     InvalidBaseVectorError,
+    MetricDefinition,
     VulnerabilityVector,
     base_metrics,
     cvs_factory,
@@ -26,6 +28,7 @@ from .vulnerability_40 import (
 )
 
 _V40_PREFIX = "CVSS:4.0/"
+_MetricFn = Callable[[], list[MetricDefinition]]
 
 
 def _exit_with_error(e: Exception) -> NoReturn:
@@ -64,38 +67,55 @@ def process_cmd_line_vulnerability(vulnerability: str) -> CVSSResult:
     return _cvs_from_vector(vulnerability, require_complete=False)
 
 
-def _interactive_v40(clarg: CvssArgs) -> CVSSResult:
+def _accumulate_groups(
+    clarg: CvssArgs,
+    all_fns: list[_MetricFn],
+    base_fn: _MetricFn,
+    temporal_fn: _MetricFn,
+    env_fn: _MetricFn,
+) -> list[str]:
+    """Read metrics interactively (no pre-existing vector)."""
     selected: list[str] = []
-    all_defs = (
-        list(base_metrics_40())
-        + list(threat_metrics_40())
-        + list(environmental_metrics_40())
-        + list(supplemental_metrics_40())
-    )
     if clarg["all"]:
-        selected.extend(read_metrics(base_metrics_40()))
-        selected.extend(read_metrics(threat_metrics_40()))
-        selected.extend(read_metrics(environmental_metrics_40()))
-        selected.extend(read_metrics(supplemental_metrics_40()))
+        for fn in all_fns:
+            selected.extend(read_metrics(fn()))
     elif clarg["base"]:
-        if clarg["vector"] and clarg["vector"].startswith(_V40_PREFIX):
-            try:
-                vvec = VulnerabilityVector40(clarg["vector"])
-                return CommonVulnerabilityScore40(
-                    vvec.complete().parsed
-                )
-            except (InvalidVectorError, ValueError) as e:
-                _exit_with_error(e)
-        else:
-            selected.extend(read_metrics(base_metrics_40()))
+        selected.extend(read_metrics(base_fn()))
         if clarg["temporal"]:
-            selected.extend(read_metrics(threat_metrics_40()))
+            selected.extend(read_metrics(temporal_fn()))
             if clarg["environmental"]:
-                selected.extend(read_metrics(environmental_metrics_40()))
-    parsed: dict[str, str] = {}
-    for i, d in enumerate(all_defs):
-        if i < len(selected):
-            parsed[d.abbrev] = selected[i]
+                selected.extend(read_metrics(env_fn()))
+    return selected
+
+
+def _interactive_v40(clarg: CvssArgs) -> CVSSResult:
+    vec = clarg["vector"]
+    if clarg["base"] and vec and vec.startswith(_V40_PREFIX):
+        try:
+            return CommonVulnerabilityScore40(
+                VulnerabilityVector40(vec).complete().parsed
+            )
+        except (InvalidVectorError, ValueError) as e:
+            _exit_with_error(e)
+    all_defs = (
+        list(base_metrics_40()) + list(threat_metrics_40())
+        + list(environmental_metrics_40()) + list(supplemental_metrics_40())
+    )
+    selected = _accumulate_groups(
+        clarg,
+        all_fns=[
+            base_metrics_40, threat_metrics_40,
+            environmental_metrics_40, supplemental_metrics_40,
+        ],
+        base_fn=base_metrics_40,
+        temporal_fn=threat_metrics_40,
+        env_fn=environmental_metrics_40,
+    )
+    parsed: dict[str, str] = {
+        d.abbrev: selected[i]
+        for i, d in enumerate(all_defs)
+        if i < len(selected)
+    }
     return CommonVulnerabilityScore40(parsed)
 
 
@@ -103,24 +123,24 @@ def process_cmd_line_interactive(clarg: CvssArgs) -> CVSSResult:
     if clarg["cvss_version"] == "4.0":
         return _interactive_v40(clarg)
     # v2.10 interactive path
-    selected: list[str] = []
-    if clarg["all"]:
-        selected.extend(read_metrics(base_metrics()))
-        selected.extend(read_metrics(temporal_metrics()))
-        selected.extend(read_metrics(environmental_metrics()))
-    elif clarg["base"]:
-        if clarg["vector"]:
-            try:
-                vvec = VulnerabilityVector(clarg["vector"])
-                selected.extend(vvec.complete().metric_values())
-            except (InvalidBaseVectorError, ValueError) as e:
-                _exit_with_error(e)
-        else:
-            selected.extend(read_metrics(base_metrics()))
+    if clarg["base"] and clarg["vector"]:
+        try:
+            vvec = VulnerabilityVector(clarg["vector"])
+            selected = list(vvec.complete().metric_values())
+        except (InvalidBaseVectorError, ValueError) as e:
+            _exit_with_error(e)
         if clarg["temporal"]:
             selected.extend(read_metrics(temporal_metrics()))
             if clarg["environmental"]:
                 selected.extend(read_metrics(environmental_metrics()))
+    else:
+        selected = _accumulate_groups(
+            clarg,
+            all_fns=[base_metrics, temporal_metrics, environmental_metrics],
+            base_fn=base_metrics,
+            temporal_fn=temporal_metrics,
+            env_fn=environmental_metrics,
+        )
     cvs: CVSS = cvs_factory(CommonVulnerabilityScore, selected)
     return cvs
 
