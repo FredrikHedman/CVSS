@@ -13,7 +13,13 @@ from cvss.cvss_40 import _eq3  # pyright: ignore[reportPrivateUsage]
 from cvss.cvss_40 import _eq4  # pyright: ignore[reportPrivateUsage]
 from cvss.cvss_40 import _eq5  # pyright: ignore[reportPrivateUsage]
 from cvss.cvss_40 import _eq6  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _EQ1_MAX  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _EQ2_MAX  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _EQ3EQ6_MAX  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _EQ4_MAX  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _EQ5_MAX  # pyright: ignore[reportPrivateUsage]
 from cvss.vulnerability_40 import InvalidVectorError, VulnerabilityVector40
+from cvss.vulnerability_40 import _ALL_ALLOWED  # pyright: ignore[reportPrivateUsage]
 
 
 # ---------------------------------------------------------------------------
@@ -135,6 +141,28 @@ def test_eq5(p: dict[str, str], expected: int) -> None:
 ])
 def test_eq6(p: dict[str, str], expected: int) -> None:
     assert _eq6(p) == expected
+
+
+# ---------------------------------------------------------------------------
+# _EQ*_MAX validity test
+# ---------------------------------------------------------------------------
+
+
+def test_eq_max_vectors_valid() -> None:
+    """Every metric:value pair in _EQ*_MAX strings is a valid metric value."""
+    flat: list[str] = []
+    for d in [_EQ1_MAX, _EQ2_MAX, _EQ4_MAX, _EQ5_MAX]:
+        for vecs in d.values():
+            flat.extend(vecs)
+    for level_dict in _EQ3EQ6_MAX.values():
+        for vecs in level_dict.values():
+            flat.extend(vecs)
+    for vec in flat:
+        for pair in vec.rstrip("/").split("/"):
+            abbrev, val = pair.split(":")
+            assert val in _ALL_ALLOWED[abbrev], (
+                f"{abbrev}:{val} not in _ALL_ALLOWED"
+            )
 
 
 # ---------------------------------------------------------------------------

@@ -127,10 +127,11 @@ _EQ4_MAX: dict[str, list[str]] = {
     "1": ["SC:H/SI:H/SA:H/"],
     "2": ["SC:L/SI:L/SA:L/"],
 }
+_eq5_vals = [
+    d.abbrev for d in THREAT40_DEFINITIONS[0].values if d.abbrev != "X"
+]
 _EQ5_MAX: dict[str, list[str]] = {
-    "0": ["E:A/"],
-    "1": ["E:P/"],
-    "2": ["E:U/"],
+    str(i): [f"E:{v}/"] for i, v in enumerate(_eq5_vals)
 }
 
 # ---------------------------------------------------------------------------
