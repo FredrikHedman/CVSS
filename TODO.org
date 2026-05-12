@@ -1,5 +1,5 @@
 * <2026-05-12 Mon> Findings after v4.0 structure refactors (validate-on-construction, EQ functions, dict-based reading) [0/3]
-  1) [ ] **`_eq_contrib` and `_eq3eq6_contrib` should be module-level** (MEDIUM) —
+  1) [X] **`_eq_contrib` and `_eq3eq6_contrib` should be module-level** (MEDIUM) —
      After R2 moved `_eq1`–`_eq6`, `_metric_eff`, and `_dist_from_specs` to module
      level, the scoring contribution helpers `_eq_contrib` and `_eq3eq6_contrib`
      remain as instance methods. They use `self._find_dist` (which itself only
