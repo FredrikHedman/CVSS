@@ -1,3 +1,29 @@
+* <2026-05-12 Mon> Findings after completing scoring/testing cleanup [0/3]
+  1) [ ] **Extend `CVSSResult` Protocol to cover all four metric group accessors** (MEDIUM) —
+     `CVSSResult` in `cvss_types.py` declares only `base_metrics() -> list[Metric]`.
+     `CommonVulnerabilityScore40` implements three additional typed accessors
+     (`threat_metrics`, `environmental_metrics`, `supplemental_metrics`) that are
+     absent from the protocol. Callers who hold a `CVSSResult` reference have no
+     typed way to reach these accessors — they cannot inspect threat or
+     environmental metrics without downcasting. Extend the protocol (or introduce
+     a `CVSS40Result` sub-protocol that `CommonVulnerabilityScore40` also satisfies)
+     so the full v4.0 public API is discoverable and checked by basedpyright.
+
+  2) [ ] **`_BASE_CLARG` as a pytest fixture in `test_display.py`** (LOW) —
+     `_BASE_CLARG` is a module-level dict spread via `{**_BASE_CLARG, ...}` at
+     every test call site. Converting to a `@pytest.fixture(name="base_clarg")`
+     returning a fresh `CvssArgs` dict each call is the idiomatic pytest fixture
+     pattern: it removes the manual spread, makes the test signature document
+     its dependencies, and guarantees test isolation if the dict is ever mutated.
+
+  3) [ ] **Direct unit test for `display_score()` in `test_display.py`** (LOW) —
+     `display_score` in `cvss_output.py` formats a `ScoreDisplayData` into tabular
+     stdout. It is exercised only indirectly through the full CLI use-case fixtures
+     (`test_usecases.py`). Adding a focused test that constructs a minimal
+     `ScoreDisplayData` and asserts on `capsys.readouterr().out` — e.g. that
+     the header label appears — applies the Arrange-Act-Assert pattern and
+     completes direct unit coverage for `cvss_output.py`.
+
 * <2026-05-12 Mon> Findings after v4.0 structure refactors (validate-on-construction, EQ functions, dict-based reading) [0/3]
   1) [X] **`_eq_contrib` and `_eq3eq6_contrib` should be module-level** (MEDIUM) —
      After R2 moved `_eq1`–`_eq6`, `_metric_eff`, and `_dist_from_specs` to module
