@@ -43,21 +43,17 @@ def test_score_display_data_immutable() -> None:
         d.header = ("X", "Y", "Z")  # type: ignore[misc]
 
 
-_BASE_CLARG: CvssArgs = {
-    "verbose": False,
-    "interactive": False,
-    "all": False,
-    "base": True,
-    "temporal": False,
-    "environmental": False,
-    "vector": None,
-    "vulnerability": None,
-    "cvss_version": "2.10",
-}
+@pytest.fixture
+def base_clarg() -> CvssArgs:
+    return {
+        "verbose": False, "interactive": False, "all": False,
+        "base": True, "temporal": False, "environmental": False,
+        "vector": None, "vulnerability": None, "cvss_version": "2.10",
+    }
 
 
-def test_render_output_non_verbose() -> None:
-    clarg: CvssArgs = {**_BASE_CLARG, "verbose": False}
+def test_render_output_non_verbose(base_clarg: CvssArgs) -> None:
+    clarg: CvssArgs = {**base_clarg, "verbose": False}
     with patch("cvss.cvss_output._generate_output") as mock_out, \
          patch("cvss.cvss_output._generate_verbose_output") as mock_verb:
         render_output(MagicMock(), clarg)
@@ -65,8 +61,8 @@ def test_render_output_non_verbose() -> None:
     mock_verb.assert_not_called()
 
 
-def test_render_output_verbose() -> None:
-    clarg: CvssArgs = {**_BASE_CLARG, "verbose": True}
+def test_render_output_verbose(base_clarg: CvssArgs) -> None:
+    clarg: CvssArgs = {**base_clarg, "verbose": True}
     with patch("cvss.cvss_output._generate_output") as mock_out, \
          patch("cvss.cvss_output._generate_verbose_output") as mock_verb:
         render_output(MagicMock(), clarg)
@@ -94,10 +90,12 @@ def testqualitative_rating(score: float, expected: str) -> None:
     assert qualitative_rating(score) == expected
 
 
-def test_render_output_v40_dispatches_to_render_v40() -> None:
+def test_render_output_v40_dispatches_to_render_v40(
+    base_clarg: CvssArgs,
+) -> None:
     cvs = MagicMock()
     cvs.version = "4.0"
-    clarg: CvssArgs = {**_BASE_CLARG, "cvss_version": "4.0"}
+    clarg: CvssArgs = {**base_clarg, "cvss_version": "4.0"}
     with patch("cvss.cvss_output._render_v40") as mock_v40, \
          patch("cvss.cvss_output._generate_output") as mock_out:
         render_output(cvs, clarg)
@@ -105,14 +103,16 @@ def test_render_output_v40_dispatches_to_render_v40() -> None:
     mock_out.assert_not_called()
 
 
-def test_render_output_v40_prints_score_and_severity() -> None:
+def test_render_output_v40_prints_score_and_severity(
+    base_clarg: CvssArgs,
+) -> None:
     cvs = MagicMock()
     cvs.version = "4.0"
     cvs.base_score = 7.3
     cvs.base_vulnerability_vector = (
         "CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
     )
-    clarg: CvssArgs = {**_BASE_CLARG, "cvss_version": "4.0"}
+    clarg: CvssArgs = {**base_clarg, "cvss_version": "4.0"}
     captured = io.StringIO()
     sys.stdout = captured
     try:

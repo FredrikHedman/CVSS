@@ -1,4 +1,4 @@
-* <2026-05-12 Mon> Findings after completing scoring/testing cleanup [1/3]
+* <2026-05-12 Mon> Findings after completing scoring/testing cleanup [2/3]
   1) [X] **Extend `CVSSResult` Protocol to cover all four metric group accessors** (MEDIUM) —
      `CVSSResult` in `cvss_types.py` declares only `base_metrics() -> list[Metric]`.
      `CommonVulnerabilityScore40` implements three additional typed accessors
@@ -9,7 +9,7 @@
      a `CVSS40Result` sub-protocol that `CommonVulnerabilityScore40` also satisfies)
      so the full v4.0 public API is discoverable and checked by basedpyright.
 
-  2) [ ] **`_BASE_CLARG` as a pytest fixture in `test_display.py`** (LOW) —
+  2) [X] **`_BASE_CLARG` as a pytest fixture in `test_display.py`** (LOW) —
      `_BASE_CLARG` is a module-level dict spread via `{**_BASE_CLARG, ...}` at
      every test call site. Converting to a `@pytest.fixture(name="base_clarg")`
      returning a fresh `CvssArgs` dict each call is the idiomatic pytest fixture
@@ -51,7 +51,7 @@
      `@functools.cached_property` that builds lazily on first access would avoid
      the upfront cost when only scoring is needed.
 
-* <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [0/3]
+* <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [1/3]
   1) [X] **Add accessor tests for `CommonVulnerabilityScore40`** — (MEDIUM)
      `threat_metrics()`, `environmental_metrics()`, and `supplemental_metrics()`
      are public accessors with no tests. Only `len(cvs.base_metrics()) == 11`
@@ -60,7 +60,7 @@
      objects carry the correct abbreviations (e.g. first threat metric abbrev is
      `"E"`). Fills a coverage gap in the v4.0 public API.
 
-  2) [ ] **`_BASE_CLARG` as a pytest fixture in `test_display.py`** — (LOW)
+  2) [X] **`_BASE_CLARG` as a pytest fixture in `test_display.py`** — (LOW)
      `_BASE_CLARG` is a module-level dict spread via `{**_BASE_CLARG, ...}` at
      every call site. Converting to a `@pytest.fixture` returning a fresh
      `CvssArgs` each call is more idiomatic, removes the need for callers to
