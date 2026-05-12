@@ -32,6 +32,7 @@ class CvssArgs(TypedDict):
     cvss_version: str
 
 
+@runtime_checkable
 class CVSSResult(Protocol):
     """Common interface satisfied by both v2.10 and v4.0 scorers."""
 

@@ -1,4 +1,4 @@
-* <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [1/3]
+* <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [2/3]
   1) [X] **Use `isinstance(cvs, CVSS40Result)` dispatch in `render_output`** (MEDIUM) —
      `render_output` in `cvss_output.py` dispatches to `_render_v40` via
      `cvs.version == "4.0"` — a runtime string check that bypasses the type system.
@@ -7,7 +7,7 @@
      `CVSSResult` to `CVSS40Result`. basedpyright will then enforce that
      `_render_v40` only receives valid v4.0 scorers (Protocol Narrowing Pattern).
 
-  2) [ ] **Make `CVSSResult` `@runtime_checkable` for symmetry** (LOW) —
+  2) [X] **Make `CVSSResult` `@runtime_checkable` for symmetry** (LOW) —
      `CVSS40Result` is `@runtime_checkable`; `CVSSResult` is not. Decorating the
      base protocol too allows callers to use `isinstance(x, CVSSResult)` as a type
      guard (e.g. in handler dispatch code). Symmetric decoration is idiomatic when
