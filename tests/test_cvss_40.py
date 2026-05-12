@@ -230,3 +230,12 @@ def test_supplemental_metrics() -> None:
     metrics = cvs.supplemental_metrics()
     assert len(metrics) == 6
     assert metrics[0].short_name == "S"
+
+
+def test_metrics_are_lazily_constructed() -> None:
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
+    assert "_metrics" not in cvs.__dict__
+    _ = cvs.base_score   # scoring does not trigger metric construction
+    assert "_metrics" not in cvs.__dict__
+    _ = cvs.base_metrics()
+    assert "_metrics" in cvs.__dict__

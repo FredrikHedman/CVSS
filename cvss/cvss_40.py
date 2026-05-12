@@ -10,6 +10,7 @@ a lookup-table approach rather than closed-form formulas. See README
 §Architecture for rationale.
 """
 
+import functools
 from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Callable, NamedTuple
@@ -479,7 +480,10 @@ class CommonVulnerabilityScore40:
 
     def __init__(self, parsed: dict[str, str]) -> None:
         self._p: dict[str, str] = parsed
-        self._metrics: dict[str, Metric] = {}
+
+    @functools.cached_property
+    def _metrics(self) -> dict[str, Metric]:
+        result: dict[str, Metric] = {}
         all_defs = (
             list(BASE40_DEFINITIONS)
             + list(THREAT40_DEFINITIONS)
@@ -487,12 +491,13 @@ class CommonVulnerabilityScore40:
             + list(SUPPLEMENTAL40_DEFINITIONS)
         )
         for d in all_defs:
-            val = parsed.get(d.abbrev, "X")
+            val = self._p.get(d.abbrev, "X")
             try:
                 m = Metric(d.name, d.abbrev, d.metric_values(), index=val)
             except ValueError:
                 m = Metric(d.name, d.abbrev, d.metric_values())
-            self._metrics[d.abbrev] = m
+            result[d.abbrev] = m
+        return result
 
     # ------------------------------------------------------------------
     # Per-EQ severity distance helpers (Spec §8.3)
