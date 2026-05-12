@@ -1,3 +1,24 @@
+* <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [0/3]
+  1) [ ] **Use `isinstance(cvs, CVSS40Result)` dispatch in `render_output`** (MEDIUM) —
+     `render_output` in `cvss_output.py` dispatches to `_render_v40` via
+     `cvs.version == "4.0"` — a runtime string check that bypasses the type system.
+     Now that `CVSS40Result` is `@runtime_checkable`, replace this with
+     `isinstance(cvs, CVSS40Result)` and narrow `_render_v40`'s parameter from
+     `CVSSResult` to `CVSS40Result`. basedpyright will then enforce that
+     `_render_v40` only receives valid v4.0 scorers (Protocol Narrowing Pattern).
+
+  2) [ ] **Make `CVSSResult` `@runtime_checkable` for symmetry** (LOW) —
+     `CVSS40Result` is `@runtime_checkable`; `CVSSResult` is not. Decorating the
+     base protocol too allows callers to use `isinstance(x, CVSSResult)` as a type
+     guard (e.g. in handler dispatch code). Symmetric decoration is idiomatic when
+     a sub-protocol is already decorated, and costs nothing at runtime.
+
+  3) [ ] **Deduplicate 2026-05-11 LOW items in TODO.org** (LOW) —
+     The 2026-05-11 section's items 2 (`_BASE_CLARG`) and 3 (`display_score()`)
+     were promoted verbatim into the 2026-05-12 sections and are now done in both
+     places. Removing or collapsing the 2026-05-11 duplicates keeps the TODO log
+     as a clean record without misleadingly unresolved entries.
+
 * <2026-05-12 Mon> Findings after completing scoring/testing cleanup [3/3]
   1) [X] **Extend `CVSSResult` Protocol to cover all four metric group accessors** (MEDIUM) —
      `CVSSResult` in `cvss_types.py` declares only `base_metrics() -> list[Metric]`.
