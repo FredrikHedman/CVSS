@@ -1,4 +1,4 @@
-* <2026-05-12 Mon> Findings after completing scoring/testing cleanup [2/3]
+* <2026-05-12 Mon> Findings after completing scoring/testing cleanup [3/3]
   1) [X] **Extend `CVSSResult` Protocol to cover all four metric group accessors** (MEDIUM) —
      `CVSSResult` in `cvss_types.py` declares only `base_metrics() -> list[Metric]`.
      `CommonVulnerabilityScore40` implements three additional typed accessors
@@ -16,7 +16,7 @@
      pattern: it removes the manual spread, makes the test signature document
      its dependencies, and guarantees test isolation if the dict is ever mutated.
 
-  3) [ ] **Direct unit test for `display_score()` in `test_display.py`** (LOW) —
+  3) [X] **Direct unit test for `display_score()` in `test_display.py`** (LOW) —
      `display_score` in `cvss_output.py` formats a `ScoreDisplayData` into tabular
      stdout. It is exercised only indirectly through the full CLI use-case fixtures
      (`test_usecases.py`). Adding a focused test that constructs a minimal
@@ -51,7 +51,7 @@
      `@functools.cached_property` that builds lazily on first access would avoid
      the upfront cost when only scoring is needed.
 
-* <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [1/3]
+* <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [2/3]
   1) [X] **Add accessor tests for `CommonVulnerabilityScore40`** — (MEDIUM)
      `threat_metrics()`, `environmental_metrics()`, and `supplemental_metrics()`
      are public accessors with no tests. Only `len(cvs.base_metrics()) == 11`
@@ -67,7 +67,7 @@
      remember to spread, and is consistent with how other test files use
      fixtures. No behavioural change; pure test-hygiene improvement.
 
-  3) [ ] **Add a unit test for `display_score()` in `test_display.py`** — (LOW)
+  3) [X] **Add a unit test for `display_score()` in `test_display.py`** — (LOW)
      `display_score` in `cvss_output.py` is exercised only indirectly through
      the full use-case CLI fixtures (`test_usecases.py`). Adding a focused test
      that calls `display_score(minimal_ScoreDisplayData)` and asserts on

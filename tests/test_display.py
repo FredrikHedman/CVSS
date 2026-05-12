@@ -8,6 +8,7 @@ import pytest
 
 from cvss.cvss_output import (
     ScoreDisplayData,
+    display_score,
     qualitative_rating,
     render_output,
 )
@@ -41,6 +42,23 @@ def test_score_display_data_immutable() -> None:
     )
     with pytest.raises(FrozenInstanceError):
         d.header = ("X", "Y", "Z")  # type: ignore[misc]
+
+
+def test_display_score_prints_header(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    data = ScoreDisplayData(
+        header=("BASE METRIC", "EVALUATION", "SCORE"),
+        footer_labels=["FORMULA", "BASE SCORE"],
+        metrics=[],
+        footer_data=[("Base Score", 7.5)],
+        vector_label=("Base", "AV:N/AC:L"),
+    )
+    display_score(data)
+    out = capsys.readouterr().out
+    assert "BASE METRIC" in out
+    assert "BASE SCORE" in out
+    assert "7.50" in out
 
 
 @pytest.fixture
