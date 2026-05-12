@@ -5,7 +5,7 @@
 #
 """Shared type definitions for the cvss CLI."""
 
-from typing import NamedTuple, Protocol, TypedDict
+from typing import NamedTuple, Protocol, TypedDict, runtime_checkable
 
 from .metric import Metric
 
@@ -45,3 +45,12 @@ class CVSSResult(Protocol):
     def base_vulnerability_vector(self) -> str: ...
 
     def base_metrics(self) -> list[Metric]: ...
+
+
+@runtime_checkable
+class CVSS40Result(CVSSResult, Protocol):
+    """Extended interface for CVSS v4.0 scorers."""
+
+    def threat_metrics(self) -> list[Metric]: ...
+    def environmental_metrics(self) -> list[Metric]: ...
+    def supplemental_metrics(self) -> list[Metric]: ...

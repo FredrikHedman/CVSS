@@ -6,6 +6,7 @@ Test vectors sourced from https://www.first.org/cvss/v4.0/examples
 import pytest
 
 from cvss.cvss_40 import CommonVulnerabilityScore40
+from cvss.cvss_types import CVSS40Result
 from cvss.cvss_40 import _eq1  # pyright: ignore[reportPrivateUsage]
 from cvss.cvss_40 import _eq2  # pyright: ignore[reportPrivateUsage]
 from cvss.cvss_40 import _eq3  # pyright: ignore[reportPrivateUsage]
@@ -230,6 +231,11 @@ def test_supplemental_metrics() -> None:
     metrics = cvs.supplemental_metrics()
     assert len(metrics) == 6
     assert metrics[0].short_name == "S"
+
+
+def test_cvss40_satisfies_cvss40result_protocol() -> None:
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
+    assert isinstance(cvs, CVSS40Result)
 
 
 def test_metrics_are_lazily_constructed() -> None:
