@@ -209,3 +209,24 @@ def test_base_vulnerability_vector_roundtrip() -> None:
 def test_base_metrics_count() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
     assert len(cvs.base_metrics()) == 11
+
+
+def test_threat_metrics() -> None:
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
+    metrics = cvs.threat_metrics()
+    assert len(metrics) == 1
+    assert metrics[0].short_name == "E"
+
+
+def test_environmental_metrics() -> None:
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
+    metrics = cvs.environmental_metrics()
+    assert len(metrics) == 14
+    assert metrics[0].short_name == "CR"
+
+
+def test_supplemental_metrics() -> None:
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
+    metrics = cvs.supplemental_metrics()
+    assert len(metrics) == 6
+    assert metrics[0].short_name == "S"

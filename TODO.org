@@ -26,7 +26,7 @@
      the upfront cost when only scoring is needed.
 
 * <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [0/3]
-  1) [ ] **Add accessor tests for `CommonVulnerabilityScore40`** — (MEDIUM)
+  1) [X] **Add accessor tests for `CommonVulnerabilityScore40`** — (MEDIUM)
      `threat_metrics()`, `environmental_metrics()`, and `supplemental_metrics()`
      are public accessors with no tests. Only `len(cvs.base_metrics()) == 11`
      is covered in `test_cvss_40.py`. Add parametrized tests asserting counts
