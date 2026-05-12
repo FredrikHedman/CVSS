@@ -4,8 +4,13 @@ from unittest.mock import patch
 
 import pytest
 
-from cvss.cvss_input import read_metrics, select_metric_value
+from cvss.cvss_input import (
+    read_metrics,
+    read_metrics_as_dict,
+    select_metric_value,
+)
 from cvss.vulnerability import base_metrics
+from cvss.vulnerability_40 import base_metrics_40
 
 
 def test_select_valid_input(capsys: pytest.CaptureFixture[str]) -> None:
@@ -35,3 +40,10 @@ def test_read_metrics_returns_selected_values() -> None:
     with patch("builtins.input", side_effect=["N", "L"]):
         result = read_metrics(metrics)
     assert result == ["N", "L"]
+
+
+def test_read_metrics_as_dict_maps_abbrev_to_value() -> None:
+    metrics = base_metrics_40()[:3]  # AV, AC, AT
+    with patch("builtins.input", side_effect=["N", "L", "N"]):
+        result = read_metrics_as_dict(metrics)
+    assert result == {"AV": "N", "AC": "L", "AT": "N"}

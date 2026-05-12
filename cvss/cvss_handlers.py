@@ -7,7 +7,7 @@ from typing import NoReturn, cast
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_40 import CommonVulnerabilityScore40
 from .cvss_base import CVSS
-from .cvss_input import read_metrics
+from .cvss_input import read_metrics, read_metrics_as_dict
 from .cvss_types import CVSSResult, CvssArgs
 from .vulnerability import (
     InvalidBaseVectorError,
@@ -98,25 +98,17 @@ def _interactive_v40(clarg: CvssArgs) -> CVSSResult:
             )
         except (InvalidVectorError, ValueError) as e:
             _exit_with_error(e)
-    all_defs = (
-        list(base_metrics_40()) + list(threat_metrics_40())
-        + list(environmental_metrics_40()) + list(supplemental_metrics_40())
-    )
-    selected = _accumulate_groups(
-        clarg,
-        all_fns=[
-            base_metrics_40, threat_metrics_40,
-            environmental_metrics_40, supplemental_metrics_40,
-        ],
-        base_fn=base_metrics_40,
-        temporal_fn=threat_metrics_40,
-        env_fn=environmental_metrics_40,
-    )
-    parsed: dict[str, str] = {
-        d.abbrev: selected[i]
-        for i, d in enumerate(all_defs)
-        if i < len(selected)
-    }
+    parsed: dict[str, str] = {}
+    if clarg["all"]:
+        for fn in [base_metrics_40, threat_metrics_40,
+                   environmental_metrics_40, supplemental_metrics_40]:
+            parsed.update(read_metrics_as_dict(fn()))
+    elif clarg["base"]:
+        parsed.update(read_metrics_as_dict(base_metrics_40()))
+        if clarg["temporal"]:
+            parsed.update(read_metrics_as_dict(threat_metrics_40()))
+            if clarg["environmental"]:
+                parsed.update(read_metrics_as_dict(environmental_metrics_40()))
     return CommonVulnerabilityScore40(parsed)
 
 

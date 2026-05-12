@@ -1,5 +1,7 @@
 """Interactive terminal input for CVSS metric selection."""
 
+from collections.abc import Iterable
+
 from .metric import Metric
 from .vulnerability import MetricDefinition
 
@@ -36,3 +38,10 @@ def select_metric_value(m: MetricDefinition) -> str:
 def read_metrics(L: list[MetricDefinition]) -> list[str]:
     """Interactively read metric values and return them as a list."""
     return [select_metric_value(m) for m in L]
+
+
+def read_metrics_as_dict(
+    metrics: Iterable[MetricDefinition],
+) -> dict[str, str]:
+    """Interactively read metrics; return abbrev→selected_value mapping."""
+    return {m.abbrev: select_metric_value(m) for m in metrics}
