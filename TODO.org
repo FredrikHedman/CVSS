@@ -1,4 +1,4 @@
-* <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [2/3]
+* <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [3/3]
   1) [X] **Use `isinstance(cvs, CVSS40Result)` dispatch in `render_output`** (MEDIUM) —
      `render_output` in `cvss_output.py` dispatches to `_render_v40` via
      `cvs.version == "4.0"` — a runtime string check that bypasses the type system.
@@ -13,7 +13,7 @@
      guard (e.g. in handler dispatch code). Symmetric decoration is idiomatic when
      a sub-protocol is already decorated, and costs nothing at runtime.
 
-  3) [ ] **Deduplicate 2026-05-11 LOW items in TODO.org** (LOW) —
+  3) [X] **Deduplicate 2026-05-11 LOW items in TODO.org** (LOW) —
      The 2026-05-11 section's items 2 (`_BASE_CLARG`) and 3 (`display_score()`)
      were promoted verbatim into the 2026-05-12 sections and are now done in both
      places. Removing or collapsing the 2026-05-11 duplicates keeps the TODO log
@@ -72,7 +72,7 @@
      `@functools.cached_property` that builds lazily on first access would avoid
      the upfront cost when only scoring is needed.
 
-* <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [2/3]
+* <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [3/3]
   1) [X] **Add accessor tests for `CommonVulnerabilityScore40`** — (MEDIUM)
      `threat_metrics()`, `environmental_metrics()`, and `supplemental_metrics()`
      are public accessors with no tests. Only `len(cvs.base_metrics()) == 11`
