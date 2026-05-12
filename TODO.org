@@ -1,5 +1,5 @@
-* <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [0/3]
-  1) [ ] **Use `isinstance(cvs, CVSS40Result)` dispatch in `render_output`** (MEDIUM) —
+* <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [1/3]
+  1) [X] **Use `isinstance(cvs, CVSS40Result)` dispatch in `render_output`** (MEDIUM) —
      `render_output` in `cvss_output.py` dispatches to `_render_v40` via
      `cvs.version == "4.0"` — a runtime string check that bypasses the type system.
      Now that `CVSS40Result` is `@runtime_checkable`, replace this with

@@ -12,7 +12,9 @@ from cvss.cvss_output import (
     qualitative_rating,
     render_output,
 )
+from cvss.cvss_40 import CommonVulnerabilityScore40
 from cvss.cvss_types import CvssArgs
+from cvss.vulnerability_40 import VulnerabilityVector40
 
 
 def test_score_display_data_construction() -> None:
@@ -108,11 +110,15 @@ def testqualitative_rating(score: float, expected: str) -> None:
     assert qualitative_rating(score) == expected
 
 
+_V40_BASE = (
+    "CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+)
+
+
 def test_render_output_v40_dispatches_to_render_v40(
     base_clarg: CvssArgs,
 ) -> None:
-    cvs = MagicMock()
-    cvs.version = "4.0"
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
     clarg: CvssArgs = {**base_clarg, "cvss_version": "4.0"}
     with patch("cvss.cvss_output._render_v40") as mock_v40, \
          patch("cvss.cvss_output._generate_output") as mock_out:
@@ -124,12 +130,7 @@ def test_render_output_v40_dispatches_to_render_v40(
 def test_render_output_v40_prints_score_and_severity(
     base_clarg: CvssArgs,
 ) -> None:
-    cvs = MagicMock()
-    cvs.version = "4.0"
-    cvs.base_score = 7.3
-    cvs.base_vulnerability_vector = (
-        "CVSS:4.0/AV:L/AC:L/AT:P/PR:L/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
-    )
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
     clarg: CvssArgs = {**base_clarg, "cvss_version": "4.0"}
     captured = io.StringIO()
     sys.stdout = captured

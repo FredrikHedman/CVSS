@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from typing import cast
 
 from .cvss_base import CVSS
-from .cvss_types import CVSSResult, CvssArgs, ScoreEntry
+from .cvss_types import CVSS40Result, CVSSResult, CvssArgs, ScoreEntry
 from .metric import Metric
 
 
@@ -145,7 +145,7 @@ def qualitative_rating(score: float) -> str:
     return "Critical"
 
 
-def _render_v40(cvs: CVSSResult) -> None:
+def _render_v40(cvs: CVSS40Result) -> None:
     print()
     print(f"CVSS v4.0 Score = {cvs.base_score}")
     print(f"Severity = {qualitative_rating(cvs.base_score)}")
@@ -156,7 +156,7 @@ def _render_v40(cvs: CVSSResult) -> None:
 
 def render_output(cvs: CVSSResult, clarg: CvssArgs) -> None:
     """Print scores in verbose or standard format."""
-    if cvs.version == "4.0":
+    if isinstance(cvs, CVSS40Result):
         _render_v40(cvs)
     elif clarg["verbose"]:
         _generate_verbose_output(cast(CVSS, cvs), clarg)
