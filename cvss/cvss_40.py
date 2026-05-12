@@ -317,6 +317,111 @@ class _EQLevels(NamedTuple):
     eq6: int
 
 
+# ---------------------------------------------------------------------------
+# Metric lookup helpers
+# ---------------------------------------------------------------------------
+
+
+def _v(p: dict[str, str], key: str) -> str:
+    return p.get(key, "X")
+
+
+def _eff(p: dict[str, str], mod: str, base: str) -> str:
+    m = p.get(mod, "X")
+    return p.get(base, "X") if m == "X" else m
+
+
+# ---------------------------------------------------------------------------
+# EQ level classification (Spec §7.5)
+# ---------------------------------------------------------------------------
+
+
+def _eq1(p: dict[str, str]) -> int:
+    av, pr, ui = _v(p, "AV"), _v(p, "PR"), _v(p, "UI")
+    if av == "N" and pr == "N" and ui == "N":
+        return 0
+    if av == "N" or pr == "N" or ui == "N":
+        return 1
+    return 2
+
+
+def _eq2(p: dict[str, str]) -> int:
+    return 0 if _v(p, "AC") == "L" and _v(p, "AT") == "N" else 1
+
+
+def _eq3(p: dict[str, str]) -> int:
+    vc, vi, va = _v(p, "VC"), _v(p, "VI"), _v(p, "VA")
+    if vc == "H" and vi == "H":
+        return 0
+    if vc == "H" or vi == "H" or va == "H":
+        return 1
+    return 2
+
+
+def _eq4(p: dict[str, str]) -> int:
+    eff_si = _eff(p, "MSI", "SI")
+    eff_sa = _eff(p, "MSA", "SA")
+    if eff_si == "S" or eff_sa == "S":
+        return 0
+    eff_sc = _eff(p, "MSC", "SC")
+    if eff_sc == "H" or eff_si == "H" or eff_sa == "H":
+        return 1
+    return 2
+
+
+def _eq5(p: dict[str, str]) -> int:
+    e = _v(p, "E")
+    eff = "A" if e == "X" else e
+    if eff == "A":
+        return 0
+    if eff == "P":
+        return 1
+    return 2
+
+
+def _eq6(p: dict[str, str]) -> int:
+    eff_vc = _eff(p, "MVC", "VC")
+    eff_vi = _eff(p, "MVI", "VI")
+    eff_va = _eff(p, "MVA", "VA")
+    cr, ir, ar = _v(p, "CR"), _v(p, "IR"), _v(p, "AR")
+    eff_cr = "H" if cr == "X" else cr
+    eff_ir = "H" if ir == "X" else ir
+    eff_ar = "H" if ar == "X" else ar
+    if ((eff_cr == "H" and eff_vc == "H")
+            or (eff_ir == "H" and eff_vi == "H")
+            or (eff_ar == "H" and eff_va == "H")):
+        return 0
+    return 1
+
+
+def _eq_levels(p: dict[str, str]) -> _EQLevels:
+    """Classify a metric dict into six EQ levels (Spec §7.5)."""
+    return _EQLevels(_eq1(p), _eq2(p), _eq3(p), _eq4(p), _eq5(p), _eq6(p))
+
+
+# ---------------------------------------------------------------------------
+# Severity distance helpers (Spec §8.3 interpolation)
+# ---------------------------------------------------------------------------
+
+
+def _metric_eff(p: dict[str, str], spec: _DistSpec) -> str:
+    v = _eff(p, spec.mod, spec.key) if spec.mod else _v(p, spec.key)
+    return spec.x_sub if spec.x_sub and v == "X" else v
+
+
+def _dist_from_specs(
+    p: dict[str, str], mv: dict[str, str], specs: list[_DistSpec]
+) -> float | None:
+    diffs = [
+        spec.ldict.get(_metric_eff(p, spec), 0.0)
+        - spec.ldict.get(mv.get(spec.key, spec.mv_default), 0.0)
+        for spec in specs
+    ]
+    if any(d < 0 for d in diffs):
+        return None
+    return sum(diffs)
+
+
 class CommonVulnerabilityScore40:
     """CVSS v4.0 scorer: MacroVector lookup + interpolation (Spec §7–§8)."""
 
@@ -337,109 +442,24 @@ class CommonVulnerabilityScore40:
                 m = Metric(d.name, d.abbrev, d.metric_values())
             self._metrics[d.abbrev] = m
 
-    def _v(self, key: str) -> str:
-        return self._p.get(key, "X")
-
-    def _eff(self, mod: str, base: str) -> str:
-        m = self._v(mod)
-        return self._v(base) if m == "X" else m
-
     # ------------------------------------------------------------------
-    # EQ level computation (Spec §7.5)
+    # Per-EQ severity distance helpers (Spec §8.3)
     # ------------------------------------------------------------------
-
-    def _eq1(self) -> int:
-        av, pr, ui = self._v("AV"), self._v("PR"), self._v("UI")
-        if av == "N" and pr == "N" and ui == "N":
-            return 0
-        if av == "N" or pr == "N" or ui == "N":
-            return 1
-        return 2
-
-    def _eq2(self) -> int:
-        return 0 if self._v("AC") == "L" and self._v("AT") == "N" else 1
-
-    def _eq3(self) -> int:
-        vc, vi, va = self._v("VC"), self._v("VI"), self._v("VA")
-        if vc == "H" and vi == "H":
-            return 0
-        if vc == "H" or vi == "H" or va == "H":
-            return 1
-        return 2
-
-    def _eq4(self) -> int:
-        eff_si = self._eff("MSI", "SI")
-        eff_sa = self._eff("MSA", "SA")
-        if eff_si == "S" or eff_sa == "S":
-            return 0
-        eff_sc = self._eff("MSC", "SC")
-        if eff_sc == "H" or eff_si == "H" or eff_sa == "H":
-            return 1
-        return 2
-
-    def _eq5(self) -> int:
-        e = self._v("E")
-        eff = "A" if e == "X" else e
-        if eff == "A":
-            return 0
-        if eff == "P":
-            return 1
-        return 2
-
-    def _eq6(self) -> int:
-        eff_vc = self._eff("MVC", "VC")
-        eff_vi = self._eff("MVI", "VI")
-        eff_va = self._eff("MVA", "VA")
-        cr, ir, ar = self._v("CR"), self._v("IR"), self._v("AR")
-        eff_cr = "H" if cr == "X" else cr
-        eff_ir = "H" if ir == "X" else ir
-        eff_ar = "H" if ar == "X" else ar
-        if ((eff_cr == "H" and eff_vc == "H")
-                or (eff_ir == "H" and eff_vi == "H")
-                or (eff_ar == "H" and eff_va == "H")):
-            return 0
-        return 1
-
-    def _eq_levels(self) -> _EQLevels:
-        return _EQLevels(
-            self._eq1(), self._eq2(), self._eq3(),
-            self._eq4(), self._eq5(), self._eq6(),
-        )
-
-    # ------------------------------------------------------------------
-    # Per-EQ severity distance helpers
-    # ------------------------------------------------------------------
-
-    def _metric_eff(self, spec: _DistSpec) -> str:
-        v = self._eff(spec.mod, spec.key) if spec.mod else self._v(spec.key)
-        return spec.x_sub if spec.x_sub and v == "X" else v
-
-    def _dist_from_specs(
-        self, mv: dict[str, str], specs: list[_DistSpec]
-    ) -> float | None:
-        diffs = [
-            spec.ldict.get(self._metric_eff(spec), 0.0)
-            - spec.ldict.get(mv.get(spec.key, spec.mv_default), 0.0)
-            for spec in specs
-        ]
-        if any(d < 0 for d in diffs):
-            return None
-        return sum(diffs)
 
     def _dist_eq1(self, mv: dict[str, str]) -> float | None:
-        return self._dist_from_specs(mv, _EQ1_SPECS)
+        return _dist_from_specs(self._p, mv, _EQ1_SPECS)
 
     def _dist_eq2(self, mv: dict[str, str]) -> float | None:
-        return self._dist_from_specs(mv, _EQ2_SPECS)
+        return _dist_from_specs(self._p, mv, _EQ2_SPECS)
 
     def _dist_eq3eq6(self, mv: dict[str, str]) -> float | None:
-        return self._dist_from_specs(mv, _EQ3EQ6_SPECS)
+        return _dist_from_specs(self._p, mv, _EQ3EQ6_SPECS)
 
     def _dist_eq4(self, mv: dict[str, str]) -> float | None:
-        return self._dist_from_specs(mv, _EQ4_SPECS)
+        return _dist_from_specs(self._p, mv, _EQ4_SPECS)
 
     def _dist_eq5(self, mv: dict[str, str]) -> float | None:
-        return self._dist_from_specs(mv, _EQ5_SPECS)
+        return _dist_from_specs(self._p, mv, _EQ5_SPECS)
 
     def _find_dist(
         self,
@@ -503,7 +523,7 @@ class CommonVulnerabilityScore40:
     @property
     def base_score(self) -> float:
         """CVSS-BTE score (all available metrics, Spec §8)."""
-        levels = self._eq_levels()
+        levels = _eq_levels(self._p)
         mv = _LOOKUP.get(levels)
         if mv is None:
             raise ValueError(f"No lookup entry for EQ levels {levels}")

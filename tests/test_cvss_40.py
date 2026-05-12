@@ -6,6 +6,12 @@ Test vectors sourced from https://www.first.org/cvss/v4.0/examples
 import pytest
 
 from cvss.cvss_40 import CommonVulnerabilityScore40
+from cvss.cvss_40 import _eq1  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _eq2  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _eq3  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _eq4  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _eq5  # pyright: ignore[reportPrivateUsage]
+from cvss.cvss_40 import _eq6  # pyright: ignore[reportPrivateUsage]
 from cvss.vulnerability_40 import InvalidVectorError, VulnerabilityVector40
 
 
@@ -65,6 +71,69 @@ def test_parse_rejects_duplicate_metric() -> None:
     )
     with pytest.raises(InvalidVectorError, match="Duplicate"):
         _ = VulnerabilityVector40(dup)
+
+
+# ---------------------------------------------------------------------------
+# EQ level function tests (Spec §7.5 boundary conditions)
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("p,expected", [
+    ({"AV": "N", "PR": "N", "UI": "N"}, 0),  # AV:N AND PR:N AND UI:N → 0
+    ({"AV": "N", "PR": "L", "UI": "A"}, 1),  # at least one is N → 1
+    ({"AV": "P", "PR": "H", "UI": "A"}, 2),  # none is N → 2
+])
+def test_eq1(p: dict[str, str], expected: int) -> None:
+    assert _eq1(p) == expected
+
+
+@pytest.mark.parametrize("p,expected", [
+    ({"AC": "L", "AT": "N"}, 0),
+    ({"AC": "H", "AT": "N"}, 1),
+    ({"AC": "L", "AT": "P"}, 1),
+])
+def test_eq2(p: dict[str, str], expected: int) -> None:
+    assert _eq2(p) == expected
+
+
+@pytest.mark.parametrize("p,expected", [
+    ({"VC": "H", "VI": "H", "VA": "N"}, 0),  # VC:H AND VI:H → 0
+    ({"VC": "H", "VI": "N", "VA": "N"}, 1),  # VC:H but not both H → 1
+    ({"VC": "N", "VI": "N", "VA": "L"}, 2),  # no H → 2
+])
+def test_eq3(p: dict[str, str], expected: int) -> None:
+    assert _eq3(p) == expected
+
+
+@pytest.mark.parametrize("p,expected", [
+    ({"SI": "S", "SA": "N", "SC": "N", "MSI": "X", "MSA": "X", "MSC": "X"}, 0),
+    ({"SI": "H", "SA": "N", "SC": "N", "MSI": "X", "MSA": "X", "MSC": "X"}, 1),
+    ({"SI": "N", "SA": "N", "SC": "N", "MSI": "X", "MSA": "X", "MSC": "X"}, 2),
+])
+def test_eq4(p: dict[str, str], expected: int) -> None:
+    assert _eq4(p) == expected
+
+
+@pytest.mark.parametrize("p,expected", [
+    ({"E": "X"}, 0),   # X → treated as A (Attacked) → 0
+    ({"E": "A"}, 0),
+    ({"E": "P"}, 1),
+    ({"E": "U"}, 2),
+])
+def test_eq5(p: dict[str, str], expected: int) -> None:
+    assert _eq5(p) == expected
+
+
+@pytest.mark.parametrize("p,expected", [
+    # CR:H and VC:H → aligned → 0
+    ({"CR": "H", "VC": "H", "IR": "L", "VI": "L", "AR": "L", "VA": "L",
+      "MVC": "X", "MVI": "X", "MVA": "X"}, 0),
+    # no alignment → 1
+    ({"CR": "L", "VC": "H", "IR": "L", "VI": "L", "AR": "L", "VA": "L",
+      "MVC": "X", "MVI": "X", "MVA": "X"}, 1),
+])
+def test_eq6(p: dict[str, str], expected: int) -> None:
+    assert _eq6(p) == expected
 
 
 # ---------------------------------------------------------------------------
