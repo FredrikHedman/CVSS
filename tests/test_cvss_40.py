@@ -33,18 +33,18 @@ def test_parse_rejects_missing_prefix() -> None:
 
 def test_parse_rejects_bad_metric_key() -> None:
     with pytest.raises(InvalidVectorError):
-        _ = VulnerabilityVector40(_VALID_BASE.replace("AV:N", "XX:N")).valid()
+        _ = VulnerabilityVector40(_VALID_BASE.replace("AV:N", "XX:N"))
 
 
 def test_parse_rejects_bad_value() -> None:
     with pytest.raises(InvalidVectorError):
-        _ = VulnerabilityVector40(_VALID_BASE.replace("AV:N", "AV:Z")).valid()
+        _ = VulnerabilityVector40(_VALID_BASE.replace("AV:N", "AV:Z"))
 
 
 def test_parse_rejects_missing_base_metric() -> None:
     incomplete = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N"
     with pytest.raises(InvalidVectorError, match="Missing"):
-        _ = VulnerabilityVector40(incomplete).complete()
+        _ = VulnerabilityVector40(incomplete)
 
 
 def test_defaults_absent_optional_to_x() -> None:
@@ -119,8 +119,7 @@ def test_parse_rejects_duplicate_metric() -> None:
     ),
 ])
 def test_score(vector: str, expected: float) -> None:
-    v40 = VulnerabilityVector40(vector).valid().complete()
-    cvs = CommonVulnerabilityScore40(v40.parsed)
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(vector).parsed)
     assert cvs.base_score == expected, (
         f"Vector: {vector}\n"
         f"Expected: {expected}, got: {cvs.base_score}"
@@ -128,19 +127,16 @@ def test_score(vector: str, expected: float) -> None:
 
 
 def test_version_property() -> None:
-    v40 = VulnerabilityVector40(_VALID_BASE).valid().complete()
-    cvs = CommonVulnerabilityScore40(v40.parsed)
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
     assert cvs.version == "4.0"
 
 
 def test_base_vulnerability_vector_roundtrip() -> None:
-    v40 = VulnerabilityVector40(_VALID_BASE).valid().complete()
-    cvs = CommonVulnerabilityScore40(v40.parsed)
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
     assert cvs.base_vulnerability_vector.startswith("CVSS:4.0/")
     assert "AV:N" in cvs.base_vulnerability_vector
 
 
 def test_base_metrics_count() -> None:
-    v40 = VulnerabilityVector40(_VALID_BASE).valid().complete()
-    cvs = CommonVulnerabilityScore40(v40.parsed)
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
     assert len(cvs.base_metrics()) == 11

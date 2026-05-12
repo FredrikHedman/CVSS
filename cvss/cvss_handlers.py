@@ -41,8 +41,9 @@ def _cvs_from_vector(
 ) -> CVSSResult:
     if vector.startswith(_V40_PREFIX):
         try:
-            vvec = VulnerabilityVector40(vector)
-            return CommonVulnerabilityScore40(vvec.complete().parsed)
+            return CommonVulnerabilityScore40(
+                VulnerabilityVector40(vector).parsed
+            )
         except (InvalidVectorError, ValueError) as e:
             _exit_with_error(e)
     else:
@@ -93,7 +94,7 @@ def _interactive_v40(clarg: CvssArgs) -> CVSSResult:
     if clarg["base"] and vec and vec.startswith(_V40_PREFIX):
         try:
             return CommonVulnerabilityScore40(
-                VulnerabilityVector40(vec).complete().parsed
+                VulnerabilityVector40(vec).parsed
             )
         except (InvalidVectorError, ValueError) as e:
             _exit_with_error(e)
