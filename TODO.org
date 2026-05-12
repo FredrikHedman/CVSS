@@ -1,3 +1,30 @@
+* <2026-05-12 Mon> Findings after v4.0 structure refactors (validate-on-construction, EQ functions, dict-based reading) [0/3]
+  1) [ ] **`_eq_contrib` and `_eq3eq6_contrib` should be module-level** (MEDIUM) —
+     After R2 moved `_eq1`–`_eq6`, `_metric_eff`, and `_dist_from_specs` to module
+     level, the scoring contribution helpers `_eq_contrib` and `_eq3eq6_contrib`
+     remain as instance methods. They use `self._find_dist` (which itself only
+     needs a candidate list and a dist-function). Extracting all three to module
+     level would reduce `CommonVulnerabilityScore40` to a pure state-holder plus
+     public interface — no private logic at all.
+
+  2) [ ] **`_EQ*_MAX` canonical vectors could be derived from metric definitions** (LOW) —
+     The `_EQ1_MAX`, `_EQ2_MAX`, etc. dictionaries are hardcoded strings like
+     `"AV:N/PR:N/UI:N/"`. The most-severe value for each metric is always the
+     FIRST entry in `MetricDefinition.values`. The spec's "highest severity vector"
+     for each EQ level is determined by taking the most-severe allowed value per
+     metric for that level. Deriving these from `BASE40_DEFINITIONS` (and modified
+     equivalents from `ENVIRONMENTAL40_DEFINITIONS`) would make `cvss_40.py`
+     self-consistent with the metric definitions and eliminate the risk of
+     divergence if metric value sets change.
+
+  3) [ ] **`CommonVulnerabilityScore40.__init__` eagerly builds all 32 `Metric` objects** (LOW) —
+     The `__init__` iterates over all four metric-definition tuples (32 total) to
+     build `self._metrics`. Most callers only ever access `base_score` — they never
+     call `base_metrics()`, `threat_metrics()`, `environmental_metrics()`, or
+     `supplemental_metrics()`. Converting `self._metrics` to a
+     `@functools.cached_property` that builds lazily on first access would avoid
+     the upfront cost when only scoring is needed.
+
 * <2026-05-11 Sun> Findings after _EQLevels/_accumulate_groups/cached_property refactors [0/3]
   1) [ ] **Add accessor tests for `CommonVulnerabilityScore40`** — (MEDIUM)
      `threat_metrics()`, `environmental_metrics()`, and `supplemental_metrics()`
