@@ -1,3 +1,75 @@
+* <2026-05-13 Tue> Post-split refactors for cvss2/cvss4 [0/5]
+  1) [ ] **CVSS-B/BT/BE/BTE score label in `cvss4/cvss_output.py`** (MEDIUM) —
+     `render_output` in `cvss4/cvss_output.py` always prints "CVSS v4.0 Score"
+     regardless of which metric groups are populated. The CVSS v4.0 Implementation
+     Guide defines four labels: CVSS-B (base only), CVSS-BT (base + threat),
+     CVSS-BE (base + environmental), CVSS-BTE (base + threat + environmental).
+     Derive the label by checking whether any `threat_metrics()` or
+     `environmental_metrics()` value is non-"X", and emit the correct label to
+     improve spec alignment and communicate assessment scope.
+
+  2) [ ] **Verbose output mode for `cvss4`** (MEDIUM) —
+     `cvss4 --verbose` is accepted by the parser but `render_output` in
+     `cvss4/cvss_output.py` produces identical output regardless. Add a
+     `_render_v40_verbose(cvs: CVSS40Result) -> None` function that displays all
+     four metric groups (base, threat, environmental, supplemental) in tabular
+     form. The `ScoreDisplayData` / `display_score` machinery is available in
+     `cvss2/cvss_output.py` — either duplicate the two dataclass + function into
+     `cvss4/cvss_output.py` or extract them to a shared module. Dispatch from
+     `render_output` when `clarg["verbose"]` is set.
+
+  3) [ ] **Remove `_40` suffix from `cvss4/vulnerability_40.py` accessors** (LOW) —
+     `base_metrics_40()`, `threat_metrics_40()`, `environmental_metrics_40()`, and
+     `supplemental_metrics_40()` have a redundant version suffix now that
+     `cvss4/` is a standalone package (there is no `base_metrics()` conflict).
+     Rename all four to `base_metrics()`, `threat_metrics()`,
+     `environmental_metrics()`, `supplemental_metrics()`. Update call sites in
+     `cvss4/cvss_40.py` and `tests/cvss4/test_cvss_40.py`.
+
+  4) [ ] **Add interactive mode to `cvss4`** (MEDIUM) —
+     `cvss4` currently has no `-i`/`--interactive` flag. Add `-i`, `-a`, `-t`,
+     `-e`, `-s` (supplemental) flags to `cvss4/cvss_parser.py` and extend
+     `CvssArgs` in `cvss4/cvss_types.py` with the corresponding keys. Implement
+     `process_cmd_line_interactive` in `cvss4/cvss_handlers.py` using the
+     dict-based `read_metrics_as_dict` pattern from the old `_interactive_v40`
+     (copy `cvss_input.py` into `cvss4/`). Supersedes the old "no `--supplemental`
+     flag" finding from the 2026-05-12 section.
+
+  5) [ ] **Expose `macro_vector()` on `CommonVulnerabilityScore40`** (LOW) —
+     The six EQ levels computed in `cvss4/cvss_40.py:base_score` are discarded
+     after interpolation. Add a `macro_vector() -> tuple[int, int, int, int, int,
+     int]` cached property (or named-tuple return) that exposes the `_EQLevels`
+     for the stored vector. Display as `MacroVector EQ: [eq1, eq2, eq3, eq4,
+     eq5, eq6]` in the verbose output added by item 2 above. Directly reflects
+     the spec's terminology and aids score explanation.
+
+* <2026-05-12 Mon> Findings after CVSS v4.0 spec/guide review [0/7]
+  1) [ ] **CVSS-B/BT/BE/BTE score nomenclature** (MEDIUM) — superseded by
+     2026-05-13 item 1 (now lives in `cvss4/cvss_output.py`).
+
+  2) [ ] **`render_output` ignores `--verbose` flag in `cvss4`** (MEDIUM) —
+     superseded by 2026-05-13 item 2 (now lives in `cvss4/cvss_output.py`).
+
+  3) [ ] **No `--supplemental` interactive flag for v4.0** (MEDIUM) —
+     superseded by 2026-05-13 item 4 (add interactive mode to `cvss4`).
+
+  4) [ ] **Exception naming asymmetry: `InvalidBaseVectorError` vs `InvalidVectorError`** (LOW) —
+     `cvss2/vulnerability.py` raises `InvalidBaseVectorError`; `cvss4/vulnerability_40.py`
+     raises `InvalidVectorError`. Both exception names should follow the same
+     convention. Catch sites: `cvss2/cvss_handlers.py` (v2.10 side).
+
+  5) [ ] **`_40` suffix redundant on `cvss4/vulnerability_40.py` accessors** (LOW) —
+     superseded by 2026-05-13 item 3.
+
+  6) [ ] **MacroVector EQ levels not surfaced in output** (LOW) —
+     superseded by 2026-05-13 item 5 (now in `cvss4/cvss_40.py`).
+
+  7) [ ] **Exploit Maturity "Not Defined" effective default undocumented** (LOW) —
+     Add a note to `cvss4/cvss_parser.py` `--vulnerability` help string and
+     optionally print a one-line reminder in `cvss4/cvss_output.py:render_output`
+     when the E metric is absent or "X":
+     "E (Exploit Maturity) defaults to Attacked — use --vulnerability with E:P or E:U to refine."
+
 * <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [3/3]
   1) [X] **Use `isinstance(cvs, CVSS40Result)` dispatch in `render_output`** (MEDIUM) —
      `render_output` in `cvss_output.py` dispatches to `_render_v40` via
