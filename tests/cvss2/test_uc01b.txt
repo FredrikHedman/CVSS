@@ -1,0 +1,19 @@
+usage: cvss2 [-h] [-v] [-i] [-a] [-b] [-t] [-e] [--vulnerability vector]
+             [--version]
+             [vector]
+
+Calculate CVSS metrics based on a list of Metrics.
+
+positional arguments:
+  vector
+
+options:
+  -h, --help            show this help message and exit
+  -v, --verbose
+  -i, --interactive
+  -a, --all
+  -b, --base
+  -t, --temporal
+  -e, --environmental
+  --vulnerability vector
+  --version             show program's version number and exit
