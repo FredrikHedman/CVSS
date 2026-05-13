@@ -19,7 +19,7 @@ def _clarg(**kwargs: object) -> CvssArgs:
     base: CvssArgs = {
         "verbose": False, "interactive": True, "all": False, "base": False,
         "temporal": False, "environmental": False, "vector": None,
-        "vulnerability": None, "cvss_version": "4.0",
+        "vulnerability": None, "cvss_version": "v4",
     }
     return {**base, **kwargs}  # type: ignore[return-value]
 

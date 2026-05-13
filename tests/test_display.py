@@ -68,7 +68,7 @@ def base_clarg() -> CvssArgs:
     return {
         "verbose": False, "interactive": False, "all": False,
         "base": True, "temporal": False, "environmental": False,
-        "vector": None, "vulnerability": None, "cvss_version": "2.10",
+        "vector": None, "vulnerability": None, "cvss_version": "v2",
     }
 
 
@@ -119,7 +119,7 @@ def test_render_output_v40_dispatches_to_render_v40(
     base_clarg: CvssArgs,
 ) -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
-    clarg: CvssArgs = {**base_clarg, "cvss_version": "4.0"}
+    clarg: CvssArgs = {**base_clarg, "cvss_version": "v4"}
     with patch("cvss.cvss_output._render_v40") as mock_v40, \
          patch("cvss.cvss_output._generate_output") as mock_out:
         render_output(cvs, clarg)
@@ -131,7 +131,7 @@ def test_render_output_v40_prints_score_and_severity(
     base_clarg: CvssArgs,
 ) -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
-    clarg: CvssArgs = {**base_clarg, "cvss_version": "4.0"}
+    clarg: CvssArgs = {**base_clarg, "cvss_version": "v4"}
     captured = io.StringIO()
     sys.stdout = captured
     try:

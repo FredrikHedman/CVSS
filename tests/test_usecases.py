@@ -53,7 +53,7 @@ def test_uc01_help_short():
 
 def test_uc02_interactive_base():
     out = run(
-        ["-ib", "--cvss-version", "2.10"],
+        ["-ib", "--cvss-version", "v2"],
         stdin_file=TESTS_DIR / "test_uc02_in.txt",
     )
     assert out == expected("test_uc02_out.txt")
@@ -61,7 +61,7 @@ def test_uc02_interactive_base():
 
 def test_uc02_interactive_base_verbose():
     out = run(
-        ["-ivb", "--cvss-version", "2.10"],
+        ["-ivb", "--cvss-version", "v2"],
         stdin_file=TESTS_DIR / "test_uc02_in.txt",
     )
     assert out == expected("test_uc02_verbose_out.txt")
@@ -72,7 +72,7 @@ def test_uc02_interactive_base_verbose():
 # ---------------------------------------------------------------------------
 
 
-_V2 = ["--cvss-version", "2.10"]
+_V2 = ["--cvss-version", "v2"]
 
 
 def test_uc03_bad_key():
