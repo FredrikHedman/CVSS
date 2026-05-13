@@ -113,7 +113,7 @@ def _interactive_v40(clarg: CvssArgs) -> CVSSResult:
 
 
 def process_cmd_line_interactive(clarg: CvssArgs) -> CVSSResult:
-    if clarg["cvss_version"] == "4.0":
+    if clarg["cvss_version"] == "v4":
         return _interactive_v40(clarg)
     # v2.10 interactive path
     if clarg["base"] and clarg["vector"]:
