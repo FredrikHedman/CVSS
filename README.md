@@ -32,7 +32,7 @@ development dependencies, and ensures `uv.lock` is in sync with
     cvss --vulnerability "AV:N/AC:L/Au:N/C:C/I:C/A:C"
 
     # Explicit version selection for interactive mode
-    cvss --cvss-version 2.10 --interactive --base
+    cvss --cvss-version v2 --interactive --base
 
 ## Examples
 
@@ -135,7 +135,7 @@ Base Vulnerability Vector: AV:N/AC:L/Au:N/C:C/I:C/A:C
 **What's new in 2.1.0**: Added CVSS v4.0 support (MacroVector lookup-table
 scoring, Spec §7–§8). v4.0 is the new default; version auto-detected from the
 `CVSS:4.0/` vector prefix. Interactive mode selects the version via
-`--cvss-version`. Qualitative severity ratings (None/Low/Medium/High/Critical,
+`--cvss-version v2` or `--cvss-version v4`. Qualitative severity ratings (None/Low/Medium/High/Critical,
 Spec §9).
 
 **What's new in 2.0.0**: Modernised packaging (uv + pyproject.toml),
