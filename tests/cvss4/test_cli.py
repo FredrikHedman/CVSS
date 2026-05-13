@@ -45,7 +45,7 @@ def test_version() -> None:
 def test_vulnerability_vector() -> None:
     out, code = run(["--vulnerability", _LOG4SHELL])
     assert code == 0
-    assert "CVSS v4.0 Score = 9.3" in out
+    assert "CVSS-BT Score = 9.3" in out   # E:A present → BT label
     assert "Severity = Critical" in out
     assert "CVSS v4.0 Vulnerability Vector = " in out
 
@@ -53,7 +53,7 @@ def test_vulnerability_vector() -> None:
 def test_base_flag() -> None:
     out, code = run(["-b", _BASE_ONLY])
     assert code == 0
-    assert "CVSS v4.0 Score = 9.3" in out
+    assert "CVSS-B Score = 9.3" in out    # no threat/env → B label
     assert "Severity = Critical" in out
 
 
