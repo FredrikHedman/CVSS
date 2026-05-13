@@ -41,7 +41,7 @@ format:
 	uv run ruff format .
 
 example:
-	uv run python -m cvss.vulnerability examples/cvss_examples.py
+	uv run python -m cvss2.vulnerability examples/cvss_examples.py
 
 clean:
 	/bin/rm -f *~ */*~ *.pyc */*.pyc
