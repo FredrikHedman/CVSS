@@ -482,6 +482,11 @@ class CommonVulnerabilityScore40:
     def __init__(self, parsed: dict[str, str]) -> None:
         self._p: dict[str, str] = parsed
 
+    @property
+    def macro_vector(self) -> _EQLevels:
+        """Six EQ levels that determine the MacroVector (Spec §7.5)."""
+        return _eq_levels(self._p)
+
     @functools.cached_property
     def _metrics(self) -> dict[str, Metric]:
         result: dict[str, Metric] = {}

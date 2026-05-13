@@ -266,6 +266,22 @@ def test_cvss40_satisfies_cvss40result_protocol() -> None:
     assert isinstance(cvs, CVSS40Result)
 
 
+def test_macro_vector_log4shell() -> None:
+    vec = "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N/E:A"
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(vec).parsed)
+    mv = cvs.macro_vector
+    assert mv.eq1 == 0   # AV:N + PR:N + UI:N → most severe
+    assert mv.eq5 == 0   # E:A (Attacked) → most severe
+
+
+def test_macro_vector_satisfies_protocol() -> None:
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
+    assert isinstance(cvs, CVSS40Result)
+    mv = cvs.macro_vector
+    assert len(mv) == 6
+    assert all(isinstance(x, int) for x in mv)
+
+
 def test_metrics_are_lazily_constructed() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
     assert "_metrics" not in cvs.__dict__
