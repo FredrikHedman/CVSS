@@ -1,3 +1,0 @@
-usage: cvss [-h] [-v] [-i] [-a] [-b] [-t] [-e] [--vulnerability vector]
-            [--cvss-version {v2,v4}] [--version]
-            [vector]
