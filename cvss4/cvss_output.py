@@ -1,6 +1,7 @@
 """Output rendering for CVSS v4.0."""
 
-from .cvss_types import CVSS40Result
+from .cvss_types import CVSS40Result, CvssArgs
+from .metric import Metric
 
 
 def qualitative_rating(score: float) -> str:
@@ -33,7 +34,44 @@ def _score_label(cvs: CVSS40Result) -> str:
     return "CVSS-B"
 
 
-def render_output(cvs: CVSS40Result) -> None:
+_W = 44
+_SEP = "=" * (_W * 2 + 6)
+
+
+def _print_group(header: str, metrics: list[Metric]) -> None:
+    print(_SEP)
+    print(f"{header:<{_W}}{'EVALUATION':<{_W}}{'ABBREV'}")
+    print(_SEP)
+    for m in metrics:
+        print(f"{m.name:<{_W}}{m.selected.metric:<{_W}}{m.index}")
+
+
+def _render_verbose(cvs: CVSS40Result) -> None:
+    label = _score_label(cvs)
+    mv = cvs.macro_vector
+    for group_name, group_metrics in [
+        ("BASE METRICS", cvs.base_metrics()),
+        ("THREAT METRICS", cvs.threat_metrics()),
+        ("ENVIRONMENTAL METRICS", cvs.environmental_metrics()),
+        ("SUPPLEMENTAL METRICS", cvs.supplemental_metrics()),
+    ]:
+        _print_group(group_name, group_metrics)
+    print(_SEP)
+    print()
+    eq = f"[{mv[0]}, {mv[1]}, {mv[2]}, {mv[3]}, {mv[4]}, {mv[5]}]"
+    print(f"MacroVector EQ: {eq}")
+    print(f"{label} Score = {cvs.base_score}")
+    print(f"Severity = {qualitative_rating(cvs.base_score)}")
+    print(
+        f"CVSS v4.0 Vulnerability Vector = {cvs.base_vulnerability_vector}"
+    )
+    print()
+
+
+def render_output(cvs: CVSS40Result, clarg: CvssArgs) -> None:
+    if clarg["verbose"]:
+        _render_verbose(cvs)
+        return
     label = _score_label(cvs)
     print()
     print(f"{label} Score = {cvs.base_score}")

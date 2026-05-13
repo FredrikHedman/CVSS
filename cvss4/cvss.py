@@ -13,7 +13,7 @@ from .cvss_parser import parse_and_validate
 def main() -> None:
     clarg = parse_and_validate()
     cvs = process_cmd_line(clarg)
-    render_output(cvs)
+    render_output(cvs, clarg)
 
 
 if __name__ == "__main__":

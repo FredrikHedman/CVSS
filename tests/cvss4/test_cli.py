@@ -57,6 +57,15 @@ def test_base_flag() -> None:
     assert "Severity = Critical" in out
 
 
+def test_verbose_flag_shows_groups() -> None:
+    out, code = run(["-v", "--vulnerability", _BASE_ONLY])
+    assert code == 0
+    assert "BASE METRICS" in out
+    assert "THREAT METRICS" in out
+    assert "MacroVector EQ:" in out
+    assert "CVSS-B Score = " in out
+
+
 def test_bad_vector_exits_nonzero() -> None:
     _, code = run(["--vulnerability", "BAD:VECTOR"])
     assert code != 0
