@@ -1,5 +1,5 @@
 usage: cvss [-h] [-v] [-i] [-a] [-b] [-t] [-e] [--vulnerability vector]
-            [--cvss-version {2.10,4.0}] [--version]
+            [--cvss-version {v2,v4}] [--version]
             [vector]
 
 Calculate CVSS metrics based on a list of Metrics.
@@ -16,6 +16,6 @@ options:
   -t, --temporal
   -e, --environmental
   --vulnerability vector
-  --cvss-version {2.10,4.0}
-                        CVSS version to use (default: 4.0)
+  --cvss-version {v2,v4}
+                        CVSS version to use (default: v4)
   --version             show program's version number and exit
