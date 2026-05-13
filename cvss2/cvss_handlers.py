@@ -9,7 +9,7 @@ from .cvss_base import CVSS
 from .cvss_input import read_metrics
 from .cvss_types import CvssArgs
 from .vulnerability import (
-    InvalidBaseVectorError,
+    InvalidVectorError,
     MetricDefinition,
     VulnerabilityVector,
     base_metrics,
@@ -37,7 +37,7 @@ def _cvs_from_vector(
             else vvec.valid().metric_values()
         )
         return cvs_factory(CommonVulnerabilityScore, mvs)
-    except (InvalidBaseVectorError, ValueError) as e:
+    except (InvalidVectorError, ValueError) as e:
         _exit_with_error(e)
 
 
@@ -75,7 +75,7 @@ def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
         try:
             vvec = VulnerabilityVector(clarg["vector"])
             selected = list(vvec.complete().metric_values())
-        except (InvalidBaseVectorError, ValueError) as e:
+        except (InvalidVectorError, ValueError) as e:
             _exit_with_error(e)
         if clarg["temporal"]:
             selected.extend(read_metrics(temporal_metrics()))
