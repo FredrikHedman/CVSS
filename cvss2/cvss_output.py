@@ -79,13 +79,13 @@ def _generate_output(cvs: CVSS, clarg: CvssArgs) -> None:
     show_base, show_temporal, show_env = _show_flags(clarg)
     entries: list[tuple[bool, ScoreEntry]] = [
         (show_base,
-         ScoreEntry("Base", cvs.base_score, cvs.base_vulnerability_vector)),
+         ScoreEntry("Base", cvs.base_score, cvs.base_vector)),
         (show_temporal,
          ScoreEntry("Temporal", cvs.temporal_score,
-                    cvs.temporal_vulnerability_vector)),
+                    cvs.temporal_vector)),
         (show_env,
          ScoreEntry("Environmental", cvs.environmental_score,
-                    cvs.environmental_vulnerability_vector)),
+                    cvs.environmental_vector)),
     ]
     print()
     for show, score in entries:
@@ -109,7 +109,7 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
                  ("Exploitability", cvs.exploitability),
                  ("Base Score", cvs.base_score),
              ],
-             vector_label=("Base", cvs.base_vulnerability_vector),
+             vector_label=("Base", cvs.base_vector),
          )),
         (show_temporal,
          ScoreDisplayData(
@@ -117,7 +117,7 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
              footer_labels=_footer_labels("TEMPORAL"),
              metrics=cvs.temporal_metrics(),
              footer_data=[("Temporal Score", cvs.temporal_score)],
-             vector_label=("Temporal", cvs.temporal_vulnerability_vector),
+             vector_label=("Temporal", cvs.temporal_vector),
          )),
         (show_env,
          ScoreDisplayData(
@@ -132,7 +132,7 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
              ],
              vector_label=(
                  "Environmental",
-                 cvs.environmental_vulnerability_vector,
+                 cvs.environmental_vector,
              ),
          )),
     ]

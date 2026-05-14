@@ -1,5 +1,5 @@
 * <2026-05-14 Wed> Code simplification review II [0/3]
-  1) [ ] **Remove 3 alias properties from `cvss2/cvss_base.py`** —
+  1) [X] **Remove 3 alias properties from `cvss2/cvss_base.py`** —
      `base_vulnerability_vector`, `temporal_vulnerability_vector`,
      `environmental_vulnerability_vector` each just return the shorter abstract
      property. Remove aliases; update 6 call sites in `cvss_output.py`.

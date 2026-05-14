@@ -95,14 +95,4 @@ class CVSS(abc.ABC):
             self.environmental_fcn(self.adjusted_temporal_score), ndigits=1
         )
 
-    @property
-    def base_vulnerability_vector(self) -> str:
-        return self.base_vector
 
-    @property
-    def temporal_vulnerability_vector(self) -> str:
-        return self.temporal_vector
-
-    @property
-    def environmental_vulnerability_vector(self) -> str:
-        return self.environmental_vector
