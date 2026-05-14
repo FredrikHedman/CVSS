@@ -163,9 +163,7 @@ Both CLI packages import from `cvss.*` using absolute imports.
 | `cvss2/cvss_types.py`       | Shared types (`CvssArgs`, `CVSSResult`, `ScoreEntry`)                      |
 | `cvss2/cvss_base.py`        | Abstract scoring base class (`CVSS`)                                       |
 | `cvss2/cvss_210.py`         | Concrete CVSS v2.10 implementation                                         |
-| `cvss2/vulnerability.py`    | v2.10 metric definitions, vector parsing, factory                          |
-| `cvss2/metric.py`           | `Metric` class                                                             |
-| `cvss2/metric_value.py`     | `MetricValue` class                                                        |
+| `cvss2/vulnerability.py`    | v2.10 metric definitions, vector parsing, factory; imports shared types from `cvss/` |
 
 ### cvss4/ — CVSS v4.0
 
