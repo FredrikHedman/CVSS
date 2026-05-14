@@ -5,6 +5,22 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.3.3] — 2026-05-14
+
+### Changed
+
+- `cvss2/cvss_types.py`: removed the unused `CVSSResult` Protocol and its
+  now-orphaned `runtime_checkable` / `Metric` imports. The `CVSS` ABC already
+  provides the same interface; the Protocol was never imported anywhere.
+- `cvss2/cvss_210.py`: extracted `_metrics_for(keys)` and `_vector_for(keys)`
+  private helpers in `CommonVulnerabilityScore`; replaced six identical-pattern
+  method bodies with one-line calls.
+- `cvss4/cvss_40.py`: replaced five single-line `_dist_eqX()` wrapper methods
+  with a single `_dist(mv, specs)` method; call sites in `base_score` updated to
+  `lambda mv: self._dist(mv, _EQX_SPECS)`.
+
+---
+
 ## [2.3.2] — 2026-05-14
 
 ### Fixed
