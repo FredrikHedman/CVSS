@@ -1,3 +1,18 @@
+* <2026-05-14 Wed> Code simplification review [3/3]
+  1) [X] **Remove unused `CVSSResult` Protocol from `cvss2/cvss_types.py`** —
+     The Protocol was defined but never imported or referenced anywhere. Removed
+     the class, `runtime_checkable` import, and now-unused `from cvss.metric import
+     Metric` import.
+
+  2) [X] **Extract `_metrics_for`/`_vector_for` helpers in `CommonVulnerabilityScore`** —
+     Six nearly-identical method bodies in `cvss2/cvss_210.py` reduced to two
+     private helpers plus six 1-line calls.
+
+  3) [X] **Consolidate `_dist_eqX` one-liners into single `_dist` method in
+     `cvss4/cvss_40.py`** — Five pass-through wrapper methods replaced by a single
+     `_dist(mv, specs)` method; call sites updated to `lambda mv: self._dist(mv,
+     _EQX_SPECS)`.
+
 * <2026-05-14 Wed> Five output and test refactors [5/5]
   1) [X] **Fix "ENIRONMENTAL" → "ENVIRONMENTAL" typo in cvss2 verbose output** —
      Fixed both occurrences in `cvss2/cvss_output.py` and the use-case fixture
