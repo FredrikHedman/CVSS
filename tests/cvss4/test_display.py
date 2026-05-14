@@ -90,3 +90,20 @@ def test_verbose_dispatch(verbose: bool, macro_vector_in_output: bool) -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
     out = format_output(cvs, _clarg(verbose=verbose))
     assert ("MacroVector EQ:" in out) == macro_vector_in_output
+
+
+_LOG4SHELL_BASE = (
+    "CVSS:4.0/AV:N/AC:L/AT:N/PR:N/UI:N/VC:H/VI:H/VA:H/SC:N/SI:N/SA:N"
+)
+
+
+@pytest.mark.parametrize("vector,expected_score", [
+    (_V40_BASE, "7.3"),
+    (_LOG4SHELL_BASE, "9.3"),
+])
+def test_format_output_known_vectors(
+    vector: str, expected_score: str
+) -> None:
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(vector).parsed)
+    out = format_output(cvs, _clarg())
+    assert f"CVSS-B Score = {expected_score}" in out

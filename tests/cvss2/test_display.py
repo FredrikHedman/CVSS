@@ -13,7 +13,7 @@ from cvss2.cvss_output import (
     format_output,
 )
 from cvss2.cvss_types import CvssArgs
-from cvss2.vulnerability import cvs_factory
+from cvss2.vulnerability import VulnerabilityVector, cvs_factory
 
 
 def test_score_display_data_construction() -> None:
@@ -127,3 +127,23 @@ def test_group_header(
 ) -> None:
     assert _group_header(name) == expected_header
     assert _footer_labels(name) == expected_footer
+
+
+def _cvs_from_vector(vector: str) -> CommonVulnerabilityScore:
+    vvec = VulnerabilityVector(vector).valid().complete()
+    return cvs_factory(CommonVulnerabilityScore, vvec.metric_values())  # type: ignore[arg-type]
+
+
+@pytest.mark.parametrize("vector,expected_score", [
+    ("AV:N/AC:L/Au:N/C:C/I:C/A:C", "10.0"),
+    ("AV:N/AC:M/Au:S/C:C/I:P/A:C", "8.2"),
+    ("AV:L/AC:H/Au:M/C:P/I:N/A:N", "0.8"),
+])
+def test_format_output_known_base_vectors(
+    vector: str,
+    expected_score: str,
+    base_clarg: CvssArgs,
+) -> None:
+    cvs = _cvs_from_vector(vector)
+    out = format_output(cvs, {**base_clarg, "base": True})
+    assert f"Base Score = {expected_score}" in out
