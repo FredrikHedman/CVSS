@@ -1,9 +1,8 @@
 """Output rendering for CVSS v4.0."""
 
-from cvss.output import capture_output
+from cvss.output import _SEP, capture_output, print_metric_group  # pyright: ignore[reportPrivateUsage]
 
 from .cvss_types import CVSS40Result, CvssArgs
-from cvss.metric import Metric
 
 
 def qualitative_rating(score: float) -> str:
@@ -36,17 +35,6 @@ def _score_label(cvs: CVSS40Result) -> str:
     return "CVSS-B"
 
 
-_W = 44
-_SEP = "=" * (_W * 2 + 6)
-
-
-def _print_group(header: str, metrics: list[Metric]) -> None:
-    print(_SEP)
-    print(f"{header:<{_W}}{'EVALUATION':<{_W}}{'ABBREV'}")
-    print(_SEP)
-    for m in metrics:
-        print(f"{m.name:<{_W}}{m.selected.metric:<{_W}}{m.index}")
-
 
 def _render_verbose(cvs: CVSS40Result) -> None:
     label = _score_label(cvs)
@@ -57,7 +45,7 @@ def _render_verbose(cvs: CVSS40Result) -> None:
         ("ENVIRONMENTAL METRICS", cvs.environmental_metrics()),
         ("SUPPLEMENTAL METRICS", cvs.supplemental_metrics()),
     ]:
-        _print_group(group_name, group_metrics)
+        print_metric_group(group_name, group_metrics)
     print(_SEP)
     print()
     eq = f"[{mv[0]}, {mv[1]}, {mv[2]}, {mv[3]}, {mv[4]}, {mv[5]}]"
