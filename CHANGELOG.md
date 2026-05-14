@@ -5,6 +5,32 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.3.2] — 2026-05-14
+
+### Fixed
+
+- Corrected long-standing "ENIRONMENTAL" → "ENVIRONMENTAL" spelling in
+  `cvss2` verbose output headers and use-case fixture.
+
+### Changed
+
+- `cvss/output.py` extended with shared output utilities: `print_metric_group`,
+  `print_separator`, and `qualitative_rating` (moved from `cvss4`).
+- `cvss2/cvss_output.py`: `_group_header(name)` and `_footer_labels(name)` helpers
+  replace six hard-coded verbose header literals.
+- `cvss4/cvss_output.py`: `_render_base_only` extracted from `format_output`
+  to make verbose/non-verbose dispatch explicit.
+- Both `format_output` implementations simplified to 2-line dispatchers via
+  the shared `capture_output` helper.
+
+### Added
+
+- End-to-end `format_output` tests for known scoring vectors in both packages
+  (3 cvss2 vectors, 2 cvss4 vectors).
+- `tests/cvss/test_output.py` — direct unit tests for shared output utilities.
+
+---
+
 ## [2.3.1] — 2026-05-14
 
 ### Added
