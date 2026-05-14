@@ -1,5 +1,5 @@
 * <2026-05-14 Wed> Five output and test refactors [5/5]
-  1) [X] **Fix "ENIRONMENTAL" → "EVIRONMENTAL" typo in cvss2 verbose output** —
+  1) [X] **Fix "ENIRONMENTAL" → "ENVIRONMENTAL" typo in cvss2 verbose output** —
      Fixed both occurrences in `cvss2/cvss_output.py` and the use-case fixture
      `tests/cvss2/test_uc06_verbose_out.txt`.
 

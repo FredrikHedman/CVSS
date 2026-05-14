@@ -116,9 +116,9 @@ def test_show_flags(
     ("TEMPORAL",
      ("TEMPORAL METRIC", "EVALUATION", "SCORE"),
      ["FORMULA", "TEMPORAL SCORE"]),
-    ("EVIRONMENTAL",
-     ("EVIRONMENTAL METRIC", "EVALUATION", "SCORE"),
-     ["FORMULA", "EVIRONMENTAL SCORE"]),
+    ("ENVIRONMENTAL",
+     ("ENVIRONMENTAL METRIC", "EVALUATION", "SCORE"),
+     ["FORMULA", "ENVIRONMENTAL SCORE"]),
 ])
 def test_group_header(
     name: str,

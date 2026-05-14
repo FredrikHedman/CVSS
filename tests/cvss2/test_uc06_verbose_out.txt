@@ -111,7 +111,7 @@ Temporal Score =                                             5.30
 Temporal Vulnerability Vector: E:H/RL:W/RC:UR
 =================================================================
 =================================================================
-EVIRONMENTAL METRIC           EVALUATION                    SCORE
+ENVIRONMENTAL METRIC          EVALUATION                    SCORE
 =================================================================
 Collateral Damage Potential   Medium-High                    0.40
 Target Distribution           Medium                         0.75
@@ -119,7 +119,7 @@ Confidentiality Requirement   Medium                         1.00
 Integrity Requirement         Medium                         1.00
 Availability Requirement      Medium                         1.00
 =================================================================
-FORMULA                                        EVIRONMENTAL SCORE
+FORMULA                                       ENVIRONMENTAL SCORE
 =================================================================
 Adjusted Impact =                                           10.00
 Adjusted Base =                                              5.90
