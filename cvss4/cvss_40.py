@@ -309,7 +309,7 @@ def _parse_vec(vec_str: str) -> dict[str, str]:
     return result
 
 
-class _EQLevels(NamedTuple):
+class EQLevels(NamedTuple):
     """Six Equivalence Set levels, one per EQ dimension (Spec §7.5)."""
     eq1: int
     eq2: int
@@ -396,9 +396,9 @@ def _eq6(p: dict[str, str]) -> int:
     return 1
 
 
-def _eq_levels(p: dict[str, str]) -> _EQLevels:
+def _eq_levels(p: dict[str, str]) -> EQLevels:
     """Classify a metric dict into six EQ levels (Spec §7.5)."""
-    return _EQLevels(_eq1(p), _eq2(p), _eq3(p), _eq4(p), _eq5(p), _eq6(p))
+    return EQLevels(_eq1(p), _eq2(p), _eq3(p), _eq4(p), _eq5(p), _eq6(p))
 
 
 # ---------------------------------------------------------------------------
@@ -451,7 +451,7 @@ def _eq_contrib(
 
 
 def _eq3eq6_contrib(
-    levels: _EQLevels,
+    levels: EQLevels,
     mv: float,
     dist_fn: Callable[[dict[str, str]], float | None],
 ) -> tuple[float, int]:
@@ -483,7 +483,7 @@ class CommonVulnerabilityScore40:
         self._p: dict[str, str] = parsed
 
     @property
-    def macro_vector(self) -> _EQLevels:
+    def macro_vector(self) -> EQLevels:
         """Six EQ levels that determine the MacroVector (Spec §7.5)."""
         return _eq_levels(self._p)
 

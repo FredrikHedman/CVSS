@@ -1,8 +1,11 @@
 """Shared types for the CVSS v4.0 CLI."""
 
-from typing import Protocol, TypedDict, runtime_checkable
+from typing import TYPE_CHECKING, Protocol, TypedDict, runtime_checkable
 
 from cvss.metric import Metric
+
+if TYPE_CHECKING:
+    from .cvss_40 import EQLevels
 
 
 class CvssArgs(TypedDict):
@@ -33,4 +36,4 @@ class CVSS40Result(Protocol):
     def supplemental_metrics(self) -> list[Metric]: ...
 
     @property
-    def macro_vector(self) -> tuple[int, int, int, int, int, int]: ...
+    def macro_vector(self) -> "EQLevels": ...
