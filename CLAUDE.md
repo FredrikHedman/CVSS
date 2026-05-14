@@ -36,7 +36,14 @@ The repo ships two standalone CLI tools, each in its own package:
 - **`cvss2`** (`cvss2/`) — CVSS v2.10 calculator with interactive mode
 - **`cvss4`** (`cvss4/`) — CVSS v4.0 calculator, no interactive mode
 
-Both packages share the same `metric.py` / `metric_value.py` / `vulnerability.py` implementations by duplication (the files are identical copies).
+All three packages are shipped together. `cvss/` holds the shared internals that both CLI packages import from:
+
+- `cvss/metric_value.py` — `MetricValue` frozen dataclass
+- `cvss/metric.py` — `Metric` class (wraps a named set of `MetricValue` options)
+- `cvss/vulnerability.py` — `MetricValueDef`, `MetricDefinition` frozen dataclasses; `InvalidVectorError` exception
+- `cvss/cli.py` — `exit_with_error(e) -> NoReturn` shared CLI helper
+
+Both cvss2 and cvss4 import from `cvss.*` using **absolute imports** (never relative). New shared utilities belong in `cvss/`, not duplicated across packages.
 
 ### cvss2/ architecture
 
