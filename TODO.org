@@ -1,3 +1,21 @@
+* <2026-05-14 Wed> Shared cvss package expansion [3/3]
+  1) [X] **Move `MetricValueDef`, `MetricDefinition`, `InvalidVectorError` to
+     `cvss/vulnerability.py`** — Both `cvss2/vulnerability.py` and
+     `cvss4/vulnerability_40.py` defined identical copies. Created
+     `cvss/vulnerability.py` as the canonical location; both packages now import
+     from there. Tests updated to import `MetricValueDef`/`InvalidVectorError`
+     from `cvss.vulnerability`.
+
+  2) [X] **Move `Metric` and `MetricValue` to `cvss/`** — `cvss2/metric.py` and
+     `cvss4/metric.py` were byte-for-byte identical. Moved to `cvss/metric.py`
+     and `cvss/metric_value.py`; all consumers updated to absolute imports.
+     `pyproject.toml` updated to include `cvss` in packages/testpaths/include.
+
+  3) [X] **Move `exit_with_error` to `cvss/cli.py`** — Both `cvss2/cvss_handlers.py`
+     and `cvss4/cvss_handlers.py` defined the identical 2-line
+     `_exit_with_error(e) -> NoReturn` helper. Moved to `cvss/cli.py` as
+     `exit_with_error`; each handler imports it with `as _exit_with_error`.
+
 * <2026-05-13 Tue> Post-verbose/interactive pattern suggestions [0/3]
   1) [ ] **Extract `_print_group`/display logic to a shared module** (MEDIUM) —
      `cvss4/cvss_output.py` now has a `_print_group` helper that renders metric
@@ -211,7 +229,7 @@
      handlers chain `.complete().parsed` after `_interactive_v40` builds its
      own `parsed` dict.
 
-* <2026-05-11 Sun> Findings after v4.0 scoring/handlers/output addition [0/5]
+* <2026-05-11 Sun> Findings after v4.0 scoring/handlers/output addition [5/5]
   1) [X] **Duplicate vector dispatch in `cvss_handlers.py`** — `process_cmd_line_base`
      and `process_cmd_line_vulnerability` share identical structure: check
      `startswith(_V40_PREFIX)`, try `VulnerabilityVector40` / fall back to
@@ -235,7 +253,7 @@
      encode per-EQ metric→dict mappings in a module-level table. Reduces ~60
      lines of boilerplate and makes the per-EQ metric set explicit.
 
-  4) [ ] **Missing accessor tests in `test_cvss_40.py`** — `CommonVulnerabilityScore40`
+  4) [X] **Missing accessor tests in `test_cvss_40.py`** — `CommonVulnerabilityScore40`
      exposes `threat_metrics()`, `environmental_metrics()`, and
      `supplemental_metrics()` but none are tested. Only
      `len(cvs.base_metrics()) == 11` appears in the suite. Add parametrized
@@ -243,26 +261,28 @@
      that the returned `Metric` objects carry the correct abbreviations
      (e.g. `E` for `threat_metrics()[0].name`).
 
-  5) [ ] **Shared metric-group accumulation in `_interactive_v40`** — The
+  5) [X] **Shared metric-group accumulation in `_interactive_v40`** — The
      `if clarg["all"]: extend + extend + extend + extend` /
      `elif clarg["base"]: extend; if clarg["temporal"]: extend; if clarg["environmental"]:
      extend` structure in `_interactive_v40` is structurally identical to the
      v2.10 path in `process_cmd_line_interactive`. Extract an
      `_accumulate_groups(clarg, groups)` helper (where `groups` is a list of
      `(condition_key, metric_fn)` pairs) and call it from both interactive paths.
+     `_accumulate_groups` now exists in `cvss2/cvss_handlers.py`; cvss4 has no
+     interactive mode (cancelled by design).
 
-* <2026-05-10 Sun> Findings after _show_flags/header-assert/render_output-test cleanup [0/3]
+* <2026-05-10 Sun> Findings after _show_flags/header-assert/render_output-test cleanup [2/3]
   1) [ ] **`_show_flags` is not directly tested** — The helper is exercised
      indirectly through the use-case fixtures, but a focused unit test that
      calls `_show_flags` with a crafted `CvssArgs` dict (e.g. `all=True`,
      `base=True`) and asserts the returned triple would make its contract
      explicit and catch any future breakage immediately.
-  2) [ ] **`_BASE_CLARG` fixture in `test_display.py` is a module-level dict** —
+  2) [X] **`_BASE_CLARG` fixture in `test_display.py` is a module-level dict** —
      Sharing a mutable dict between tests via `{**_BASE_CLARG, ...}` spread is
      correct but verbose.  Converting to a `pytest.fixture` returning a fresh
      `CvssArgs` each call would be more idiomatic and remove the need for
      callers to remember to spread.
-  3) [ ] **`display_score` in `cvss_output.py` has no unit test** — The function
+  3) [X] **`display_score` in `cvss_output.py` has no unit test** — The function
      formats a `ScoreDisplayData` into tabular stdout output.  `test_display.py`
      constructs `ScoreDisplayData` objects but never calls `display_score`.
      Adding a test that calls `display_score` with a minimal `ScoreDisplayData`
@@ -412,7 +432,7 @@
      `process_cmd_line_base`, keeping `process_cmd_line` only as the interactive
      dispatcher.
 
-* <2026-05-09 Sat> Findings after mutation/typed-args/guard/verbose-entries cleanup [3/4]
+* <2026-05-09 Sat> Findings after mutation/typed-args/guard/verbose-entries cleanup [4/4]
   1) [X] **`process_cmd_line_base` and `…_vulnerability` accept `CvssArgs` but only
      use one field each** — After the mutation refactor, `process_cmd_line_vulnerability`
      reads only `clarg["vulnerability"]` and `process_cmd_line_base` reads only
@@ -434,7 +454,7 @@
      tests.  Tests can then call `_make_clarg(typed_args)` instead of building
      the dict from `_args.verbose` (which is `Any`), eliminating all `reportAny`
      in `tests/test_cli.py`.
-  4) [ ] **`test_temporal_without_base_rejected` and `…_environmental_without_temporal`
+  4) [X] **`test_temporal_without_base_rejected` and `…_environmental_without_temporal`
      duplicate `main()`'s validation logic** — These tests mirror the if-conditions
      from `main()` inline rather than calling `main()` end-to-end via `sys.argv`
      mocking.  If the validation logic in `main()` changes, these tests will not
