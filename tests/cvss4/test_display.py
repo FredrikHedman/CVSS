@@ -79,3 +79,13 @@ def test_verbose_output_non_verbose_unchanged() -> None:
     out = format_output(cvs, _clarg(verbose=False))
     assert "BASE METRICS" not in out
     assert "CVSS-B Score = 7.3" in out
+
+
+@pytest.mark.parametrize("verbose,macro_vector_in_output", [
+    (True,  True),
+    (False, False),
+])
+def test_verbose_dispatch(verbose: bool, macro_vector_in_output: bool) -> None:
+    cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
+    out = format_output(cvs, _clarg(verbose=verbose))
+    assert ("MacroVector EQ:" in out) == macro_vector_in_output
