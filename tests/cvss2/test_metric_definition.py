@@ -1,5 +1,6 @@
 """Unit tests for MetricDefinition and derived validation dicts."""
 
+from cvss.vulnerability import MetricValueDef
 from cvss2.vulnerability import (
     BASE,
     BASE_DEFINITIONS,
@@ -7,7 +8,6 @@ from cvss2.vulnerability import (
     ENVIRONMENTAL_DEFINITIONS,
     TEMPORAL,
     TEMPORAL_DEFINITIONS,
-    MetricValueDef,
     all_metrics,
 )
 
