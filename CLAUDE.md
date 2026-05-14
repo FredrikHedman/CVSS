@@ -48,17 +48,14 @@ Both cvss2 and cvss4 import from `cvss.*` using **absolute imports** (never rela
 ### cvss2/ architecture
 
 **Data layer** (`cvss2/vulnerability.py`):
-- `MetricValueDef` / `MetricDefinition` are frozen dataclasses — single source of truth for metric names, abbreviations, weights, descriptions.
+- Imports `MetricValueDef`, `MetricDefinition`, `InvalidVectorError` from `cvss.vulnerability`.
 - `BASE_DEFINITIONS`, `TEMPORAL_DEFINITIONS`, `ENVIRONMENTAL_DEFINITIONS` are module-level tuples; validation dicts and key lists derived from them.
-- `VulnerabilityVector` parses and validates vectors. `valid()` / `complete()` chain raises `InvalidBaseVectorError` or `ValueError`.
+- `VulnerabilityVector` parses and validates vectors. `valid()` / `complete()` chain raises `InvalidVectorError` or `ValueError`.
 - `cvs_factory()` builds a `CVSS` instance from selected abbreviation strings.
 
 **Scoring layer** (`cvss2/cvss_base.py`, `cvss2/cvss_210.py`):
 - `CVSS` (abstract, `cvss_base.py`) is a template-method ABC. Concrete `base_score`, `temporal_score`, `environmental_score` properties call abstract hooks.
 - `CommonVulnerabilityScore` (`cvss_210.py`) is the concrete implementation. Metrics in `dict[str, Metric]` keyed by abbreviation.
-
-**Metric layer** (`cvss2/metric.py`, `cvss2/metric_value.py`):
-- `Metric` wraps a named set of `MetricValue` options and tracks the selected one.
 
 **CLI layer** (`cvss2/cvss.py`, `cvss2/cvss_parser.py`, `cvss2/cvss_handlers.py`, `cvss2/cvss_input.py`, `cvss2/cvss_output.py`, `cvss2/cvss_types.py`):
 - `CvssArgs` (`cvss_types.py`) is a `TypedDict` mirroring the argparse `Namespace` (8 keys, no `cvss_version`).
