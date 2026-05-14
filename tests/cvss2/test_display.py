@@ -6,6 +6,7 @@ import pytest
 
 from cvss2.cvss_output import (
     ScoreDisplayData,
+    _show_flags,  # pyright: ignore[reportPrivateUsage]
     display_score,
     render_output,
 )
@@ -83,3 +84,28 @@ def test_render_output_verbose(base_clarg: CvssArgs) -> None:
         render_output(MagicMock(), clarg)
     mock_verb.assert_called_once()
     mock_out.assert_not_called()
+
+
+def _clarg(**kwargs: bool) -> CvssArgs:
+    base: CvssArgs = {
+        "verbose": False, "interactive": False, "all": False,
+        "base": False, "temporal": False, "environmental": False,
+        "vector": None, "vulnerability": None,
+    }
+    return {**base, **kwargs}  # type: ignore[misc]
+
+
+@pytest.mark.parametrize("flags,expected", [
+    ({"base": True},                    (True,  False, False)),
+    ({"temporal": True},                (False, True,  False)),
+    ({"environmental": True},           (False, False, True)),
+    ({"all": True},                     (True,  True,  True)),
+    ({"all": True, "base": False},      (True,  True,  True)),
+    ({},                                (False, False, False)),
+    ({"base": True, "temporal": True},  (True,  True,  False)),
+])
+def test_show_flags(
+    flags: dict[str, bool],
+    expected: tuple[bool, bool, bool],
+) -> None:
+    assert _show_flags(_clarg(**flags)) == expected
