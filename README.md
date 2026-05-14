@@ -140,6 +140,17 @@ Base Vulnerability Vector: AV:N/AC:L/Au:N/C:C/I:C/A:C
 
 ## Code Structure
 
+### cvss/ — Shared internals
+
+Both CLI packages import from `cvss.*` using absolute imports.
+
+| Module                  | Responsibility                                              |
+|-------------------------|-------------------------------------------------------------|
+| `cvss/metric_value.py`  | `MetricValue` frozen dataclass                              |
+| `cvss/metric.py`        | `Metric` — named set of `MetricValue` options               |
+| `cvss/vulnerability.py` | `MetricValueDef`, `MetricDefinition`, `InvalidVectorError`  |
+| `cvss/cli.py`           | `exit_with_error(e) -> NoReturn` CLI helper                 |
+
 ### cvss2/ — CVSS v2.10
 
 | Module                      | Responsibility                                                             |
