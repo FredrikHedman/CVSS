@@ -5,6 +5,27 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.3.1] — 2026-05-14
+
+### Added
+
+- `_show_flags` in `cvss2/cvss_output.py` now has a direct parametrized unit
+  test covering all six flag combinations (7 new test cases).
+- `--vulnerability` help string in `cvss4` now documents that absent or `X`
+  Exploit Maturity (E) defaults to Attacked (A) for scoring.
+
+### Changed
+
+- `render_output` renamed to `format_output(cvs, clarg) -> str` in both
+  `cvss2/cvss_output.py` and `cvss4/cvss_output.py`; `main()` writes the
+  returned string to `sys.stdout`. Tests now assert on the return value
+  directly — no `capsys` capture needed in cvss4.
+- `_EQLevels` promoted to public `EQLevels` in `cvss4/cvss_40.py`;
+  `CVSS40Result.macro_vector` Protocol declaration updated to `EQLevels`
+  so callers get named `.eq1`–`.eq6` access instead of positional indexing.
+
+---
+
 ## [2.3.0] — 2026-05-14
 
 ### Added
