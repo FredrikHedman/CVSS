@@ -5,10 +5,7 @@
 #
 """Shared type definitions for the cvss2 CLI."""
 
-from typing import NamedTuple, Protocol, TypedDict, runtime_checkable
-
-from cvss.metric import Metric
-
+from typing import NamedTuple, TypedDict
 
 class ScoreEntry(NamedTuple):
     """One score label, numeric value, and vulnerability vector."""
@@ -29,19 +26,3 @@ class CvssArgs(TypedDict):
     environmental: bool
     vector: str | None
     vulnerability: str | None
-
-
-@runtime_checkable
-class CVSSResult(Protocol):
-    """Common interface satisfied by the v2.10 scorer."""
-
-    @property
-    def version(self) -> str: ...
-
-    @property
-    def base_score(self) -> float: ...
-
-    @property
-    def base_vulnerability_vector(self) -> str: ...
-
-    def base_metrics(self) -> list[Metric]: ...
