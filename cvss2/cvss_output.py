@@ -113,8 +113,8 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
          )),
         (show_env,
          ScoreDisplayData(
-             header=("ENIRONMENTAL METRIC", "EVALUATION", "SCORE"),
-             footer_labels=["FORMULA", "ENIRONMENTAL SCORE"],
+             header=("EVIRONMENTAL METRIC", "EVALUATION", "SCORE"),
+             footer_labels=["FORMULA", "EVIRONMENTAL SCORE"],
              metrics=cvs.environmental_metrics(),
              footer_data=[
                  ("Adjusted Impact", cvs.adjusted_impact),
