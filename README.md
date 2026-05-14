@@ -175,10 +175,7 @@ Both CLI packages import from `cvss.*` using absolute imports.
 | `cvss4/cvss_output.py`      | Score output; `render_output`, `qualitative_rating`                        |
 | `cvss4/cvss_types.py`       | Shared types (`CvssArgs`, `CVSS40Result`)                                  |
 | `cvss4/cvss_40.py`          | Standalone CVSS v4.0 scorer (`CommonVulnerabilityScore40`)                 |
-| `cvss4/vulnerability_40.py` | v4.0 metric definitions and `VulnerabilityVector40`                        |
-| `cvss4/vulnerability.py`    | `MetricDefinition`/`MetricValueDef` types (shared primitives)              |
-| `cvss4/metric.py`           | `Metric` class                                                             |
-| `cvss4/metric_value.py`     | `MetricValue` class                                                        |
+| `cvss4/vulnerability_40.py` | v4.0 metric definitions, `VulnerabilityVector40`; imports shared types from `cvss/` |
 
 ## Development Flow
 
