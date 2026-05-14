@@ -22,40 +22,27 @@ class ScoreDisplayData:
 
 def display_score(data: ScoreDisplayData) -> None:
     """Formatted score that recreates format of the CVSS examples."""
-
-    def display_header() -> None:
-        print(s1)
-        h = data.header
-        print(f"{h[0]:<{w0}}{h[1]:<{w0}}{h[2]}")
-
-    def display_metrics() -> None:
-        print(s1)
-        for m in data.metrics:
-            print(
-                f"{m.name:<{w0}}{m.selected.metric:<{w0}}"
-                + f"{m.selected.number:>{w1}.2f}"
-            )
-
-    def display_footer() -> None:
-        print(s1)
-        w2 = len(s1) - len(data.footer_labels[1])
-        print(f"{data.footer_labels[0]:<{w2}}{data.footer_labels[1]}")
-
-    def display_footer_data() -> None:
-        print(s1)
-        for label, value in data.footer_data:
-            print(f"{label + ' =':<{2 * w0}}{value:>{w1}.2f}")
-        vl = data.vector_label
-        print(f"{vl[0]} Vulnerability Vector: {vl[1]}")
-        print(s1)
-
     w0 = 30
     w1 = len(data.header[2])
     s1 = (w0 * 2 + w1) * "="
-    display_header()
-    display_metrics()
-    display_footer()
-    display_footer_data()
+    h = data.header
+    print(s1)
+    print(f"{h[0]:<{w0}}{h[1]:<{w0}}{h[2]}")
+    print(s1)
+    for m in data.metrics:
+        print(
+            f"{m.name:<{w0}}{m.selected.metric:<{w0}}"
+            + f"{m.selected.number:>{w1}.2f}"
+        )
+    print(s1)
+    w2 = len(s1) - len(data.footer_labels[1])
+    print(f"{data.footer_labels[0]:<{w2}}{data.footer_labels[1]}")
+    print(s1)
+    for label, value in data.footer_data:
+        print(f"{label + ' =':<{2 * w0}}{value:>{w1}.2f}")
+    vl = data.vector_label
+    print(f"{vl[0]} Vulnerability Vector: {vl[1]}")
+    print(s1)
 
 
 def _group_header(name: str) -> tuple[str, str, str]:
