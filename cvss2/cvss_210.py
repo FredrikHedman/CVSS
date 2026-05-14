@@ -103,31 +103,37 @@ class CommonVulnerabilityScore(CVSS):
             val = 0.0
         return val
 
+    def _metrics_for(self, keys: tuple[str, ...]) -> list[Metric]:
+        return [self[k] for k in keys]
+
+    def _vector_for(self, keys: tuple[str, ...]) -> str:
+        return "/".join(f"{k}:{self[k]}" for k in keys)
+
     @override
     def base_metrics(self) -> list[Metric]:
-        return [self[v] for v in _BASE_KEYS]
+        return self._metrics_for(_BASE_KEYS)
 
     @property
     @override
     def base_vector(self) -> str:
-        return "/".join(f"{v}:{self[v]}" for v in _BASE_KEYS)
+        return self._vector_for(_BASE_KEYS)
 
     @override
     def temporal_metrics(self) -> list[Metric]:
-        return [self[v] for v in _TEMPORAL_KEYS]
+        return self._metrics_for(_TEMPORAL_KEYS)
 
     @property
     @override
     def temporal_vector(self) -> str:
-        return "/".join(f"{v}:{self[v]}" for v in _TEMPORAL_KEYS)
+        return self._vector_for(_TEMPORAL_KEYS)
 
     @override
     def environmental_metrics(self) -> list[Metric]:
-        return [self[v] for v in _ENV_KEYS]
+        return self._metrics_for(_ENV_KEYS)
 
     @property
     @override
     def environmental_vector(self) -> str:
-        return "/".join(f"{v}:{self[v]}" for v in _ENV_KEYS)
+        return self._vector_for(_ENV_KEYS)
 
 
