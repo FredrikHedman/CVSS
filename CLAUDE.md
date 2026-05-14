@@ -71,12 +71,14 @@ Both cvss2 and cvss4 import from `cvss.*` using **absolute imports** (never rela
 ### cvss4/ architecture
 
 **Data layer** (`cvss4/vulnerability_40.py`):
+- Imports `MetricDefinition`, `MetricValueDef`, `InvalidVectorError` from `cvss.vulnerability`.
 - `BASE40_DEFINITIONS`, `THREAT40_DEFINITIONS`, `ENVIRONMENTAL40_DEFINITIONS`, `SUPPLEMENTAL40_DEFINITIONS` — four metric groups (Spec §7.1–§7.4).
 - `VulnerabilityVector40` validates and parses `CVSS:4.0/` vectors on construction. `parsed` is a `cached_property` returning `dict[str, str]` (absent metrics default to `"X"`).
 - `_ALL_ALLOWED` — validation dict derived from all four definition groups.
 
 **Scoring layer** (`cvss4/cvss_40.py`):
 - `CommonVulnerabilityScore40` — standalone class (does not inherit from the v2.10 CVSS ABC). Uses MacroVector lookup table (270 entries) + EQ-set interpolation (Spec §7–§8).
+- `macro_vector` property — returns `_EQLevels` NamedTuple of the six EQ level integers.
 - `_eq1`–`_eq6` — module-level pure EQ classification functions.
 - `_DistSpec` dataclass — per-EQ distance configuration.
 - `_EQLevels` NamedTuple — named EQ level access.
