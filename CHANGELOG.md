@@ -5,6 +5,37 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.3.0] — 2026-05-14
+
+### Added
+
+- Restructured into three packages: `cvss/` (shared internals), `cvss2/` (CVSS v2.10
+  CLI), `cvss4/` (CVSS v4.0 CLI). Both CLI packages install from a single `cvss` wheel.
+- `cvss/` shared package: `Metric`, `MetricValue`, `MetricValueDef`, `MetricDefinition`,
+  `InvalidVectorError`, `exit_with_error` consolidated; both CLI packages import from
+  `cvss.*` using absolute imports.
+- CVSS v4.0 verbose tabular output mode (`-v` / `--verbose`): all four metric groups
+  in aligned tables plus MacroVector EQ levels, score label, severity, and vector.
+- CVSS v4.0 score label prefix in output: CVSS-B / CVSS-BT / CVSS-BE / CVSS-BTE
+  depending on which optional metric groups are set.
+- `macro_vector` property on `CommonVulnerabilityScore40` returning `_EQLevels`
+  NamedTuple of the six EQ level integers; declared in `CVSS40Result` Protocol.
+
+### Changed
+
+- `--cvss-version` choices simplified from `2.10` / `4.0` to `v2` / `v4`.
+- `InvalidBaseVectorError` renamed to `InvalidVectorError` in cvss2 for symmetry
+  with cvss4.
+- `vulnerability_40` accessor methods: `_40` suffix dropped
+  (`base_metrics_40` → `base_metrics`, etc.).
+
+### Removed
+
+- Monolithic `cvss` package replaced by the three-package structure.
+- Stale `# VERSION: 1.20.1` file-level header comments.
+
+---
+
 ## [2.2.0] — 2026-05-12
 
 ### Added
