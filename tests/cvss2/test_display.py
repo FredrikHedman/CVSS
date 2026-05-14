@@ -4,13 +4,14 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
+from cvss2.cvss_210 import CommonVulnerabilityScore
 from cvss2.cvss_output import (
     ScoreDisplayData,
     _show_flags,  # pyright: ignore[reportPrivateUsage]
-    display_score,
     format_output,
 )
 from cvss2.cvss_types import CvssArgs
+from cvss2.vulnerability import cvs_factory
 
 
 def test_score_display_data_construction() -> None:
@@ -42,21 +43,14 @@ def test_score_display_data_immutable() -> None:
         d.header = ("X", "Y", "Z")  # type: ignore[misc]
 
 
-def test_display_score_prints_header(
-    capsys: pytest.CaptureFixture[str],
+def test_format_output_verbose_contains_base_table(
+    base_clarg: CvssArgs,
 ) -> None:
-    data = ScoreDisplayData(
-        header=("BASE METRIC", "EVALUATION", "SCORE"),
-        footer_labels=["FORMULA", "BASE SCORE"],
-        metrics=[],
-        footer_data=[("Base Score", 7.5)],
-        vector_label=("Base", "AV:N/AC:L"),
-    )
-    display_score(data)
-    out = capsys.readouterr().out
+    cvs = cvs_factory(CommonVulnerabilityScore)
+    out = format_output(cvs, {**base_clarg, "verbose": True})
     assert "BASE METRIC" in out
     assert "BASE SCORE" in out
-    assert "7.50" in out
+    assert isinstance(out, str)
 
 
 @pytest.fixture
