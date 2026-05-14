@@ -35,7 +35,15 @@ def build_parser() -> argparse.ArgumentParser:
     _ = p.add_argument("-v", "--verbose", action="store_true")
     _ = p.add_argument("-b", "--base", action="store_true")
     _ = p.add_argument("vector", nargs="?", default=None)
-    _ = p.add_argument("--vulnerability", metavar="vector", default=None)
+    _ = p.add_argument(
+        "--vulnerability",
+        metavar="vector",
+        default=None,
+        help=(
+            "score a full vulnerability vector; "
+            "E (Exploit Maturity) absent or X defaults to Attacked (A)"
+        ),
+    )
     _ = p.add_argument("--version", action="version", version=VERSION)
     return p
 

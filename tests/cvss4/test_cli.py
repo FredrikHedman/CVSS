@@ -28,6 +28,7 @@ def test_help_long() -> None:
     assert "cvss4" in out
     assert "--vulnerability" in out
     assert "--base" in out
+    assert "defaults to Attacked" in out
 
 
 def test_help_short() -> None:
