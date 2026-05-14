@@ -15,7 +15,7 @@ from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Callable, NamedTuple
 
-from .metric import Metric
+from cvss.metric import Metric
 from .vulnerability_40 import (
     BASE40_DEFINITIONS,
     ENVIRONMENTAL40_DEFINITIONS,

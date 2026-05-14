@@ -10,7 +10,7 @@
 from typing import override
 
 from .cvss_base import CVSS
-from .metric import Metric
+from cvss.metric import Metric
 from .vulnerability import (
     BASE_DEFINITIONS,
     ENVIRONMENTAL_DEFINITIONS,

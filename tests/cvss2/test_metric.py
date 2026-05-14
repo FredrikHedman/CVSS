@@ -2,7 +2,7 @@
 
 import pytest
 
-from cvss2.metric import Metric
+from cvss.metric import Metric
 
 
 @pytest.fixture

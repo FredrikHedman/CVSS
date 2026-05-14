@@ -4,7 +4,7 @@ from dataclasses import dataclass
 
 from .cvss_base import CVSS
 from .cvss_types import CvssArgs, ScoreEntry
-from .metric import Metric
+from cvss.metric import Metric
 
 
 @dataclass(frozen=True)

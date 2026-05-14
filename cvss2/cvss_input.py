@@ -2,7 +2,7 @@
 
 from collections.abc import Iterable
 
-from .metric import Metric
+from cvss.metric import Metric
 from .vulnerability import MetricDefinition
 
 

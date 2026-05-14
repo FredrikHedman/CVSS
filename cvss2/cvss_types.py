@@ -7,7 +7,7 @@
 
 from typing import NamedTuple, Protocol, TypedDict, runtime_checkable
 
-from .metric import Metric
+from cvss.metric import Metric
 
 
 class ScoreEntry(NamedTuple):

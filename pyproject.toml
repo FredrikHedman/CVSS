@@ -30,11 +30,11 @@ cvss2 = "cvss2.cvss:main"
 cvss4 = "cvss4.cvss:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["cvss2", "cvss4"]
+packages = ["cvss", "cvss2", "cvss4"]
 
 [tool.pytest.ini_options]
 addopts = "--doctest-modules"
-testpaths = ["cvss2", "cvss4", "tests"]
+testpaths = ["cvss", "cvss2", "cvss4", "tests"]
 
 [tool.ruff]
 line-length = 79
@@ -50,7 +50,7 @@ max-complexity = 9
 [tool.basedpyright]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
-include = ["cvss2", "cvss4", "tests"]
+include = ["cvss", "cvss2", "cvss4", "tests"]
 exclude = ["misc"]
 reportImplicitOverride = "warning"
 reportImplicitStringConcatenation = "warning"

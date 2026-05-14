@@ -1,7 +1,7 @@
 """Output rendering for CVSS v4.0."""
 
 from .cvss_types import CVSS40Result, CvssArgs
-from .metric import Metric
+from cvss.metric import Metric
 
 
 def qualitative_rating(score: float) -> str:
