@@ -1,12 +1,9 @@
 """Unit tests for cvss4 output functions."""
 
-import io
-import sys
-
 import pytest
 
 from cvss4.cvss_40 import CommonVulnerabilityScore40
-from cvss4.cvss_output import qualitative_rating, render_output
+from cvss4.cvss_output import format_output, qualitative_rating
 from cvss4.cvss_types import CvssArgs
 from cvss4.vulnerability_40 import VulnerabilityVector40
 
@@ -46,46 +43,29 @@ def test_qualitative_rating(score: float, expected: str) -> None:
     (_V40_WITH_ENV, "CVSS-BE"),
     (_V40_WITH_BOTH, "CVSS-BTE"),
 ])
-def test_score_label(
-    vector: str,
-    expected_label: str,
-    capsys: pytest.CaptureFixture[str],
-) -> None:
+def test_score_label(vector: str, expected_label: str) -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(vector).parsed)
-    render_output(cvs, _clarg())
-    out = capsys.readouterr().out
+    out = format_output(cvs, _clarg())
     assert f"{expected_label} Score = " in out
 
 
-def test_render_output_prints_score_and_severity() -> None:
+def test_format_output_score_and_severity() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
-    captured = io.StringIO()
-    sys.stdout = captured
-    try:
-        render_output(cvs, _clarg())
-    finally:
-        sys.stdout = sys.__stdout__
-    out = captured.getvalue()
+    out = format_output(cvs, _clarg())
     assert "CVSS-B Score = 7.3" in out
     assert "Severity = High" in out
     assert "CVSS v4.0 Vulnerability Vector = " in out
 
 
-def test_render_output_includes_vector(
-    capsys: pytest.CaptureFixture[str],
-) -> None:
+def test_format_output_includes_vector() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
-    render_output(cvs, _clarg())
-    out = capsys.readouterr().out
+    out = format_output(cvs, _clarg())
     assert cvs.base_vulnerability_vector in out
 
 
-def test_verbose_output_shows_all_groups(
-    capsys: pytest.CaptureFixture[str],
-) -> None:
+def test_verbose_output_shows_all_groups() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
-    render_output(cvs, _clarg(verbose=True))
-    out = capsys.readouterr().out
+    out = format_output(cvs, _clarg(verbose=True))
     assert "BASE METRICS" in out
     assert "THREAT METRICS" in out
     assert "ENVIRONMENTAL METRICS" in out
@@ -94,11 +74,8 @@ def test_verbose_output_shows_all_groups(
     assert "CVSS-B Score = 7.3" in out
 
 
-def test_verbose_output_non_verbose_unchanged(
-    capsys: pytest.CaptureFixture[str],
-) -> None:
+def test_verbose_output_non_verbose_unchanged() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_V40_BASE).parsed)
-    render_output(cvs, _clarg(verbose=False))
-    out = capsys.readouterr().out
+    out = format_output(cvs, _clarg(verbose=False))
     assert "BASE METRICS" not in out
     assert "CVSS-B Score = 7.3" in out
