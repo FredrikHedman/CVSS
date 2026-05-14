@@ -1,7 +1,6 @@
 """Output rendering for CVSS v4.0."""
 
-import contextlib
-import io
+from cvss.output import capture_output
 
 from .cvss_types import CVSS40Result, CvssArgs
 from cvss.metric import Metric
@@ -71,18 +70,18 @@ def _render_verbose(cvs: CVSS40Result) -> None:
     print()
 
 
+def _render_base_only(cvs: CVSS40Result) -> None:
+    label = _score_label(cvs)
+    print()
+    print(f"{label} Score = {cvs.base_score}")
+    print(f"Severity = {qualitative_rating(cvs.base_score)}")
+    vec = cvs.base_vulnerability_vector
+    print(f"CVSS v4.0 Vulnerability Vector = {vec}")
+    print()
+
+
 def format_output(cvs: CVSS40Result, clarg: CvssArgs) -> str:
     """Return scores formatted as a string (verbose or standard)."""
-    buf = io.StringIO()
-    with contextlib.redirect_stdout(buf):
-        if clarg["verbose"]:
-            _render_verbose(cvs)
-        else:
-            label = _score_label(cvs)
-            print()
-            print(f"{label} Score = {cvs.base_score}")
-            print(f"Severity = {qualitative_rating(cvs.base_score)}")
-            vec = cvs.base_vulnerability_vector
-            print(f"CVSS v4.0 Vulnerability Vector = {vec}")
-            print()
-    return buf.getvalue()
+    if clarg["verbose"]:
+        return capture_output(lambda: _render_verbose(cvs))
+    return capture_output(lambda: _render_base_only(cvs))

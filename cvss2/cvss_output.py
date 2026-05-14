@@ -1,8 +1,8 @@
 """CVSS v2.10 score output formatting."""
 
-import contextlib
-import io
 from dataclasses import dataclass
+
+from cvss.output import capture_output
 
 from .cvss_base import CVSS
 from .cvss_types import CvssArgs, ScoreEntry
@@ -135,10 +135,6 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
 
 def format_output(cvs: CVSS, clarg: CvssArgs) -> str:
     """Return scores formatted as a string (verbose or standard)."""
-    buf = io.StringIO()
-    with contextlib.redirect_stdout(buf):
-        if clarg["verbose"]:
-            _generate_verbose_output(cvs, clarg)
-        else:
-            _generate_output(cvs, clarg)
-    return buf.getvalue()
+    if clarg["verbose"]:
+        return capture_output(lambda: _generate_verbose_output(cvs, clarg))
+    return capture_output(lambda: _generate_output(cvs, clarg))
