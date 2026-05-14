@@ -509,20 +509,10 @@ class CommonVulnerabilityScore40:
     # Per-EQ severity distance helpers (Spec §8.3)
     # ------------------------------------------------------------------
 
-    def _dist_eq1(self, mv: dict[str, str]) -> float | None:
-        return _dist_from_specs(self._p, mv, _EQ1_SPECS)
-
-    def _dist_eq2(self, mv: dict[str, str]) -> float | None:
-        return _dist_from_specs(self._p, mv, _EQ2_SPECS)
-
-    def _dist_eq3eq6(self, mv: dict[str, str]) -> float | None:
-        return _dist_from_specs(self._p, mv, _EQ3EQ6_SPECS)
-
-    def _dist_eq4(self, mv: dict[str, str]) -> float | None:
-        return _dist_from_specs(self._p, mv, _EQ4_SPECS)
-
-    def _dist_eq5(self, mv: dict[str, str]) -> float | None:
-        return _dist_from_specs(self._p, mv, _EQ5_SPECS)
+    def _dist(
+        self, mv: dict[str, str], specs: list[_DistSpec]
+    ) -> float | None:
+        return _dist_from_specs(self._p, mv, specs)
 
     # ------------------------------------------------------------------
     # Score computation (Spec §8)
@@ -545,23 +535,29 @@ class CommonVulnerabilityScore40:
             _eq_contrib(
                 _LOOKUP.get((eq1 + 1, eq2, eq3, eq4, eq5, eq6))
                 if eq1 < 2 else None,
-                mv, _EQ1_MAX[str(eq1)], self._dist_eq1, _SEV_EQ1[eq1],
+                mv, _EQ1_MAX[str(eq1)],
+                lambda mv: self._dist(mv, _EQ1_SPECS), _SEV_EQ1[eq1],
             ),
             _eq_contrib(
                 _LOOKUP.get((eq1, eq2 + 1, eq3, eq4, eq5, eq6))
                 if eq2 < 1 else None,
-                mv, _EQ2_MAX[str(eq2)], self._dist_eq2, _SEV_EQ2[eq2],
+                mv, _EQ2_MAX[str(eq2)],
+                lambda mv: self._dist(mv, _EQ2_SPECS), _SEV_EQ2[eq2],
             ),
-            _eq3eq6_contrib(levels, mv, self._dist_eq3eq6),
+            _eq3eq6_contrib(
+                levels, mv, lambda mv: self._dist(mv, _EQ3EQ6_SPECS)
+            ),
             _eq_contrib(
                 _LOOKUP.get((eq1, eq2, eq3, eq4 + 1, eq5, eq6))
                 if eq4 < 2 else None,
-                mv, _EQ4_MAX[str(eq4)], self._dist_eq4, _SEV_EQ4[eq4],
+                mv, _EQ4_MAX[str(eq4)],
+                lambda mv: self._dist(mv, _EQ4_SPECS), _SEV_EQ4[eq4],
             ),
             _eq_contrib(
                 _LOOKUP.get((eq1, eq2, eq3, eq4, eq5 + 1, eq6))
                 if eq5 < 2 else None,
-                mv, _EQ5_MAX[str(eq5)], self._dist_eq5, _SEV_EQ5[eq5],
+                mv, _EQ5_MAX[str(eq5)],
+                lambda mv: self._dist(mv, _EQ5_SPECS), _SEV_EQ5[eq5],
             ),
         ]
         total = sum(c for c, _ in contribs)
