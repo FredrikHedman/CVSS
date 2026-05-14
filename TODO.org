@@ -1,3 +1,24 @@
+* <2026-05-14 Wed> Five output and test refactors [5/5]
+  1) [X] **Fix "ENIRONMENTAL" → "EVIRONMENTAL" typo in cvss2 verbose output** —
+     Fixed both occurrences in `cvss2/cvss_output.py` and the use-case fixture
+     `tests/cvss2/test_uc06_verbose_out.txt`.
+
+  2) [X] **Derive verbose group headers and footer_labels from group name** —
+     Added `_group_header(name)` and `_footer_labels(name)` helpers in
+     `cvss2/cvss_output.py`; replaced all six hard-coded literals. Parametrized
+     test added to `tests/cvss2/test_display.py`.
+
+  3) [X] **Move `_print_group` to `cvss/output.py` as `print_metric_group`** —
+     Also added `print_separator()` to avoid exposing `_SEP`. New test file
+     `tests/cvss/test_output.py` added. README updated.
+
+  4) [X] **Move `qualitative_rating` to `cvss/output.py`** — Removed from
+     `cvss4/cvss_output.py`; test import updated to `cvss.output`. README updated.
+
+  5) [X] **`format_output` end-to-end tests for known scoring vectors** — 3 cvss2
+     vectors (10.0, 8.2, 0.8) and 2 cvss4 vectors (7.3, 9.3) added as parametrized
+     tests. 180 total tests pass.
+
 * <2026-05-14 Wed> Shared cvss package expansion [3/3]
   1) [X] **Move `MetricValueDef`, `MetricDefinition`, `InvalidVectorError` to
      `cvss/vulnerability.py`** — Both `cvss2/vulnerability.py` and
@@ -60,22 +81,14 @@
      `test_format_output_verbose_contains_base_table` that calls `format_output`
      end-to-end and asserts on the return value.
 
-* <2026-05-14 Wed> Suggested future refactors [0/3]
-  1) [ ] **Share `_print_group` table renderer in `cvss/output.py`** (MEDIUM) —
-     cvss4's `_print_group(header, metrics)` and cvss2's
-     `display_score(ScoreDisplayData)` both render aligned metric tables. A shared
-     `print_metric_table(header, metrics, width)` primitive in `cvss/output.py`
-     would let both packages use the same renderer.
+* <2026-05-14 Wed> Suggested future refactors [3/3]
+  1) [X] **Share `_print_group` table renderer in `cvss/output.py`** — done as
+     `print_metric_group` in 2026-05-14 "Five output and test refactors" item 3.
 
-  2) [ ] **Derive `ScoreDisplayData` headers from `MetricDefinition`** (LOW) —
-     The header tuples in cvss2 verbose output are hand-coded strings (e.g.
-     `"BASE METRIC"`); they could be derived from `BASE_DEFINITIONS` etc., making
-     them drift-proof against future metric renames.
+  2) [X] **Derive `ScoreDisplayData` headers from `MetricDefinition`** — done as
+     `_group_header`/`_footer_labels` helpers in item 2.
 
-  3) [ ] **`format_output` end-to-end tests for known vectors** (LOW) —
-     Focused `format_output` parametrized tests for known vectors with exact
-     expected score strings would decouple format verification from the subprocess
-     layer (currently covered only by `test_usecases.py` via the binary).
+  3) [X] **`format_output` end-to-end tests for known vectors** — done in item 5.
 
 * <2026-05-13 Tue> Post-verbose/interactive pattern suggestions [0/0]
   (All items moved/completed — see 2026-05-14 entries above.)
