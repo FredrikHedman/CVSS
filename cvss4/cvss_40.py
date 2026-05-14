@@ -16,6 +16,7 @@ from decimal import ROUND_HALF_UP, Decimal
 from typing import Callable, NamedTuple
 
 from cvss.metric import Metric
+from cvss.vulnerability import MetricDefinition
 from .vulnerability_40 import (
     BASE40_DEFINITIONS,
     ENVIRONMENTAL40_DEFINITIONS,
@@ -587,14 +588,19 @@ class CommonVulnerabilityScore40:
         )
         return "CVSS:4.0/" + base + ("/" + optional if optional else "")
 
+    def _metrics_from_defs(
+        self, defs: tuple[MetricDefinition, ...]
+    ) -> list[Metric]:
+        return [self._metrics[d.abbrev] for d in defs]
+
     def base_metrics(self) -> list[Metric]:
-        return [self._metrics[d.abbrev] for d in BASE40_DEFINITIONS]
+        return self._metrics_from_defs(BASE40_DEFINITIONS)
 
     def threat_metrics(self) -> list[Metric]:
-        return [self._metrics[d.abbrev] for d in THREAT40_DEFINITIONS]
+        return self._metrics_from_defs(THREAT40_DEFINITIONS)
 
     def environmental_metrics(self) -> list[Metric]:
-        return [self._metrics[d.abbrev] for d in ENVIRONMENTAL40_DEFINITIONS]
+        return self._metrics_from_defs(ENVIRONMENTAL40_DEFINITIONS)
 
     def supplemental_metrics(self) -> list[Metric]:
-        return [self._metrics[d.abbrev] for d in SUPPLEMENTAL40_DEFINITIONS]
+        return self._metrics_from_defs(SUPPLEMENTAL40_DEFINITIONS)

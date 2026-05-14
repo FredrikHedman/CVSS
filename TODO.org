@@ -1,4 +1,4 @@
-* <2026-05-14 Wed> Code simplification review II [0/3]
+* <2026-05-14 Wed> Code simplification review II [3/3]
   1) [X] **Remove 3 alias properties from `cvss2/cvss_base.py`** —
      `base_vulnerability_vector`, `temporal_vulnerability_vector`,
      `environmental_vulnerability_vector` each just return the shorter abstract
@@ -9,7 +9,7 @@
      in `cvss2/cvss_output.py` are each called exactly once. Inline them to
      remove the indirection layer.
 
-  3) [ ] **Extract `_metrics_from_defs` helper in `CommonVulnerabilityScore40`** —
+  3) [X] **Extract `_metrics_from_defs` helper in `CommonVulnerabilityScore40`** —
      Four identical `[self._metrics[d.abbrev] for d in X_DEFINITIONS]` bodies in
      `cvss4/cvss_40.py` can be reduced to one-line calls via a private helper.
 
