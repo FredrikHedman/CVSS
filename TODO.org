@@ -16,38 +16,54 @@
      `_exit_with_error(e) -> NoReturn` helper. Moved to `cvss/cli.py` as
      `exit_with_error`; each handler imports it with `as _exit_with_error`.
 
-* <2026-05-13 Tue> Post-verbose/interactive pattern suggestions [0/3]
+* <2026-05-14 Wed> Output and type refactors [4/4]
+  1) [X] **Export `EQLevels` as public type, fix `CVSS40Result` Protocol** (LOW) —
+     Renamed `_EQLevels` → `EQLevels` in `cvss4/cvss_40.py`. Updated
+     `cvss4/cvss_types.py` to import `EQLevels` via `TYPE_CHECKING` and declare
+     `macro_vector` return type as `EQLevels` instead of the plain tuple. Callers
+     holding a `CVSS40Result` reference now get named `.eq1`–`.eq6` access.
+
+  2) [X] **`_show_flags` direct unit test** (LOW) — Added parametrized
+     `test_show_flags` in `tests/cvss2/test_display.py` covering all six flag
+     combinations (base, temporal, environmental, all, mixed, all-false). 168 tests
+     pass (7 new).
+
+  3) [X] **Document Exploit Maturity X→Attacked default** (LOW) — Added
+     `"E (Exploit Maturity) absent or X defaults to Attacked (A)"` to the
+     `--vulnerability` help string in `cvss4/cvss_parser.py`. Test in
+     `tests/cvss4/test_cli.py` asserts the phrase "defaults to Attacked" appears
+     in `--help` output.
+
+  4) [X] **`render_output` → `format_output() -> str`** (LOW) — Renamed
+     `render_output` to `format_output` in both `cvss2/cvss_output.py` and
+     `cvss4/cvss_output.py`. Uses `io.StringIO + contextlib.redirect_stdout` to
+     capture the existing print-based helpers; `main()` calls
+     `sys.stdout.write(format_output(...))`. Tests updated: cvss4 tests now
+     assert on return value directly (no `capsys`); cvss2 dispatch tests
+     retain mocks but also check `isinstance(result, str)`.
+
+* <2026-05-14 Wed> Suggested next refactors [0/3]
   1) [ ] **Extract `_print_group`/display logic to a shared module** (MEDIUM) —
-     `cvss4/cvss_output.py` now has a `_print_group` helper that renders metric
-     tables; `cvss2/cvss_output.py` has the parallel `ScoreDisplayData` /
-     `display_score` machinery. Both sets of table-rendering code solve the same
-     underlying problem: format a list of `Metric` objects into aligned columnar
-     output. A `cvss_shared/` package (or a single `cvss_shared.py` alongside
-     both) would eliminate the divergence and create a single tested
-     table-rendering abstraction. Both parsers already call `version("cvss")`
-     from the same installed name, so a shared module is compatible with the
-     current `pyproject.toml` layout.
+     Now that `format_output` returns a string, both output modules are easier
+     to test in isolation. The next step is extracting the shared table-rendering
+     abstraction (`_print_group` in cvss4, `display_score`/`ScoreDisplayData` in
+     cvss2) into `cvss/output.py` and deleting the duplicate logic.
 
-  2) [ ] **`render_output` return value for library use** (LOW) —
-     Both `cvss2/cvss_output.py:render_output` and `cvss4/cvss_output.py:render_output`
-     write directly to stdout. This makes output testable only via `capsys`
-     capture and makes the packages unusable as libraries without monkeypatching.
-     Adding a companion `format_output(cvs, clarg) -> str` (or changing
-     `render_output` to return the string and let `main()` print it) would
-     decouple formatting from I/O, simplify tests, and open both packages to
-     programmatic use.
+  2) [ ] **`_show_flags` equivalent for cvss4** (LOW) — `format_output` in
+     cvss4 dispatches on `clarg["verbose"]` inline. Extracting a predicate
+     `_show_verbose(clarg) -> bool` (or similar) would mirror cvss2's `_show_flags`
+     pattern and make the dispatch explicit and directly testable.
 
-  3) [ ] **Add `macro_vector` to `CVSS40Result` Protocol** (LOW) —
-     `macro_vector` was added to `CommonVulnerabilityScore40` and to the
-     `CVSS40Result` Protocol (step 2), but the Protocol declares its return type
-     as `tuple[int, int, int, int, int, int]` while the concrete class returns
-     the richer `_EQLevels` NamedTuple. Callers who hold a `CVSS40Result`
-     reference can only index into the tuple, not use named `.eq1`–`.eq6` access.
-     Exporting `_EQLevels` as a public `EQLevels` NamedTuple (dropping the
-     leading underscore) and using it in the Protocol would give callers named
-     access without losing type safety.
+  3) [ ] **Make `format_output` the primary tested surface** (LOW) — A few
+     `display_score` tests in `tests/cvss2/test_display.py` still use `capsys`
+     to assert on output from the internal helper. Now that `format_output`
+     returns a string, those tests can be rewritten to call `format_output` end-
+     to-end and assert on the return value, removing all stdout-capture dependency.
 
-* <2026-05-13 Tue> Post-split refactors for cvss2/cvss4 [4/5]
+* <2026-05-13 Tue> Post-verbose/interactive pattern suggestions [0/0]
+  (All items moved/completed — see 2026-05-14 entries above.)
+
+* <2026-05-13 Tue> Post-split refactors for cvss2/cvss4 [10/12]
   1) [X] **CVSS-B/BT/BE/BTE score label in `cvss4/cvss_output.py`** (MEDIUM) —
      `_score_label()` checks `m.index != "X"` across `threat_metrics()` and
      `environmental_metrics()`; `render_output` now prefixes score with the
@@ -77,7 +93,7 @@
      exposing the private type. Displayed in verbose output as
      `MacroVector EQ: [eq1, eq2, eq3, eq4, eq5, eq6]`.
 
-* <2026-05-12 Mon> Findings after CVSS v4.0 spec/guide review [6/7]
+* <2026-05-12 Mon> Findings after CVSS v4.0 spec/guide review [12/12]
   1) [X] **CVSS-B/BT/BE/BTE score nomenclature** (MEDIUM) — done in 2026-05-13 item 1.
 
   2) [X] **`render_output` ignores `--verbose` flag in `cvss4`** (MEDIUM) —
@@ -95,11 +111,8 @@
   6) [X] **MacroVector EQ levels not surfaced in output** (LOW) —
      done in 2026-05-13 item 5.
 
-  7) [ ] **Exploit Maturity "Not Defined" effective default undocumented** (LOW) —
-     Add a note to `cvss4/cvss_parser.py` `--vulnerability` help string and
-     optionally print a one-line reminder in `cvss4/cvss_output.py:render_output`
-     when the E metric is absent or "X":
-     "E (Exploit Maturity) defaults to Attacked — use --vulnerability with E:P or E:U to refine."
+  7) [X] **Exploit Maturity "Not Defined" effective default undocumented** (LOW) —
+     Done in 2026-05-14 item 3.
 
 * <2026-05-12 Mon> Findings after protocol/scoring/test-hygiene refactors [3/3]
   1) [X] **Use `isinstance(cvs, CVSS40Result)` dispatch in `render_output`** (MEDIUM) —
@@ -199,7 +212,7 @@
      complete unit coverage for `cvss_output.py` and decouple output-format
      verification from the CLI integration layer.
 
-* <2026-05-11 Sun> Findings after v4.0 handler/scoring refactors [0/3]
+* <2026-05-11 Sun> Findings after v4.0 handler/scoring refactors [3/3]
   1) [X] **`_eq_levels()` should return a `NamedTuple`** — `_eq_levels()` returns
      `tuple[int, int, int, int, int, int]`. In `base_score` it is destructured
      as `eq1, eq2, eq3, eq4, eq5, eq6 = self._eq_levels()` and six positional
@@ -271,12 +284,8 @@
      `_accumulate_groups` now exists in `cvss2/cvss_handlers.py`; cvss4 has no
      interactive mode (cancelled by design).
 
-* <2026-05-10 Sun> Findings after _show_flags/header-assert/render_output-test cleanup [2/3]
-  1) [ ] **`_show_flags` is not directly tested** — The helper is exercised
-     indirectly through the use-case fixtures, but a focused unit test that
-     calls `_show_flags` with a crafted `CvssArgs` dict (e.g. `all=True`,
-     `base=True`) and asserts the returned triple would make its contract
-     explicit and catch any future breakage immediately.
+* <2026-05-10 Sun> Findings after _show_flags/header-assert/render_output-test cleanup [3/3]
+  1) [X] **`_show_flags` is not directly tested** — Done in 2026-05-14 item 2.
   2) [X] **`_BASE_CLARG` fixture in `test_display.py` is a module-level dict** —
      Sharing a mutable dict between tests via `{**_BASE_CLARG, ...}` spread is
      correct but verbose.  Converting to a `pytest.fixture` returning a fresh
