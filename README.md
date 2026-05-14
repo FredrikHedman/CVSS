@@ -136,7 +136,7 @@ Base Vulnerability Vector: AV:N/AC:L/Au:N/C:C/I:C/A:C
 | License        | MIT                                       | MIT                                       |
 | Type-checked   | basedpyright strict                       | basedpyright strict                       |
 | Linter         | ruff                                      | ruff                                      |
-| Tests          | 81 passing                                | 70 passing                                |
+| Tests          | 81 passing                                | 78 passing                                |
 
 ## Code Structure
 
