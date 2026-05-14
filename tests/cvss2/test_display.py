@@ -7,6 +7,8 @@ import pytest
 from cvss2.cvss_210 import CommonVulnerabilityScore
 from cvss2.cvss_output import (
     ScoreDisplayData,
+    _footer_labels,  # pyright: ignore[reportPrivateUsage]
+    _group_header,  # pyright: ignore[reportPrivateUsage]
     _show_flags,  # pyright: ignore[reportPrivateUsage]
     format_output,
 )
@@ -105,3 +107,23 @@ def test_show_flags(
     expected: tuple[bool, bool, bool],
 ) -> None:
     assert _show_flags(_clarg(**flags)) == expected
+
+
+@pytest.mark.parametrize("name,expected_header,expected_footer", [
+    ("BASE",
+     ("BASE METRIC", "EVALUATION", "SCORE"),
+     ["FORMULA", "BASE SCORE"]),
+    ("TEMPORAL",
+     ("TEMPORAL METRIC", "EVALUATION", "SCORE"),
+     ["FORMULA", "TEMPORAL SCORE"]),
+    ("EVIRONMENTAL",
+     ("EVIRONMENTAL METRIC", "EVALUATION", "SCORE"),
+     ["FORMULA", "EVIRONMENTAL SCORE"]),
+])
+def test_group_header(
+    name: str,
+    expected_header: tuple[str, str, str],
+    expected_footer: list[str],
+) -> None:
+    assert _group_header(name) == expected_header
+    assert _footer_labels(name) == expected_footer

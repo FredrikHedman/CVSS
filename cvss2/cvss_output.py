@@ -58,6 +58,14 @@ def display_score(data: ScoreDisplayData) -> None:
     display_footer_data()
 
 
+def _group_header(name: str) -> tuple[str, str, str]:
+    return (f"{name} METRIC", "EVALUATION", "SCORE")
+
+
+def _footer_labels(name: str) -> list[str]:
+    return ["FORMULA", f"{name} SCORE"]
+
+
 def _show_flags(clarg: CvssArgs) -> tuple[bool, bool, bool]:
     return (
         clarg["base"] or clarg["all"],
@@ -93,8 +101,8 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
     entries: list[tuple[bool, ScoreDisplayData]] = [
         (show_base,
          ScoreDisplayData(
-             header=("BASE METRIC", "EVALUATION", "SCORE"),
-             footer_labels=["FORMULA", "BASE SCORE"],
+             header=_group_header("BASE"),
+             footer_labels=_footer_labels("BASE"),
              metrics=cvs.base_metrics(),
              footer_data=[
                  ("Impact", cvs.impact),
@@ -105,16 +113,16 @@ def _generate_verbose_output(cvs: CVSS, clarg: CvssArgs) -> None:
          )),
         (show_temporal,
          ScoreDisplayData(
-             header=("TEMPORAL METRIC", "EVALUATION", "SCORE"),
-             footer_labels=["FORMULA", "TEMPORAL SCORE"],
+             header=_group_header("TEMPORAL"),
+             footer_labels=_footer_labels("TEMPORAL"),
              metrics=cvs.temporal_metrics(),
              footer_data=[("Temporal Score", cvs.temporal_score)],
              vector_label=("Temporal", cvs.temporal_vulnerability_vector),
          )),
         (show_env,
          ScoreDisplayData(
-             header=("EVIRONMENTAL METRIC", "EVALUATION", "SCORE"),
-             footer_labels=["FORMULA", "EVIRONMENTAL SCORE"],
+             header=_group_header("EVIRONMENTAL"),
+             footer_labels=_footer_labels("EVIRONMENTAL"),
              metrics=cvs.environmental_metrics(),
              footer_data=[
                  ("Adjusted Impact", cvs.adjusted_impact),
