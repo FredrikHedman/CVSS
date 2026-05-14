@@ -3,7 +3,8 @@
 import pytest
 
 from cvss4.cvss_40 import CommonVulnerabilityScore40
-from cvss4.cvss_output import format_output, qualitative_rating
+from cvss.output import qualitative_rating
+from cvss4.cvss_output import format_output
 from cvss4.cvss_types import CvssArgs
 from cvss4.vulnerability_40 import VulnerabilityVector40
 

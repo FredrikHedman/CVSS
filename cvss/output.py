@@ -18,6 +18,24 @@ def capture_output(fn: Callable[[], None]) -> str:
     return buf.getvalue()
 
 
+def qualitative_rating(score: float) -> str:
+    """Map a CVSS v4.0 score to a severity label (Spec §9)."""
+    if score == 0.0:
+        return "None"
+    if score < 4.0:
+        return "Low"
+    if score < 7.0:
+        return "Medium"
+    if score < 9.0:
+        return "High"
+    return "Critical"
+
+
+def print_separator() -> None:
+    """Print the standard separator line used in metric group tables."""
+    print(_SEP)
+
+
 def print_metric_group(header: str, metrics: list[Metric]) -> None:
     """Print one metric group as an aligned table with separator lines."""
     print(_SEP)

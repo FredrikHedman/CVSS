@@ -150,7 +150,7 @@ Both CLI packages import from `cvss.*` using absolute imports.
 | `cvss/metric.py`        | `Metric` — named set of `MetricValue` options               |
 | `cvss/vulnerability.py` | `MetricValueDef`, `MetricDefinition`, `InvalidVectorError`  |
 | `cvss/cli.py`           | `exit_with_error(e) -> NoReturn` CLI helper                 |
-| `cvss/output.py`        | `capture_output`, `print_metric_group` — output utilities   |
+| `cvss/output.py`        | `capture_output`, `print_metric_group`, `qualitative_rating` |
 
 ### cvss2/ — CVSS v2.10
 
