@@ -1,8 +1,9 @@
 """CVSS v2.10 command handlers and dispatch for all CLI modes."""
 
-import sys
 from collections.abc import Callable
-from typing import NoReturn, cast
+from typing import cast
+
+from cvss.cli import exit_with_error as _exit_with_error
 
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS
@@ -19,11 +20,6 @@ from .vulnerability import (
 )
 
 _MetricFn = Callable[[], list[MetricDefinition]]
-
-
-def _exit_with_error(e: Exception) -> NoReturn:
-    print(e)
-    sys.exit(1)
 
 
 def _cvs_from_vector(

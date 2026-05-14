@@ -1,16 +1,10 @@
 """CLI handlers for CVSS v4.0."""
 
-import sys
-from typing import NoReturn
+from cvss.cli import exit_with_error as _exit_with_error
 
 from .cvss_40 import CommonVulnerabilityScore40
 from .cvss_types import CVSS40Result, CvssArgs
 from .vulnerability_40 import InvalidVectorError, VulnerabilityVector40
-
-
-def _exit_with_error(e: Exception) -> NoReturn:
-    print(e)
-    sys.exit(1)
 
 
 def _cvs_from_vector(vector: str) -> CVSS40Result:
