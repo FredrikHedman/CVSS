@@ -8,7 +8,7 @@ from cvss2.cvss_output import (
     ScoreDisplayData,
     _show_flags,  # pyright: ignore[reportPrivateUsage]
     display_score,
-    render_output,
+    format_output,
 )
 from cvss2.cvss_types import CvssArgs
 
@@ -68,22 +68,24 @@ def base_clarg() -> CvssArgs:
     }
 
 
-def test_render_output_non_verbose(base_clarg: CvssArgs) -> None:
+def test_format_output_non_verbose(base_clarg: CvssArgs) -> None:
     clarg: CvssArgs = {**base_clarg, "verbose": False}
     with patch("cvss2.cvss_output._generate_output") as mock_out, \
          patch("cvss2.cvss_output._generate_verbose_output") as mock_verb:
-        render_output(MagicMock(), clarg)
+        result = format_output(MagicMock(), clarg)
     mock_out.assert_called_once()
     mock_verb.assert_not_called()
+    assert isinstance(result, str)
 
 
-def test_render_output_verbose(base_clarg: CvssArgs) -> None:
+def test_format_output_verbose(base_clarg: CvssArgs) -> None:
     clarg: CvssArgs = {**base_clarg, "verbose": True}
     with patch("cvss2.cvss_output._generate_output") as mock_out, \
          patch("cvss2.cvss_output._generate_verbose_output") as mock_verb:
-        render_output(MagicMock(), clarg)
+        result = format_output(MagicMock(), clarg)
     mock_verb.assert_called_once()
     mock_out.assert_not_called()
+    assert isinstance(result, str)
 
 
 def _clarg(**kwargs: bool) -> CvssArgs:
