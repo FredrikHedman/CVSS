@@ -27,7 +27,7 @@ uv run pytest tests/cvss2/test_cli.py::test_base_flag_parsed
 uv run pytest tests/cvss4/test_cli.py::test_vulnerability_vector
 ```
 
-Doctests are collected automatically from all `cvss2/` and `cvss4/` modules via `--doctest-modules` in `pyproject.toml`.
+Doctests are collected automatically from all `cvss/`, `cvss2/`, and `cvss4/` modules via `--doctest-modules` in `pyproject.toml`.
 
 ## Architecture
 
