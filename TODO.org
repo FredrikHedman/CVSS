@@ -1,3 +1,29 @@
+* <2026-05-15 Fri> Code simplification review III [1/3]
+  1) [X] **Collapse `_allowed()` + 4 intermediate dicts into a single
+     comprehension in `cvss4/vulnerability_40.py`** — `_allowed()` is called
+     four times to produce `_BASE_ALLOWED`, `_THREAT_ALLOWED`, `_ENV_ALLOWED`,
+     `_SUPPL_ALLOWED`; these are used only to build `_ALL_ALLOWED` via dict
+     unpacking. Replace all five with one nested comprehension:
+     `_ALL_ALLOWED = {d.abbrev: {v.abbrev for v in d.values} for defs in
+     (BASE40_DEFINITIONS, ...) for d in defs}`. Removes 1 helper function and
+     4 private intermediate dicts (~9 lines).
+
+  2) [ ] **Drop redundant `all_fns` parameter from `_accumulate_groups` in
+     `cvss2/cvss_handlers.py`** — The sole call site always passes
+     `all_fns=[base_fn, temporal_fn, env_fn]` in the same order as the three
+     individual parameters. Remove `all_fns` from the signature and reconstruct
+     `[base_fn, temporal_fn, env_fn]` internally in the `if clarg["all"]`
+     branch. Simplifies the function signature by one parameter and the call
+     site by one keyword argument.
+
+  3) [ ] **Add `all_metrics()` to `cvss4/vulnerability_40.py`; use it in
+     `_metrics` cached property** — `cvss2/vulnerability.py` already exposes
+     `all_metrics()`; the v4 counterpart has no equivalent. As a result,
+     `CommonVulnerabilityScore40._metrics` (cvss4/cvss_40.py) hand-builds a
+     4-source list concatenation. Adding `all_metrics()` to the vulnerability
+     module mirrors the v2 API, reduces noise in the scoring class to a single
+     `for d in all_metrics():`, and makes the two packages symmetric.
+
 * <2026-05-14 Wed> Code simplification review II [3/3]
   1) [X] **Remove 3 alias properties from `cvss2/cvss_base.py`** —
      `base_vulnerability_vector`, `temporal_vulnerability_vector`,
