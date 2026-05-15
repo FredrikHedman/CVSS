@@ -47,7 +47,6 @@ def process_cmd_line_vulnerability(vulnerability: str) -> CVSS:
 
 def _accumulate_groups(
     clarg: CvssArgs,
-    all_fns: list[_MetricFn],
     base_fn: _MetricFn,
     temporal_fn: _MetricFn,
     env_fn: _MetricFn,
@@ -55,7 +54,7 @@ def _accumulate_groups(
     """Read metrics interactively (no pre-existing vector)."""
     selected: list[str] = []
     if clarg["all"]:
-        for fn in all_fns:
+        for fn in [base_fn, temporal_fn, env_fn]:
             selected.extend(read_metrics(fn()))
     elif clarg["base"]:
         selected.extend(read_metrics(base_fn()))
@@ -80,7 +79,6 @@ def process_cmd_line_interactive(clarg: CvssArgs) -> CVSS:
     else:
         selected = _accumulate_groups(
             clarg,
-            all_fns=[base_metrics, temporal_metrics, environmental_metrics],
             base_fn=base_metrics,
             temporal_fn=temporal_metrics,
             env_fn=environmental_metrics,

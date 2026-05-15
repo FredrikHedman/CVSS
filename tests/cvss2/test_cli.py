@@ -40,17 +40,15 @@ def _fn_d() -> list[MetricDefinition]: return []
 def test_accumulate_all_reads_all_groups(mock_rm: object) -> None:
     result = _accumulate_groups(
         _clarg(all=True),
-        all_fns=[_fn_a, _fn_b, _fn_c, _fn_d],
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
-    assert result == ["x", "x", "x", "x"]
+    assert result == ["x", "x", "x"]
 
 
 @patch("cvss2.cvss_handlers.read_metrics", return_value=["x"])
 def test_accumulate_base_only(mock_rm: object) -> None:
     result = _accumulate_groups(
         _clarg(base=True),
-        all_fns=[_fn_a, _fn_b, _fn_c],
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == ["x"]
@@ -60,7 +58,6 @@ def test_accumulate_base_only(mock_rm: object) -> None:
 def test_accumulate_base_plus_temporal(mock_rm: object) -> None:
     result = _accumulate_groups(
         _clarg(base=True, temporal=True),
-        all_fns=[_fn_a, _fn_b, _fn_c],
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == ["x", "x"]
@@ -70,7 +67,6 @@ def test_accumulate_base_plus_temporal(mock_rm: object) -> None:
 def test_accumulate_base_temporal_env(mock_rm: object) -> None:
     result = _accumulate_groups(
         _clarg(base=True, temporal=True, environmental=True),
-        all_fns=[_fn_a, _fn_b, _fn_c],
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == ["x", "x", "x"]
@@ -80,7 +76,6 @@ def test_accumulate_base_temporal_env(mock_rm: object) -> None:
 def test_accumulate_no_flags_returns_empty(mock_rm: object) -> None:
     result = _accumulate_groups(
         _clarg(),  # neither all nor base
-        all_fns=[_fn_a, _fn_b, _fn_c],
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == []
