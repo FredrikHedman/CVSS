@@ -22,6 +22,7 @@ from .vulnerability_40 import (
     ENVIRONMENTAL40_DEFINITIONS,
     SUPPLEMENTAL40_DEFINITIONS,
     THREAT40_DEFINITIONS,
+    all_metrics,
 )
 
 # ---------------------------------------------------------------------------
@@ -491,13 +492,7 @@ class CommonVulnerabilityScore40:
     @functools.cached_property
     def _metrics(self) -> dict[str, Metric]:
         result: dict[str, Metric] = {}
-        all_defs = (
-            list(BASE40_DEFINITIONS)
-            + list(THREAT40_DEFINITIONS)
-            + list(ENVIRONMENTAL40_DEFINITIONS)
-            + list(SUPPLEMENTAL40_DEFINITIONS)
-        )
-        for d in all_defs:
+        for d in all_metrics():
             val = self._p.get(d.abbrev, "X")
             try:
                 m = Metric(d.name, d.abbrev, d.metric_values(), index=val)
