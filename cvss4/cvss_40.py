@@ -354,7 +354,9 @@ def _eq2(p: dict[str, str]) -> int:
 
 
 def _eq3(p: dict[str, str]) -> int:
-    vc, vi, va = _v(p, "VC"), _v(p, "VI"), _v(p, "VA")
+    vc = _eff(p, "MVC", "VC")
+    vi = _eff(p, "MVI", "VI")
+    va = _eff(p, "MVA", "VA")
     if vc == "H" and vi == "H":
         return 0
     if vc == "H" or vi == "H" or va == "H":
