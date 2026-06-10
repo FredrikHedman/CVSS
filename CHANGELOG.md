@@ -5,6 +5,58 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.3.4] — 2026-06-10
+
+### Fixed
+
+- `cvss4/cvss_40.py`: `_eq3` now uses effective `MVC`/`MVI`/`MVA` (via
+  `_eff()`) instead of raw `VC`/`VI`/`VA` when classifying EQ3, matching
+  `_eq4`/`_eq6` (Spec §7.5). Vectors setting `MVC`/`MVI`/`MVA` were
+  previously scored as if those modifiers were absent. Added
+  `test_eq3_uses_modified_metrics` plus MVC/MVI override cases.
+- `tests/cvss2/test_cli.py`: removed unused `_fn_d` stub tripping
+  basedpyright's `reportUnusedFunction`.
+- `misc/agent2.py`, `misc/agent3.py`: replaced `hasattr` checks with
+  `isinstance` type guards against `TextBlock`/`ToolUseBlock`/
+  `ServerToolUseBlock` so basedpyright can narrow `ContentBlock`.
+
+### Changed
+
+- `cvss2/cvss_base.py`: removed alias `vulnerability_vector` properties
+  from the `CVSS` ABC.
+- `cvss2/cvss_output.py`: inlined single-use nested functions in
+  `display_score`.
+- `cvss4/cvss_40.py`: extracted `_metrics_from_defs` helper in
+  `CommonVulnerabilityScore40`; `all_metrics()` added to
+  `cvss4/vulnerability_40.py` (mirroring `cvss2/vulnerability.py`) and
+  used in `_metrics`, replacing a four-source list concatenation.
+- `cvss4/vulnerability_40.py`: replaced `_allowed()` plus four
+  intermediate dicts with a single comprehension building
+  `_ALL_ALLOWED`.
+- `cvss2/cvss_handlers.py`: dropped the redundant `all_fns` parameter
+  from `_accumulate_groups`.
+- `misc/`: relocated the `claude_agent_sdk` experiment scripts
+  (`agent.py`, `agent2.py`, `agent3.py`) into `misc/`, alongside the
+  existing numbered learning iterations.
+- `claude-agent-sdk` moved from `project.dependencies` into a new
+  `sdk-agents` dependency-group (`pyproject.toml`); the published
+  `cvss`/`cvss2`/`cvss4` packages keep `dependencies = []`.
+- Dev/CI interpreter moved to Python 3.14 (`.python-version`,
+  `basedpyright.pythonVersion`); the project's minimum supported
+  version (`requires-python >=3.12`) is unchanged.
+
+### Documentation
+
+- Documented the `uv` dependency-management workflow (`uv add`/
+  `uv remove`/`uv lock`/`uv sync`, dependency groups) in `README.md` and
+  `CLAUDE.md`.
+- Split the per-package architecture write-ups out of the root
+  `CLAUDE.md` into `cvss2/CLAUDE.md` and `cvss4/CLAUDE.md` (loaded
+  on-demand by Claude Code); added `.claude/rules/markdown-style.md`
+  (95-character line-wrap rule for `**/*.md`).
+
+---
+
 ## [2.3.3] — 2026-05-14
 
 ### Changed
