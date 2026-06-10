@@ -28,7 +28,6 @@ def _clarg(**kwargs: object) -> CvssArgs:
 def _fn_a() -> list[MetricDefinition]: return []
 def _fn_b() -> list[MetricDefinition]: return []
 def _fn_c() -> list[MetricDefinition]: return []
-def _fn_d() -> list[MetricDefinition]: return []
 
 
 # ---------------------------------------------------------------------------
