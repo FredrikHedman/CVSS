@@ -4,14 +4,17 @@ from claude_agent_sdk import (
     ClaudeAgentOptions,
     ResultMessage,
     AssistantMessage,
+    TextBlock,
+    ToolUseBlock,
+    ServerToolUseBlock,
 )
 
 
 def _print_assistant_message(message: AssistantMessage) -> None:
     for block in message.content:
-        if hasattr(block, "text"):
+        if isinstance(block, TextBlock):
             print(block.text)  # Claude's reasoning
-        elif hasattr(block, "name"):
+        elif isinstance(block, (ToolUseBlock, ServerToolUseBlock)):
             print(f"Tool: {block.name}")  # a tool being called
 
 
