@@ -65,3 +65,6 @@ dev = [
     "pytest>=9.0.3",
     "ruff>=0.15.12",
 ]
+sdk-agents = [
+    "claude-agent-sdk>=0.2.95",
+]

@@ -34,6 +34,19 @@ together. If you edit `pyproject.toml` by hand instead, run
 `.python-version` pins the Python version (3.14) that `uv sync`
 provisions for `.venv`.
 
+### Dependency groups
+
+The published `cvss`/`cvss2`/`cvss4` packages have zero runtime
+dependencies (`dependencies = []`). `[dependency-groups]` in
+`pyproject.toml` holds dev-only tooling:
+
+- `dev` — `basedpyright`, `pytest`, `ruff` (lint/type-check/test tooling)
+- `sdk-agents` — `claude-agent-sdk`, used only by the experiment scripts
+  in `misc/agent*.py`
+
+`make install` (`uv sync --all-groups`) installs all groups. To run a
+`misc/` agent script: `uv run python misc/agent3.py`.
+
 ## Usage
 
 ### cvss2 (CVSS v2.10)

@@ -100,6 +100,7 @@ Both cvss2 and cvss4 import from `cvss.*` using **absolute imports** (never rela
 
 - Dev/CI interpreter: Python 3.14, managed by `uv`. Lock file: `uv.lock`; version pinned in `.python-version`. (The project's minimum supported version is `>=3.12`, set via `requires-python` in `pyproject.toml`.)
 - `[dependency-groups] dev` in `pyproject.toml` holds dev-only deps (basedpyright, pytest, ruff).
+- `[dependency-groups] sdk-agents` holds `claude-agent-sdk`, used only by the experiment scripts in `misc/agent*.py`. The shipped `cvss`/`cvss2`/`cvss4` packages keep `dependencies = []`.
 - Use `uv add <pkg>` / `uv add --group dev <pkg>` / `uv remove <pkg>` to change deps — these update `pyproject.toml`, `uv.lock`, and `.venv` together.
 - If `pyproject.toml` is edited by hand, run `make lock` then `make install` to regenerate `uv.lock` and resync `.venv`.
 - Linter/formatter: `ruff` (line length 79, rules E/F/W/C90/N, max complexity 9).
