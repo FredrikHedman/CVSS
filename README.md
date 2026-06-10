@@ -31,7 +31,7 @@ together. If you edit `pyproject.toml` by hand instead, run
 `.venv`). After `git pull`, run `make install` to resync `.venv` if
 `uv.lock` changed.
 
-`.python-version` pins the Python version (3.12) that `uv sync`
+`.python-version` pins the Python version (3.14) that `uv sync`
 provisions for `.venv`.
 
 ## Usage

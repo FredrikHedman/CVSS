@@ -48,7 +48,7 @@ ignore = ["D100", "D101", "D102", "D103", "D301", "N803"]
 max-complexity = 9
 
 [tool.basedpyright]
-pythonVersion = "3.12"
+pythonVersion = "3.14"
 typeCheckingMode = "strict"
 include = ["cvss", "cvss2", "cvss4", "tests"]
 exclude = ["misc"]
