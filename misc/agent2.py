@@ -4,6 +4,9 @@ from claude_agent_sdk import (
     ClaudeAgentOptions,
     AssistantMessage,
     ResultMessage,
+    TextBlock,
+    ToolUseBlock,
+    ServerToolUseBlock,
 )
 
 
@@ -16,9 +19,9 @@ async def main():
     ):
         if isinstance(message, AssistantMessage):
             for block in message.content:
-                if hasattr(block, "text"):
+                if isinstance(block, TextBlock):
                     print(block.text)  # Claude's reasoning
-                elif hasattr(block, "name"):
+                elif isinstance(block, (ToolUseBlock, ServerToolUseBlock)):
                     print(f"Tool: {block.name}")  # a tool being called
         elif isinstance(message, ResultMessage):
             print(f"Done: {message.subtype}")
