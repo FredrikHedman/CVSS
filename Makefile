@@ -1,8 +1,8 @@
 help:
 	@echo "Please use 'make <target>' where <target> is one of"
-	@echo "  install    install/sync environment including dev dependencies"
+	@echo "  install    sync .venv with uv.lock, including dev dependencies"
 	@echo "  build      build wheel and source distribution into dist/"
-	@echo "  lock       regenerate uv.lock from pyproject.toml"
+	@echo "  lock       regenerate uv.lock from pyproject.toml (run before install after editing deps)"
 	@echo "  push       push commits and tags to origin (SSH passphrase required)"
 	@echo "  fetch      fetch updates from origin (SSH passphrase required)"
 	@echo "  test       run all tests (pytest)"

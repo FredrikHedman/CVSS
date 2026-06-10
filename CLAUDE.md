@@ -5,7 +5,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Commands
 
 ```bash
-make install      # create .venv, install all deps (run once after cloning)
+make install      # sync .venv with uv.lock, incl. dev deps (run once after cloning)
+make lock         # regenerate uv.lock from pyproject.toml (run after editing deps)
 make test         # run full test suite (pytest --doctest-modules)
 make lint         # check style (ruff)
 make format       # auto-fix style (ruff)
@@ -97,7 +98,10 @@ Both cvss2 and cvss4 import from `cvss.*` using **absolute imports** (never rela
 
 ## Tooling
 
-- Python 3.12, managed by `uv`. Lock file: `uv.lock`.
+- Python 3.12, managed by `uv`. Lock file: `uv.lock`; version pinned in `.python-version`.
+- `[dependency-groups] dev` in `pyproject.toml` holds dev-only deps (basedpyright, pytest, ruff).
+- Use `uv add <pkg>` / `uv add --group dev <pkg>` / `uv remove <pkg>` to change deps — these update `pyproject.toml`, `uv.lock`, and `.venv` together.
+- If `pyproject.toml` is edited by hand, run `make lock` then `make install` to regenerate `uv.lock` and resync `.venv`.
 - Linter/formatter: `ruff` (line length 79, rules E/F/W/C90/N, max complexity 9).
 - Type checker: `basedpyright` in strict mode. All public APIs must be fully annotated.
 - `basedpyright` settings are in `pyproject.toml`; `reportAny` and `reportExplicitAny` are warnings, not errors — but avoid `Any` unless unavoidable.

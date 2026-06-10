@@ -19,6 +19,21 @@ Requires Python 3.12+ and [uv](https://docs.astral.sh/uv/):
 development dependencies, and ensures `uv.lock` is in sync with
 `pyproject.toml`.
 
+### Updating dependencies
+
+    uv add <package>             # add a runtime dependency
+    uv add --group dev <package> # add a dev-only dependency
+    uv remove <package>          # remove a dependency
+
+`uv add`/`uv remove` update `pyproject.toml`, `uv.lock`, and `.venv`
+together. If you edit `pyproject.toml` by hand instead, run
+`make lock` (regenerates `uv.lock`) followed by `make install` (resyncs
+`.venv`). After `git pull`, run `make install` to resync `.venv` if
+`uv.lock` changed.
+
+`.python-version` pins the Python version (3.12) that `uv sync`
+provisions for `.venv`.
+
 ## Usage
 
 ### cvss2 (CVSS v2.10)
