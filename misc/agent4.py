@@ -51,7 +51,8 @@ async def main() -> None:
     )
     async with ClaudeSDKClient(options=options) as client:
         await client.query(
-            "List the files in the current directory using a shell command."
+            "Create a file named scratch.txt in the current directory "
+            "with the text 'hello'."
         )
         async for message in client.receive_response():
             if isinstance(message, AssistantMessage):
