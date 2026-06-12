@@ -45,7 +45,6 @@ async def _keep_stream_open(
 
 async def main() -> None:
     options = ClaudeAgentOptions(
-        allowed_tools=["Bash"],
         can_use_tool=can_use_tool,
         hooks={"PreToolUse": [HookMatcher(hooks=[_keep_stream_open])]},
     )
