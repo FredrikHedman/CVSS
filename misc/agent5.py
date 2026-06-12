@@ -44,7 +44,7 @@ async def _keep_stream_open(
 
 async def main() -> None:
     options = ClaudeAgentOptions(
-        allowed_tools=["Write", "Edit"],
+        setting_sources=[],
         can_use_tool=can_use_tool,
         hooks={"PreToolUse": [HookMatcher(hooks=[_keep_stream_open])]},
     )
