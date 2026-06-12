@@ -48,3 +48,4 @@ clean:
 	/bin/rm -rf __pycache__ examples/__pycache__
 	/bin/rm -rf cvss.egg-info .pytest_cache dist
 	/bin/rm -f scratch.txt
+	/bin/rm -rf sandbox
