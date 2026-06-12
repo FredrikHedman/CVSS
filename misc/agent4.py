@@ -51,10 +51,12 @@ async def main() -> None:
         hooks={"PreToolUse": [HookMatcher(hooks=[_keep_stream_open])]},
     )
     async with ClaudeSDKClient(options=options) as client:
-        await client.query(
+        prompt = (
             "Create a file named scratch.txt in the current directory "
             "with the text 'hello'."
         )
+        print(f"Prompt: {prompt}")
+        await client.query(prompt)
         async for message in client.receive_response():
             if isinstance(message, AssistantMessage):
                 for block in message.content:

@@ -49,9 +49,9 @@ async def main() -> None:
         hooks={"PreToolUse": [HookMatcher(hooks=[_keep_stream_open])]},
     )
     async with ClaudeSDKClient(options=options) as client:
-        await client.query(
-            "Create a file named config.json with the content {}."
-        )
+        prompt = "Create a file named config.json with the content {}."
+        print(f"Prompt: {prompt}")
+        await client.query(prompt)
         async for message in client.receive_response():
             if isinstance(message, AssistantMessage):
                 for block in message.content:
