@@ -23,8 +23,9 @@ async def can_use_tool(
     _context: ToolPermissionContext,
 ) -> PermissionResult:
     print(f"\nClaude wants to use {tool_name}")
-    if tool_name == "Bash":
-        print(f"Command: {input_data.get('command')}")
+    if tool_name == "Write":
+        print(f"File: {input_data.get('file_path')}")
+        print(f"Content: {input_data.get('content')}")
     response = input("Allow this action? (y/n): ")
     if response.lower() == "y":
         # Allow: tool runs with the original (or a modified) input
