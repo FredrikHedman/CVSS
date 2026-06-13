@@ -23,3 +23,4 @@ async def main():
 
 
 session_id = asyncio.run(main())
+print(f"Session ID: {session_id}")
