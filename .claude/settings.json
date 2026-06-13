@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(uv add:*)",
+      "Bash(uv run:*)",
+      "Bash(make test:*)",
+      "Bash(make lint:*)",
+      "Bash(make typecheck:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "WebFetch(domain:www.first.org)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(pip show *)",
+      "Bash(uv pip *)",
+      "WebFetch(domain:pypi.org)",
+      "WebFetch(domain:github.com)",
+      "Bash(gh --version)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(uv sync *)",
+      "Bash(uv --version)"
+    ]
+  }
+}
