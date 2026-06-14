@@ -11,7 +11,10 @@ from _agent_common import print_assistant_message, print_result_message
 
 
 async def main(session_id: str) -> str | None:
-    prompt = "Continue fixing the failing tests where you left off."
+    prompt = """
+    Continue the analysis of the overall architecture of the CVSS module
+     and suggest fixes. Suggest changes to improve maintainability
+    """
     print(f"Prompt: {prompt}")
     new_session_id: str | None = None
     async for message in query(
@@ -34,7 +37,9 @@ if __name__ == "__main__":
         sys.exit(f"Usage: {sys.argv[0]} <session_id>")
 
     try:
-        session_id = asyncio.run(main(sys.argv[1]))
-        print(f"Session ID: {session_id}")
+        session_id = str(sys.argv[1])
+        print(f"RESTARTING from Session ID: {session_id}")
+        session_id_new = asyncio.run(main(session_id))
+        print(f"Session ID: {session_id_new}")
     except Exception as exc:
         print(f"Top-level error: {exc}")
