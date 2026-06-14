@@ -20,7 +20,7 @@ def print_assistant_message(message: AssistantMessage) -> str | None:
 def print_result_message(message: ResultMessage) -> str:
     session_id = message.session_id  # available on every subtype
     if message.subtype == "success":
-        print(f"DONE: {message.result}")
+        print("DONE")
     elif message.subtype == "error_max_turns":
         print(f"HIT TURN LIMIT. Session id: {session_id}")
     elif message.subtype == "error_max_budget_usd":
