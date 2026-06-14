@@ -30,8 +30,7 @@ def print_result_message(message: ResultMessage) -> str:
 
     if message.total_cost_usd is not None:
         print(f"Cost: ${message.total_cost_usd:.4f}")
-    if message.usage is not None:
-        print(f"Usage: {message.usage}")
+        print(f"Turns: ${message.num_turns:4d}")
 
     if message.stop_reason == "refusal":
         print(f"REFUSED TO EXECUTE: {message.stop_reason}")
