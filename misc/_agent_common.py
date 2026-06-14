@@ -22,15 +22,16 @@ def print_result_message(message: ResultMessage) -> str:
     if message.subtype == "success":
         print(f"DONE: {message.result}")
     elif message.subtype == "error_max_turns":
-        print(f"HIT TURN LIMIT. Resume session {session_id} to continue.")
+        print(f"HIT TURN LIMIT. Session id: {session_id}")
     elif message.subtype == "error_max_budget_usd":
-        print(f"HIT BUDGET LIMIT. Resume session {session_id}")
+        print(f"HIT BUDGET LIMIT. Session id: {session_id}")
     else:
-        print(f"STOPPED: {message.subtype}. Resume session {session_id}")
+        msg = f"STOPPED: {message.subtype}. Session id: {session_id}"
+        print(msg)
 
+    print(f"Turns: {message.num_turns:4d}")
     if message.total_cost_usd is not None:
         print(f"Cost: ${message.total_cost_usd:.4f}")
-        print(f"Turns: ${message.num_turns:4d}")
 
     if message.stop_reason == "refusal":
         print(f"REFUSED TO EXECUTE: {message.stop_reason}")
