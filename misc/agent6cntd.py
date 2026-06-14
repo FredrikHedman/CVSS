@@ -7,7 +7,7 @@ from claude_agent_sdk import (
     AssistantMessage,
 )
 
-from _agent_common import _print_assistant_message, _print_result_message
+from _agent_common import print_assistant_message, print_result_message
 
 
 async def main(session_id: str) -> str | None:
@@ -23,9 +23,9 @@ async def main(session_id: str) -> str | None:
         ),
     ):
         if isinstance(message, AssistantMessage):
-            new_session_id = _print_assistant_message(message)
+            new_session_id = print_assistant_message(message)
         elif isinstance(message, ResultMessage):
-            new_session_id = _print_result_message(message)
+            new_session_id = print_result_message(message)
     return new_session_id
 
 

@@ -7,7 +7,7 @@ from claude_agent_sdk import (
 )
 
 
-def _print_assistant_message(message: AssistantMessage) -> str | None:
+def print_assistant_message(message: AssistantMessage) -> str | None:
     session_id = message.session_id  # available on every subtype
     for block in message.content:
         if isinstance(block, TextBlock):
@@ -17,7 +17,7 @@ def _print_assistant_message(message: AssistantMessage) -> str | None:
     return session_id
 
 
-def _print_result_message(message: ResultMessage) -> str:
+def print_result_message(message: ResultMessage) -> str:
     session_id = message.session_id  # available on every subtype
     if message.subtype == "success":
         print(f"DONE: {message.result}")
