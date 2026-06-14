@@ -38,7 +38,7 @@ testpaths = ["cvss", "cvss2", "cvss4", "tests"]
 
 [tool.ruff]
 line-length = 79
-exclude = ["misc"]
+exclude = ["misc/cvss_calci.py", "misc/cvss_calci3.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "C90", "N"]
@@ -50,8 +50,8 @@ max-complexity = 9
 [tool.basedpyright]
 pythonVersion = "3.14"
 typeCheckingMode = "strict"
-include = ["cvss", "cvss2", "cvss4", "tests"]
-exclude = ["misc"]
+include = ["cvss", "cvss2", "cvss4", "tests", "misc"]
+exclude = ["misc/cvss_calci.py", "misc/cvss_calci3.py"]
 reportImplicitOverride = "warning"
 reportImplicitStringConcatenation = "warning"
 reportUnusedCallResult = "warning"
