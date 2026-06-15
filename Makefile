@@ -45,7 +45,8 @@ example:
 
 clean:
 	/bin/rm -f *~ */*~ *.pyc */*.pyc
-	/bin/rm -rf __pycache__ examples/__pycache__
-	/bin/rm -rf cvss.egg-info .pytest_cache dist
+	find . -type d -name __pycache__ -prune -exec /bin/rm -rf {} +
+	find . -name .DS_Store -delete
+	/bin/rm -rf cvss.egg-info .pytest_cache dist build .ruff_cache .mypy_cache
 	/bin/rm -f scratch.txt
 	/bin/rm -rf sandbox
