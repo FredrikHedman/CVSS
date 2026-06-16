@@ -41,8 +41,8 @@ class CommonVulnerabilityScore(CVSS):
 
     @override
     def base_fcn(self, impact: float) -> float:
-        score = 0.6 * impact + 0.4 * self.exploitability - 1.5
-        score *= self.fcn(impact)
+        score = 0.6 * impact + 0.4 * self.exploitability - 1.5  # Spec §3.2.1
+        score *= self._severity_multiplier(impact)
         return score
 
     @override
@@ -94,14 +94,12 @@ class CommonVulnerabilityScore(CVSS):
         result = 1 - (
             (1 - conf_impact) * (1 - integ_impact) * (1 - avail_impact)
         )
-        result *= 10.41
+        result *= 10.41  # Spec §3.2.1 normalisation constant
         return result
 
-    def fcn(self, impact: float) -> float:
-        val = 1.176
-        if impact == 0:
-            val = 0.0
-        return val
+    def _severity_multiplier(self, impact: float) -> float:
+        # Spec §3.2.1: f(impact) = 1.176 if Impact > 0, else 0
+        return 1.176 if impact != 0 else 0.0
 
     def _metrics_for(self, keys: tuple[str, ...]) -> list[Metric]:
         return [self[k] for k in keys]
