@@ -50,10 +50,21 @@ internals that both CLI packages import from:
 - `cvss/vulnerability.py` — `MetricValueDef`, `MetricDefinition` frozen
   dataclasses; `InvalidVectorError` exception
 - `cvss/cli.py` — `exit_with_error(e) -> NoReturn` shared CLI helper
+- `cvss/output.py` — `capture_output`, `print_metric_group`,
+  `qualitative_rating`
 
 Both cvss2 and cvss4 import from `cvss.*` using **absolute imports**
 (never relative). New shared utilities belong in `cvss/`, not duplicated
 across packages.
+
+## Conventions
+
+- Tests live in `tests/` and mirror the module layout of the `cvss/`,
+  `cvss2/`, and `cvss4/` source packages at the repo root (e.g.
+  `tests/cvss2/` mirrors `cvss2/`). `misc/` holds restricted agent
+  experiments and is not covered by this convention.
+- Fix the source to make a test pass; never edit a test just to make it green
+  unless the test itself is demonstrably wrong, and say so explicitly if you do.
 
 ## Tooling
 

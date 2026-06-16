@@ -274,7 +274,7 @@ class. EQ3 and EQ6 are treated as a combined dimension in the interpolation.
 | High     | 7.0–8.9     |
 | Critical | 9.0–10.0    |
 
-Use `qualitative_rating(score)` from `cvss4/cvss_output.py`.
+Use `qualitative_rating(score)` from `cvss/output.py`.
 
 ### Vector format (Spec §6)
 
