@@ -10,18 +10,10 @@ from cvss2.cvss_handlers import (
     process_cmd_line_base,
     process_cmd_line_vulnerability,
 )
-from cvss2.cvss_parser import build_parser, make_clarg
-from cvss2.cvss_types import CvssArgs
+from cvss2.cvss_parser import build_parser, make_clarg as make_clarg_parser
 from cvss2.vulnerability import MetricDefinition
 
-
-def _clarg(**kwargs: object) -> CvssArgs:
-    base: CvssArgs = {
-        "verbose": False, "interactive": True, "all": False, "base": False,
-        "temporal": False, "environmental": False, "vector": None,
-        "vulnerability": None,
-    }
-    return {**base, **kwargs}  # type: ignore[return-value]
+from tests.cvss2.conftest import make_clarg
 
 
 # Stub metric functions
@@ -38,7 +30,7 @@ def _fn_c() -> list[MetricDefinition]: return []
 @patch("cvss2.cvss_handlers.read_metrics", return_value=["x"])
 def test_accumulate_all_reads_all_groups(mock_rm: object) -> None:
     result = _accumulate_groups(
-        _clarg(all=True),
+        make_clarg(all=True),
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == ["x", "x", "x"]
@@ -47,7 +39,7 @@ def test_accumulate_all_reads_all_groups(mock_rm: object) -> None:
 @patch("cvss2.cvss_handlers.read_metrics", return_value=["x"])
 def test_accumulate_base_only(mock_rm: object) -> None:
     result = _accumulate_groups(
-        _clarg(base=True),
+        make_clarg(base=True),
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == ["x"]
@@ -56,7 +48,7 @@ def test_accumulate_base_only(mock_rm: object) -> None:
 @patch("cvss2.cvss_handlers.read_metrics", return_value=["x"])
 def test_accumulate_base_plus_temporal(mock_rm: object) -> None:
     result = _accumulate_groups(
-        _clarg(base=True, temporal=True),
+        make_clarg(base=True, temporal=True),
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == ["x", "x"]
@@ -65,7 +57,7 @@ def test_accumulate_base_plus_temporal(mock_rm: object) -> None:
 @patch("cvss2.cvss_handlers.read_metrics", return_value=["x"])
 def test_accumulate_base_temporal_env(mock_rm: object) -> None:
     result = _accumulate_groups(
-        _clarg(base=True, temporal=True, environmental=True),
+        make_clarg(base=True, temporal=True, environmental=True),
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == ["x", "x", "x"]
@@ -74,7 +66,7 @@ def test_accumulate_base_temporal_env(mock_rm: object) -> None:
 @patch("cvss2.cvss_handlers.read_metrics", return_value=["x"])
 def test_accumulate_no_flags_returns_empty(mock_rm: object) -> None:
     result = _accumulate_groups(
-        _clarg(),  # neither all nor base
+        make_clarg(),  # neither all nor base
         base_fn=_fn_a, temporal_fn=_fn_b, env_fn=_fn_c,
     )
     assert result == []
@@ -113,7 +105,7 @@ def test_help_exits_zero(capsys: pytest.CaptureFixture[str]) -> None:
 
 def test_base_flag_parsed() -> None:
     parser = build_parser()
-    clarg = make_clarg(
+    clarg = make_clarg_parser(
         parser.parse_args(["--base", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
     )
     assert clarg["base"] is True
@@ -122,7 +114,7 @@ def test_base_flag_parsed() -> None:
 
 def test_vulnerability_flag_parsed() -> None:
     parser = build_parser()
-    clarg = make_clarg(
+    clarg = make_clarg_parser(
         parser.parse_args(["--vulnerability", "AV:N/AC:L/Au:N/C:C/I:C/A:C"])
     )
     assert clarg["vulnerability"] == "AV:N/AC:L/Au:N/C:C/I:C/A:C"
@@ -130,7 +122,7 @@ def test_vulnerability_flag_parsed() -> None:
 
 def test_verbose_short_flag() -> None:
     parser = build_parser()
-    clarg = make_clarg(
+    clarg = make_clarg_parser(
         parser.parse_args(["-v", "--base", "AV:L/AC:H/Au:N/C:N/I:N/A:N"])
     )
     assert clarg["verbose"] is True
@@ -138,7 +130,7 @@ def test_verbose_short_flag() -> None:
 
 def test_interactive_combined_flags() -> None:
     parser = build_parser()
-    clarg = make_clarg(parser.parse_args(["-ib"]))
+    clarg = make_clarg_parser(parser.parse_args(["-ib"]))
     assert clarg["interactive"] is True
     assert clarg["base"] is True
 

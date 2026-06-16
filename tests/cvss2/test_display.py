@@ -15,6 +15,8 @@ from cvss2.cvss_output import (
 from cvss2.cvss_types import CvssArgs
 from cvss2.vulnerability import VulnerabilityVector, cvs_factory
 
+from tests.cvss2.conftest import make_clarg
+
 
 def test_score_display_data_construction() -> None:
     d = ScoreDisplayData(
@@ -84,14 +86,6 @@ def test_format_output_verbose(base_clarg: CvssArgs) -> None:
     assert isinstance(result, str)
 
 
-def _clarg(**kwargs: bool) -> CvssArgs:
-    base: CvssArgs = {
-        "verbose": False, "interactive": False, "all": False,
-        "base": False, "temporal": False, "environmental": False,
-        "vector": None, "vulnerability": None,
-    }
-    return {**base, **kwargs}  # type: ignore[misc]
-
 
 @pytest.mark.parametrize("flags,expected", [
     ({"base": True},                    (True,  False, False)),
@@ -106,7 +100,7 @@ def test_show_flags(
     flags: dict[str, bool],
     expected: tuple[bool, bool, bool],
 ) -> None:
-    assert _show_flags(_clarg(**flags)) == expected
+    assert _show_flags(make_clarg(**flags)) == expected
 
 
 @pytest.mark.parametrize("name,expected_header,expected_footer", [
