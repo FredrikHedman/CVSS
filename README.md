@@ -156,7 +156,7 @@ Base Vulnerability Vector: AV:N/AC:L/Au:N/C:C/I:C/A:C
 
 | Item           | cvss2                                     | cvss4                                     |
 |----------------|-------------------------------------------|-------------------------------------------|
-| Version        | 2.3.4                                     | 2.3.4                                     |
+| Version        | 2.3.5                                     | 2.3.5                                     |
 | CVSS version   | 2.10                                      | 4.0                                       |
 | Scoring        | Closed-form formulas (Spec §3)            | MacroVector lookup table (Spec §7–§8)     |
 | Interactive    | Yes (`-i` flag)                           | No                                        |
