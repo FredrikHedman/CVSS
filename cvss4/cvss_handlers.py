@@ -17,5 +17,6 @@ def _cvs_from_vector(vector: str) -> CVSS40Result:
 def process_cmd_line(clarg: CvssArgs) -> CVSS40Result:
     """Dispatch to the appropriate handler."""
     vec = clarg["vulnerability"] or clarg["vector"]
-    assert vec is not None
+    if vec is None:
+        _exit_with_error(ValueError("no vector supplied"))
     return _cvs_from_vector(vec)
