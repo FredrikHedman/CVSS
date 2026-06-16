@@ -19,11 +19,11 @@ there.
 - `CommonVulnerabilityScore40` — standalone class (does not inherit from
   the v2.10 `CVSS` ABC). Uses MacroVector lookup table (270 entries) +
   EQ-set interpolation (Spec §7-§8).
-- `macro_vector` property — returns `_EQLevels` NamedTuple of the six EQ
+- `macro_vector` property — returns `EQLevels` NamedTuple of the six EQ
   level integers.
 - `_eq1`-`_eq6` — module-level pure EQ classification functions.
 - `_DistSpec` dataclass — per-EQ distance configuration.
-- `_EQLevels` NamedTuple — named EQ level access.
+- `EQLevels` NamedTuple — named EQ level access.
 - `_metrics` — `cached_property` (lazy; not triggered by `base_score`).
 
 **CLI layer** (`cvss4/cvss.py`, `cvss4/cvss_parser.py`,
@@ -34,8 +34,7 @@ there.
   `CommonVulnerabilityScore40`.
 - `cvss4` has **no interactive mode**. Only `--base <vector>` and
   `--vulnerability <vector>`.
-- `cvss_output.py`: `render_output(cvs: CVSS40Result)`,
-  `qualitative_rating(score)`.
+- `cvss_output.py`: `format_output(cvs: CVSS40Result, clarg: CvssArgs) -> str`.
 
 **Tests** (`tests/cvss4/`):
 - `test_cvss_40.py` — unit and scoring tests (15 spec examples, EQ
