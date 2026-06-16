@@ -5,6 +5,59 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- `misc/agent6.py`: iterative Claude Agent SDK demo — prints query prompt,
+  session ID, and turn count; helper functions extracted to
+  `misc/_agent_common.py`.
+- `misc/agent6cntd.py`: companion script that resumes an `agent6` session
+  by passing the session ID as a CLI argument.
+- `misc/agent7.py`: checkpoint-and-rewind demo using `ClaudeSDKClient`
+  with `enable_file_checkpointing` and `rewind_files`.
+- `misc/agent_part6.py`: runnable `query()`-based example using
+  `setting_sources=["project"]` to load the repo's CLAUDE.md/rules/skills;
+  follows the `agent6`/`agent7` pattern with `_agent_common` helpers.
+- `misc/agent4.py`: typed `can_use_tool` callback example; prints file
+  path and content for `Write` tool calls.
+- `misc/agent5.py`: restructured to mirror `agent4` shape with a
+  `can_use_tool` sandbox redirect.
+
+### Changed
+
+- `examples/`: `misc/cvss_calci.py`, `misc/cvss_calci3.py`, and
+  `misc/UseCases.org` (all from 2016) relocated to `examples/` where the
+  other legacy reference material lives.
+
+### Build
+
+- `misc/` (excluding `examples/cvss_calci*.py`) is now covered by `ruff`
+  and `basedpyright` via `pyproject.toml`; `[tool.ruff]` and
+  `[tool.basedpyright]` exclude lists updated to the new `examples/` paths.
+- `make clean` now removes `__pycache__/` trees recursively, `sandbox/`,
+  and `scratch.txt`.
+- `.claude/settings.json`: shared Claude Code permission settings added.
+
+### Documentation
+
+- `CLAUDE.md` "Conventions" section: replaced non-existent `src/` layout
+  reference with the actual source package locations (`cvss/`, `cvss2/`,
+  `cvss4/` at repo root); noted `misc/` is excluded from test-mirroring.
+- `CLAUDE.md` "Architecture": added `cvss/output.py` (`capture_output`,
+  `print_metric_group`, `print_separator`, `qualitative_rating`) to the
+  shared-internals list.
+- `README.md`: corrected `qualitative_rating` attribution to `cvss/output.py`
+  (was incorrectly pointing to `cvss4/cvss_output.py`).
+- `cvss2/CLAUDE.md`: removed stale `CVSSResult` protocol reference
+  (never existed); corrected `render_output` → `format_output`; removed
+  obsolete `###| |###` trace note.
+- `cvss4/CLAUDE.md`: corrected `_EQLevels` → `EQLevels`; corrected
+  `render_output` → `format_output(cvs, clarg)`; removed `qualitative_rating`
+  (defined in shared `cvss/output.py`, not in `cvss4/cvss_output.py`).
+
+---
+
 ## [2.3.4] — 2026-06-10
 
 ### Fixed
