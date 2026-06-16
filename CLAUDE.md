@@ -115,7 +115,7 @@ internals that both CLI packages import from:
   dataclasses; `InvalidVectorError` exception
 - `cvss/cli.py` — `exit_with_error(e) -> NoReturn` shared CLI helper
 - `cvss/output.py` — `capture_output`, `print_metric_group`,
-  `print_separator`, `qualitative_rating`
+  `print_separator`
 
 Both cvss2 and cvss4 import from `cvss.*` using **absolute imports**
 (never relative). New shared utilities belong in `cvss/`, not duplicated

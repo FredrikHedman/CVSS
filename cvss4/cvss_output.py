@@ -1,14 +1,21 @@
 """Output rendering for CVSS v4.0."""
 
-from cvss.output import (
-    capture_output,
-    print_metric_group,
-    print_separator,
-    qualitative_rating,
-)
+from cvss.output import capture_output, print_metric_group, print_separator
 
 from .cvss_types import CVSS40Result, CvssArgs
 
+
+def qualitative_rating(score: float) -> str:
+    """Map a CVSS v4.0 score to a severity label (Spec §9)."""
+    if score == 0.0:
+        return "None"
+    if score < 4.0:
+        return "Low"
+    if score < 7.0:
+        return "Medium"
+    if score < 9.0:
+        return "High"
+    return "Critical"
 
 
 def _score_label(cvs: CVSS40Result) -> str:

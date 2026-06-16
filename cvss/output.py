@@ -1,4 +1,4 @@
-"""Shared output utilities used by both cvss2 and cvss4."""
+"""Shared output utilities used by cvss2 and cvss4."""
 
 import contextlib
 import io
@@ -16,19 +16,6 @@ def capture_output(fn: Callable[[], None]) -> str:
     with contextlib.redirect_stdout(buf):
         fn()
     return buf.getvalue()
-
-
-def qualitative_rating(score: float) -> str:
-    """Map a CVSS v4.0 score to a severity label (Spec §9)."""
-    if score == 0.0:
-        return "None"
-    if score < 4.0:
-        return "Low"
-    if score < 7.0:
-        return "Medium"
-    if score < 9.0:
-        return "High"
-    return "Critical"
 
 
 def print_separator() -> None:

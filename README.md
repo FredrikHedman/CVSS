@@ -178,7 +178,7 @@ Both CLI packages import from `cvss.*` using absolute imports.
 | `cvss/metric.py`        | `Metric` — named set of `MetricValue` options               |
 | `cvss/vulnerability.py` | `MetricValueDef`, `MetricDefinition`, `InvalidVectorError`  |
 | `cvss/cli.py`           | `exit_with_error(e) -> NoReturn` CLI helper                 |
-| `cvss/output.py`        | `capture_output`, `print_metric_group`, `qualitative_rating` |
+| `cvss/output.py`        | `capture_output`, `print_metric_group`, `print_separator`    |
 
 ### cvss2/ — CVSS v2.10
 
@@ -201,7 +201,7 @@ Both CLI packages import from `cvss.*` using absolute imports.
 | `cvss4/cvss.py`             | Entry point — `main()` only                                                |
 | `cvss4/cvss_parser.py`      | Argument parsing (`--base`, `--vulnerability`, `--verbose`)                |
 | `cvss4/cvss_handlers.py`    | Handler and dispatch (no interactive mode)                                 |
-| `cvss4/cvss_output.py`      | Score output; `render_output`, `qualitative_rating`                        |
+| `cvss4/cvss_output.py`      | Score output; `format_output`, `qualitative_rating`                        |
 | `cvss4/cvss_types.py`       | Shared types (`CvssArgs`, `CVSS40Result`)                                  |
 | `cvss4/cvss_40.py`          | Standalone CVSS v4.0 scorer (`CommonVulnerabilityScore40`)                 |
 | `cvss4/vulnerability_40.py` | v4.0 metric definitions, `VulnerabilityVector40`; imports shared types from `cvss/` |
