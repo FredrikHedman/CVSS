@@ -150,6 +150,27 @@ _SEV_EQ3EQ6: dict[tuple[int, int], int] = {
 _SEV_EQ4 = {0: 6, 1: 5, 2: 4}
 _SEV_EQ5 = {0: 1, 1: 1, 2: 1}
 
+# EQ index, max level, max-vector dict, dist specs, severity counts
+# Used to loop over the four individually-interpolated EQ dimensions.
+_STD_EQ_PARAMS: list[
+    tuple[int, int, dict[str, list[str]], list[_DistSpec], dict[int, int]]
+] = [
+    (0, 2, _EQ1_MAX, _EQ1_SPECS, _SEV_EQ1),
+    (1, 1, _EQ2_MAX, _EQ2_SPECS, _SEV_EQ2),
+    (3, 2, _EQ4_MAX, _EQ4_SPECS, _SEV_EQ4),
+    (4, 2, _EQ5_MAX, _EQ5_SPECS, _SEV_EQ5),
+]
+
+
+def _bump(
+    levels: "EQLevels", idx: int
+) -> tuple[int, int, int, int, int, int]:
+    """Return levels with position idx incremented by 1."""
+    b = list(levels)
+    b[idx] += 1
+    return (b[0], b[1], b[2], b[3], b[4], b[5])
+
+
 # ---------------------------------------------------------------------------
 # MacroVector lookup table (Spec §8.3, 270 valid entries)
 # ---------------------------------------------------------------------------
@@ -512,6 +533,25 @@ class CommonVulnerabilityScore40:
     ) -> float | None:
         return _dist_from_specs(self._p, mv, specs)
 
+    def _std_eq_contrib(
+        self,
+        eq_idx: int,
+        max_level: int,
+        eq_max: dict[str, list[str]],
+        specs: list[_DistSpec],
+        sev: dict[int, int],
+        levels: EQLevels,
+        mv: float,
+    ) -> tuple[float, int]:
+        level = levels[eq_idx]
+        next_score = (
+            _LOOKUP.get(_bump(levels, eq_idx)) if level < max_level else None
+        )
+        return _eq_contrib(
+            next_score, mv, eq_max[str(level)],
+            lambda m: self._dist(m, specs), sev[level],
+        )
+
     # ------------------------------------------------------------------
     # Score computation (Spec §8)
     # ------------------------------------------------------------------
@@ -527,37 +567,13 @@ class CommonVulnerabilityScore40:
         mv = _LOOKUP.get(levels)
         if mv is None:
             raise ValueError(f"No lookup entry for EQ levels {levels}")
-        eq1, eq2, eq3, eq4, eq5, eq6 = levels
 
         contribs: list[tuple[float, int]] = [
-            _eq_contrib(
-                _LOOKUP.get((eq1 + 1, eq2, eq3, eq4, eq5, eq6))
-                if eq1 < 2 else None,
-                mv, _EQ1_MAX[str(eq1)],
-                lambda mv: self._dist(mv, _EQ1_SPECS), _SEV_EQ1[eq1],
-            ),
-            _eq_contrib(
-                _LOOKUP.get((eq1, eq2 + 1, eq3, eq4, eq5, eq6))
-                if eq2 < 1 else None,
-                mv, _EQ2_MAX[str(eq2)],
-                lambda mv: self._dist(mv, _EQ2_SPECS), _SEV_EQ2[eq2],
-            ),
-            _eq3eq6_contrib(
-                levels, mv, lambda mv: self._dist(mv, _EQ3EQ6_SPECS)
-            ),
-            _eq_contrib(
-                _LOOKUP.get((eq1, eq2, eq3, eq4 + 1, eq5, eq6))
-                if eq4 < 2 else None,
-                mv, _EQ4_MAX[str(eq4)],
-                lambda mv: self._dist(mv, _EQ4_SPECS), _SEV_EQ4[eq4],
-            ),
-            _eq_contrib(
-                _LOOKUP.get((eq1, eq2, eq3, eq4, eq5 + 1, eq6))
-                if eq5 < 2 else None,
-                mv, _EQ5_MAX[str(eq5)],
-                lambda mv: self._dist(mv, _EQ5_SPECS), _SEV_EQ5[eq5],
-            ),
+            self._std_eq_contrib(*p, levels, mv) for p in _STD_EQ_PARAMS
         ]
+        contribs.append(
+            _eq3eq6_contrib(levels, mv, lambda m: self._dist(m, _EQ3EQ6_SPECS))
+        )
         total = sum(c for c, _ in contribs)
         n_lower = sum(n for _, n in contribs)
         value = mv if n_lower == 0 else mv - total / n_lower
