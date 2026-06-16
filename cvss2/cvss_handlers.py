@@ -54,14 +54,21 @@ def _accumulate_groups(
     """Read metrics interactively (no pre-existing vector)."""
     selected: list[str] = []
     if clarg["all"]:
-        for fn in [base_fn, temporal_fn, env_fn]:
-            selected.extend(read_metrics(fn()))
+        groups: list[_MetricFn] = [base_fn, temporal_fn, env_fn]
     elif clarg["base"]:
-        selected.extend(read_metrics(base_fn()))
-        if clarg["temporal"]:
-            selected.extend(read_metrics(temporal_fn()))
-            if clarg["environmental"]:
-                selected.extend(read_metrics(env_fn()))
+        groups = [
+            fn
+            for active, fn in [
+                (True, base_fn),
+                (clarg["temporal"], temporal_fn),
+                (clarg["temporal"] and clarg["environmental"], env_fn),
+            ]
+            if active
+        ]
+    else:
+        return selected
+    for fn in groups:
+        selected.extend(read_metrics(fn()))
     return selected
 
 
