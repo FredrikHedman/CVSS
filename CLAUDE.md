@@ -3,6 +3,70 @@
 This file provides guidance to Claude Code (claude.ai/code) when working
 with code in this repository.
 
+These project instructions override any conflicting user-level defaults.
+**Tradeoff:** these guidelines bias toward caution over speed; for
+trivial tasks, use judgment.
+
+## 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them — don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+## 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If
+yes, simplify.
+
+## 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it — don't delete it.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix a failing test" → make the minimal source change to pass it; never
+  edit the test to force it green unless the test is demonstrably wrong —
+  say so explicitly if you do.
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
+```
+
+Strong success criteria let you loop independently. Weak criteria
+("make it work") require constant clarification.
+
 ## Commands
 
 ```bash
@@ -57,14 +121,9 @@ Both cvss2 and cvss4 import from `cvss.*` using **absolute imports**
 (never relative). New shared utilities belong in `cvss/`, not duplicated
 across packages.
 
-## Conventions
-
-- Tests live in `tests/` and mirror the module layout of the `cvss/`,
-  `cvss2/`, and `cvss4/` source packages at the repo root (e.g.
-  `tests/cvss2/` mirrors `cvss2/`). `misc/` holds restricted agent
-  experiments and is not covered by this convention.
-- Fix the source to make a test pass; never edit a test just to make it green
-  unless the test itself is demonstrably wrong, and say so explicitly if you do.
+Tests live in `tests/` and mirror the package layout (`tests/cvss2/`
+mirrors `cvss2/`, etc.). `misc/` holds restricted agent experiments and
+is not covered by this convention.
 
 ## Tooling
 
