@@ -94,7 +94,8 @@ uv run pytest tests/cvss4/test_cli.py::test_vulnerability_vector
 ```
 
 Doctests are collected automatically from all `cvss/`, `cvss2/`, and
-`cvss4/` modules via `--doctest-modules` in `pyproject.toml`.
+`cvss4/` modules via `--doctest-modules` in `pyproject.toml`. (`cvss/`
+now contains only `__init__.py`, so doctest coverage there is minimal.)
 
 ## Architecture
 
@@ -105,21 +106,14 @@ The repo ships two standalone CLI tools, each in its own package:
 - **`cvss4`** (`cvss4/`) — CVSS v4.0 calculator, no interactive mode.
   See `cvss4/CLAUDE.md` for module-level details.
 
-All three packages are shipped together. `cvss/` holds the shared
-internals that both CLI packages import from:
+All three packages are shipped together. `cvss/` holds the small set of
+utilities shared by both CLI packages:
 
-- `cvss/metric_value.py` — `MetricValue` frozen dataclass
-- `cvss/metric.py` — `Metric` class (wraps a named set of `MetricValue`
-  options)
-- `cvss/vulnerability.py` — `MetricValueDef`, `MetricDefinition` frozen
-  dataclasses; `InvalidVectorError` exception
-- `cvss/cli.py` — `exit_with_error(e) -> NoReturn` shared CLI helper
-- `cvss/output.py` — `capture_output`, `print_metric_group`,
-  `print_separator`
+- `cvss/__init__.py` — `InvalidVectorError`, `exit_with_error(e) -> NoReturn`,
+  `capture_output` — the only shared utilities; import with
+  `from cvss import ...`
 
-Both cvss2 and cvss4 import from `cvss.*` using **absolute imports**
-(never relative). New shared utilities belong in `cvss/`, not duplicated
-across packages.
+New shared utilities belong in `cvss/__init__.py`.
 
 Tests live in `tests/` and mirror the package layout (`tests/cvss2/`
 mirrors `cvss2/`, etc.). `misc/` holds restricted agent experiments and

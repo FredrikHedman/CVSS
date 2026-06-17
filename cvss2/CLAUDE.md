@@ -1,12 +1,12 @@
 # cvss2/ architecture
 
-CVSS v2.10 calculator with full interactive mode. Shared internals live in
-`cvss/` (see root `CLAUDE.md`); global commands and tooling are also
-documented there.
+CVSS v2.10 calculator with full interactive mode. Shared utilities live in
+`cvss/__init__.py` (see root `CLAUDE.md`); global commands and tooling are
+also documented there.
 
 **Data layer** (`cvss2/vulnerability.py`):
-- Imports `MetricValueDef`, `MetricDefinition`, `InvalidVectorError` from
-  `cvss.vulnerability`.
+- Defines `MetricValueDef` and `MetricDefinition` (moved from `cvss/`).
+- Imports `InvalidVectorError` from `cvss`.
 - `BASE_DEFINITIONS`, `TEMPORAL_DEFINITIONS`, `ENVIRONMENTAL_DEFINITIONS`
   are module-level tuples; validation dicts and key lists are derived from
   them.
@@ -15,7 +15,12 @@ documented there.
 - `cvs_factory()` builds a `CVSS` instance from selected abbreviation
   strings.
 
-**Scoring layer** (`cvss2/cvss_base.py`, `cvss2/cvss_210.py`):
+**Scoring layer** (`cvss2/cvss_base.py`, `cvss2/cvss_210.py`,
+`cvss2/metric.py`, `cvss2/metric_value.py`):
+- `Metric` (`cvss2/metric.py`) wraps a named set of `MetricValue` options;
+  `float(metric)` returns the selected value's weight.
+- `MetricValue` (`cvss2/metric_value.py`) — frozen dataclass with weight
+  (number field used in score formulas).
 - `CVSS` (abstract, `cvss_base.py`) is a template-method ABC. Concrete
   `base_score`, `temporal_score`, `environmental_score` properties call
   abstract hooks.
