@@ -18,7 +18,7 @@ from cvss4.cvss_40 import _EQ2_MAX  # pyright: ignore[reportPrivateUsage]
 from cvss4.cvss_40 import _EQ3EQ6_MAX  # pyright: ignore[reportPrivateUsage]
 from cvss4.cvss_40 import _EQ4_MAX  # pyright: ignore[reportPrivateUsage]
 from cvss4.cvss_40 import _EQ5_MAX  # pyright: ignore[reportPrivateUsage]
-from cvss.vulnerability import InvalidVectorError
+from cvss import InvalidVectorError
 from cvss4.vulnerability_40 import VulnerabilityVector40
 from cvss4.vulnerability_40 import _ALL_ALLOWED  # pyright: ignore[reportPrivateUsage]
 

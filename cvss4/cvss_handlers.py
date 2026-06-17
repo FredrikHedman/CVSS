@@ -1,6 +1,6 @@
 """CLI handlers for CVSS v4.0."""
 
-from cvss.cli import exit_with_error as _exit_with_error
+from cvss import exit_with_error as _exit_with_error
 
 from .cvss_40 import CommonVulnerabilityScore40
 from .cvss_types import CVSS40Result, CvssArgs

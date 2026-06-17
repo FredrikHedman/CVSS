@@ -2,7 +2,7 @@
 
 from dataclasses import dataclass
 
-from cvss.output import capture_output
+from cvss import capture_output
 
 from .cvss_base import CVSS
 from .cvss_types import CvssArgs, ScoreEntry

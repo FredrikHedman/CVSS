@@ -3,7 +3,7 @@
 from collections.abc import Callable
 from typing import cast
 
-from cvss.cli import exit_with_error as _exit_with_error
+from cvss import exit_with_error as _exit_with_error
 
 from .cvss_210 import CommonVulnerabilityScore
 from .cvss_base import CVSS

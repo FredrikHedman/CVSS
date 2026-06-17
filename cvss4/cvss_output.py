@@ -1,6 +1,6 @@
 """Output rendering for CVSS v4.0."""
 
-from cvss.output import capture_output
+from cvss import capture_output
 
 from .cvss_types import CVSS40Result, CvssArgs, MetricDisplay
 
