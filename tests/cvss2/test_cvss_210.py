@@ -3,7 +3,7 @@
 import pytest
 
 from cvss2.cvss_210 import CommonVulnerabilityScore
-from cvss.metric import Metric
+from cvss2.metric import Metric
 
 
 def test_duplicate_short_name_raises() -> None:

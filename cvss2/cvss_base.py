@@ -7,7 +7,7 @@
 
 import abc
 
-from cvss.metric import Metric
+from .metric import Metric
 
 
 class CVSS(abc.ABC):

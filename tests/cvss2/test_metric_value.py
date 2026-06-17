@@ -3,7 +3,7 @@
 import pytest
 from dataclasses import FrozenInstanceError
 
-from cvss.metric_value import MetricValue
+from cvss2.metric_value import MetricValue
 
 
 @pytest.fixture

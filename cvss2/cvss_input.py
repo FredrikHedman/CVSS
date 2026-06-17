@@ -1,6 +1,6 @@
 """Interactive terminal input for CVSS metric selection."""
 
-from cvss.metric import Metric
+from .metric import Metric
 from .vulnerability import MetricDefinition
 
 
