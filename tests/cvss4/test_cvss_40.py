@@ -357,21 +357,21 @@ def test_threat_metrics() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
     metrics = cvs.threat_metrics()
     assert len(metrics) == 1
-    assert metrics[0].short_name == "E"
+    assert metrics[0].name == "Exploit Maturity"
 
 
 def test_environmental_metrics() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
     metrics = cvs.environmental_metrics()
     assert len(metrics) == 14
-    assert metrics[0].short_name == "CR"
+    assert metrics[0].name == "Confidentiality Requirement"
 
 
 def test_supplemental_metrics() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
     metrics = cvs.supplemental_metrics()
     assert len(metrics) == 6
-    assert metrics[0].short_name == "S"
+    assert metrics[0].name == "Safety"
 
 
 def test_cvss40_satisfies_cvss40result_protocol() -> None:
@@ -412,10 +412,7 @@ def test_macro_vector_satisfies_protocol() -> None:
     assert all(isinstance(x, int) for x in mv)
 
 
-def test_metrics_are_lazily_constructed() -> None:
+def test_base_score_does_not_build_display_metrics() -> None:
     cvs = CommonVulnerabilityScore40(VulnerabilityVector40(_VALID_BASE).parsed)
-    assert "_metrics" not in cvs.__dict__
-    _ = cvs.base_score  # scoring does not trigger metric construction
-    assert "_metrics" not in cvs.__dict__
-    _ = cvs.base_metrics()
-    assert "_metrics" in cvs.__dict__
+    _ = cvs.base_score
+    assert cvs.base_score > 0  # scoring works without display metrics

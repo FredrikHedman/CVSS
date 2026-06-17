@@ -1,8 +1,11 @@
 """Output rendering for CVSS v4.0."""
 
-from cvss.output import capture_output, print_metric_group, print_separator
+from cvss.output import capture_output
 
-from .cvss_types import CVSS40Result, CvssArgs
+from .cvss_types import CVSS40Result, CvssArgs, MetricDisplay
+
+_W = 44
+_SEP = "=" * (_W * 2 + 6)
 
 
 def qualitative_rating(score: float) -> str:
@@ -18,14 +21,26 @@ def qualitative_rating(score: float) -> str:
     return "Critical"
 
 
+def _print_separator() -> None:
+    print(_SEP)
+
+
+def _print_metric_group(header: str, metrics: list[MetricDisplay]) -> None:
+    print(_SEP)
+    print(f"{header:<{_W}}{'EVALUATION':<{_W}}{'ABBREV'}")
+    print(_SEP)
+    for m in metrics:
+        print(f"{m.name:<{_W}}{m.value:<{_W}}{m.abbrev}")
+
+
 def _score_label(cvs: CVSS40Result) -> str:
     """Return CVSS-B/BT/BE/BTE nomenclature label (Implementation Guide §4).
 
     The label reflects which metric groups were explicitly provided:
     B = base only, BT = + threat, BE = + environmental, BTE = all three.
     """
-    has_threat = any(m.index != "X" for m in cvs.threat_metrics())
-    has_env = any(m.index != "X" for m in cvs.environmental_metrics())
+    has_threat = any(m.abbrev != "X" for m in cvs.threat_metrics())
+    has_env = any(m.abbrev != "X" for m in cvs.environmental_metrics())
     if has_threat and has_env:
         return "CVSS-BTE"
     if has_threat:
@@ -33,7 +48,6 @@ def _score_label(cvs: CVSS40Result) -> str:
     if has_env:
         return "CVSS-BE"
     return "CVSS-B"
-
 
 
 def _render_verbose(cvs: CVSS40Result) -> None:
@@ -45,8 +59,8 @@ def _render_verbose(cvs: CVSS40Result) -> None:
         ("ENVIRONMENTAL METRICS", cvs.environmental_metrics()),
         ("SUPPLEMENTAL METRICS", cvs.supplemental_metrics()),
     ]:
-        print_metric_group(group_name, group_metrics)
-    print_separator()
+        _print_metric_group(group_name, group_metrics)
+    _print_separator()
     print()
     eq = f"[{mv[0]}, {mv[1]}, {mv[2]}, {mv[3]}, {mv[4]}, {mv[5]}]"
     print(f"MacroVector EQ: {eq}")

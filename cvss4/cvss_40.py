@@ -10,19 +10,17 @@ a lookup-table approach rather than closed-form formulas. See README
 §Architecture for rationale.
 """
 
-import functools
 from dataclasses import dataclass
 from decimal import ROUND_HALF_UP, Decimal
 from typing import Callable, NamedTuple
 
-from cvss.metric import Metric
-from cvss.vulnerability import MetricDefinition
+from .cvss_types import MetricDisplay
 from .vulnerability_40 import (
     BASE40_DEFINITIONS,
     ENVIRONMENTAL40_DEFINITIONS,
     SUPPLEMENTAL40_DEFINITIONS,
     THREAT40_DEFINITIONS,
-    all_metrics,
+    _V40Def,  # pyright: ignore[reportPrivateUsage]
 )
 
 # ---------------------------------------------------------------------------
@@ -512,16 +510,17 @@ class CommonVulnerabilityScore40:
         """Six EQ levels that determine the MacroVector (Spec §7.5)."""
         return _eq_levels(self._p)
 
-    @functools.cached_property
-    def _metrics(self) -> dict[str, Metric]:
-        result: dict[str, Metric] = {}
-        for d in all_metrics():
-            val = self._p.get(d.abbrev, "X")
-            try:
-                m = Metric(d.name, d.abbrev, d.metric_values(), index=val)
-            except ValueError:
-                m = Metric(d.name, d.abbrev, d.metric_values())
-            result[d.abbrev] = m
+    def _display_for(
+        self, defs: tuple[_V40Def, ...]
+    ) -> list[MetricDisplay]:
+        result: list[MetricDisplay] = []
+        for d in defs:
+            abbrev = self._p.get(d.abbrev, "X")
+            name = next(
+                (v.name for v in d.values if v.abbrev == abbrev),
+                d.values[0].name,
+            )
+            result.append(MetricDisplay(d.name, name, abbrev))
         return result
 
     # ------------------------------------------------------------------
@@ -601,19 +600,14 @@ class CommonVulnerabilityScore40:
         )
         return "CVSS:4.0/" + base + ("/" + optional if optional else "")
 
-    def _metrics_from_defs(
-        self, defs: tuple[MetricDefinition, ...]
-    ) -> list[Metric]:
-        return [self._metrics[d.abbrev] for d in defs]
+    def base_metrics(self) -> list[MetricDisplay]:
+        return self._display_for(BASE40_DEFINITIONS)
 
-    def base_metrics(self) -> list[Metric]:
-        return self._metrics_from_defs(BASE40_DEFINITIONS)
+    def threat_metrics(self) -> list[MetricDisplay]:
+        return self._display_for(THREAT40_DEFINITIONS)
 
-    def threat_metrics(self) -> list[Metric]:
-        return self._metrics_from_defs(THREAT40_DEFINITIONS)
+    def environmental_metrics(self) -> list[MetricDisplay]:
+        return self._display_for(ENVIRONMENTAL40_DEFINITIONS)
 
-    def environmental_metrics(self) -> list[Metric]:
-        return self._metrics_from_defs(ENVIRONMENTAL40_DEFINITIONS)
-
-    def supplemental_metrics(self) -> list[Metric]:
-        return self._metrics_from_defs(SUPPLEMENTAL40_DEFINITIONS)
+    def supplemental_metrics(self) -> list[MetricDisplay]:
+        return self._display_for(SUPPLEMENTAL40_DEFINITIONS)

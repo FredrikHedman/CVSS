@@ -1,11 +1,19 @@
 """Shared types for the CVSS v4.0 CLI."""
 
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Protocol, TypedDict, runtime_checkable
-
-from cvss.metric import Metric
 
 if TYPE_CHECKING:
     from .cvss_40 import EQLevels
+
+
+@dataclass(frozen=True)
+class MetricDisplay:
+    """One row in a verbose metric group table."""
+
+    name: str
+    value: str
+    abbrev: str
 
 
 class CvssArgs(TypedDict):
@@ -30,10 +38,10 @@ class CVSS40Result(Protocol):
     @property
     def base_vulnerability_vector(self) -> str: ...
 
-    def base_metrics(self) -> list[Metric]: ...
-    def threat_metrics(self) -> list[Metric]: ...
-    def environmental_metrics(self) -> list[Metric]: ...
-    def supplemental_metrics(self) -> list[Metric]: ...
+    def base_metrics(self) -> list[MetricDisplay]: ...
+    def threat_metrics(self) -> list[MetricDisplay]: ...
+    def environmental_metrics(self) -> list[MetricDisplay]: ...
+    def supplemental_metrics(self) -> list[MetricDisplay]: ...
 
     @property
     def macro_vector(self) -> "EQLevels": ...
