@@ -67,4 +67,5 @@ dev = [
 ]
 sdk-agents = [
     "claude-agent-sdk>=0.2.95",
+    "starlette>=1.3.1",
 ]
