@@ -154,56 +154,59 @@ Base Vulnerability Vector: AV:N/AC:L/Au:N/C:C/I:C/A:C
 
 ## Status
 
-| Item           | cvss2                                     | cvss4                                     |
-|----------------|-------------------------------------------|-------------------------------------------|
-| Version        | 2.3.5                                     | 2.3.5                                     |
-| CVSS version   | 2.10                                      | 4.0                                       |
-| Scoring        | Closed-form formulas (Spec §3)            | MacroVector lookup table (Spec §7–§8)     |
-| Interactive    | Yes (`-i` flag)                           | No                                        |
-| Python         | ≥ 3.12                                    | ≥ 3.12                                    |
-| License        | MIT                                       | MIT                                       |
-| Type-checked   | basedpyright strict                       | basedpyright strict                       |
-| Linter         | ruff                                      | ruff                                      |
-| Tests          | 94 passing                                | 87 passing                                |
+| Item         | cvss2                          | cvss4                                 |
+|--------------|--------------------------------|---------------------------------------|
+| Version      | 2.3.5                          | 2.3.5                                 |
+| CVSS version | 2.10                           | 4.0                                   |
+| Scoring      | Closed-form formulas (Spec §3) | MacroVector lookup table (Spec §7–§8) |
+| Interactive  | Yes (`-i` flag)                | No                                    |
+| Python       | ≥ 3.12                         | ≥ 3.12                                |
+| License      | MIT                            | MIT                                   |
+| Type-checked | basedpyright strict            | basedpyright strict                   |
+| Linter       | ruff                           | ruff                                  |
+| Tests        | 94 passing                     | 87 passing                            |
 
 ## Code Structure
 
 ### cvss/ — Shared internals
 
-| Module               | Responsibility                                                                       |
-|----------------------|--------------------------------------------------------------------------------------|
-| `cvss/__init__.py`   | `InvalidVectorError`, `exit_with_error(e) -> NoReturn`, `capture_output`             |
+| Module             | Responsibility                                          |
+|--------------------|---------------------------------------------------------|
+| `cvss/__init__.py` | `InvalidVectorError`, `exit_with_error(e) -> NoReturn`, |
+|                    | `capture_output`                                        |
 
 ### cvss2/ — CVSS v2.10
 
-| Module                      | Responsibility                                                               |
-|-----------------------------|------------------------------------------------------------------------------|
-| `cvss2/cvss.py`             | Entry point — `main()` only                                                  |
-| `cvss2/cvss_parser.py`      | Argument parsing and flag validation                                         |
-| `cvss2/cvss_handlers.py`    | Mode handlers (`--base`, `--vulnerability`, `--interactive`) and dispatch    |
-| `cvss2/cvss_input.py`       | Interactive terminal input (`select_metric_value`, `read_metrics`)           |
-| `cvss2/cvss_output.py`      | Score output; `render_output`, `ScoreDisplayData`, `display_score`           |
-| `cvss2/cvss_types.py`       | Shared types (`CvssArgs`, `CVSSResult`, `ScoreEntry`)                        |
-| `cvss2/cvss_base.py`        | Abstract scoring base class (`CVSS`)                                         |
-| `cvss2/cvss_210.py`         | Concrete CVSS v2.10 implementation                                           |
-| `cvss2/metric_value.py`     | `MetricValue` frozen dataclass (metric, value, weight, description)          |
-| `cvss2/metric.py`           | `Metric` — named set of `MetricValue` options; `float(m)` returns weight     |
-| `cvss2/vulnerability.py`    | `MetricValueDef`, `MetricDefinition`; metric definitions, vector parsing,    |
-|                             | factory helpers                                                              |
+| Module             | Responsibility                                                       |
+|--------------------|----------------------------------------------------------------------|
+| `cvss.py`          | Entry point — `main()` only                                          |
+| `cvss_parser.py`   | Argument parsing and flag validation                                 |
+| `cvss_handlers.py` | Mode handlers (`--base`, `--vulnerability`, `--interactive`)         |
+|                    | and dispatch                                                         |
+| `cvss_input.py`    | Interactive terminal input (`select_metric_value`, `read_metrics`)   |
+| `cvss_output.py`   | Score output; `render_output`, `ScoreDisplayData`, `display_score`   |
+| `cvss_types.py`    | Shared types (`CvssArgs`, `CVSSResult`, `ScoreEntry`)                |
+| `cvss_base.py`     | Abstract scoring base class (`CVSS`)                                 |
+| `cvss_210.py`      | Concrete CVSS v2.10 implementation                                   |
+| `metric_value.py`  | `MetricValue` frozen dataclass (metric, value, weight, description)  |
+| `metric.py`        | `Metric` — named set of `MetricValue` options;                       |
+|                    | `float(m)` returns weight                                            |
+| `vulnerability.py` | `MetricValueDef`, `MetricDefinition`; metric definitions,            |
+|                    | vector parsing, factory helpers                                      |
 
 ### cvss4/ — CVSS v4.0
 
-| Module                      | Responsibility                                                               |
-|-----------------------------|------------------------------------------------------------------------------|
-| `cvss4/cvss.py`             | Entry point — `main()` only                                                  |
-| `cvss4/cvss_parser.py`      | Argument parsing (`--base`, `--vulnerability`, `--verbose`)                  |
-| `cvss4/cvss_handlers.py`    | Handler and dispatch (no interactive mode)                                   |
-| `cvss4/cvss_output.py`      | Score output; `format_output`, `qualitative_rating`                          |
-| `cvss4/cvss_types.py`       | `CvssArgs`, `CVSS40Result`, `MetricDisplay` (verbose table row)              |
-| `cvss4/cvss_40.py`          | Standalone CVSS v4.0 scorer (`CommonVulnerabilityScore40`); `_display_for()` |
-|                             | builds `list[MetricDisplay]` for verbose output                              |
-| `cvss4/vulnerability_40.py` | `_V40Value`, `_V40Def` (no weight field); metric definitions;                |
-|                             | `VulnerabilityVector40`                                                      |
+| Module                | Responsibility                                                   |
+|-----------------------|------------------------------------------------------------------|
+| `cvss.py`             | Entry point — `main()` only                                      |
+| `cvss_parser.py`      | Argument parsing (`--base`, `--vulnerability`, `--verbose`)      |
+| `cvss_handlers.py`    | Handler and dispatch (no interactive mode)                       |
+| `cvss_output.py`      | Score output; `format_output`, `qualitative_rating`              |
+| `cvss_types.py`       | `CvssArgs`, `CVSS40Result`, `MetricDisplay` (verbose table row)  |
+| `cvss_40.py`          | Standalone CVSS v4.0 scorer (`CommonVulnerabilityScore40`);      |
+|                       | `_display_for()` builds `list[MetricDisplay]` for verbose output |
+| `vulnerability_40.py` | `_V40Value`, `_V40Def` (no weight field); metric definitions;    |
+|                       | `VulnerabilityVector40`                                          |
 
 ## Development Flow
 
@@ -249,14 +252,14 @@ class implementing the `CVSS40Result` Protocol (`cvss4/cvss_types.py`).
 A vector is mapped to six Equivalence Sets, each capturing a dimension of
 severity. Level 0 is most severe.
 
-| EQ  | Metrics           | Levels |
-|-----|-------------------|--------|
-| EQ1 | AV, PR, UI        | 0–2    |
-| EQ2 | AC, AT            | 0–1    |
-| EQ3 | VC, VI, VA        | 0–2    |
-| EQ4 | SC, SI, SA        | 0–2    |
-| EQ5 | E (exploit maturity) | 0–2 |
-| EQ6 | CR/IR/AR vs VC/VI/VA | 0–1 |
+| EQ  | Metrics              | Levels |
+|-----|----------------------|--------|
+| EQ1 | AV, PR, UI           | 0–2    |
+| EQ2 | AC, AT               | 0–1    |
+| EQ3 | VC, VI, VA           | 0–2    |
+| EQ4 | SC, SI, SA           | 0–2    |
+| EQ5 | E (exploit maturity) | 0–2    |
+| EQ6 | CR/IR/AR vs VC/VI/VA | 0–1    |
 
 The six EQ levels form a key into the lookup table (270 valid combinations).
 An interpolation step (Spec §8.3) adjusts the score within the MacroVector
