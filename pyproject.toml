@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "cvss"
-version = "2.3.5"
+version = "2.3.6"
 description = "CVSS calculator supporting CVSS versions 2.10 and 4.0"
 readme = "README.md"
 license = "MIT"

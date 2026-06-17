@@ -5,6 +5,64 @@ Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ---
 
+## [2.3.6] — 2026-06-17
+
+### Refactored
+
+- `cvss/__init__.py`: collapsed `cvss/cli.py`, `cvss/output.py`, and
+  `cvss/vulnerability.py` into a single `__init__.py` exporting only
+  `InvalidVectorError`, `exit_with_error`, and `capture_output`.
+  Deleted `cvss/metric.py` and `cvss/metric_value.py` (now owned by
+  `cvss2`).
+- `cvss2/`: `Metric`, `MetricValue`, `MetricValueDef`, and
+  `MetricDefinition` moved from the shared `cvss/` package into `cvss2/`
+  (`cvss2/metric.py`, `cvss2/metric_value.py`, `cvss2/vulnerability.py`).
+  All imports updated to relative paths.
+- `cvss4/`: replaced shared `Metric`/`MetricDefinition` with
+  package-local display types — `_V40Value` and `_V40Def` (no weight
+  field) in `vulnerability_40.py`; `MetricDisplay` in `cvss_types.py`;
+  `_display_for()` in `cvss_40.py` builds display rows; `cvss_output.py`
+  gains local print helpers.
+- `cvss4/vulnerability_40.py`: extracted `_parse` and `_validate` from
+  `VulnerabilityVector40`; simplified `base_score` lambda closures into
+  a loop.
+- `cvss4/cvss_output.py`: `qualitative_rating` moved from shared
+  `cvss/output.py` to `cvss4/cvss_output.py` — the function uses
+  CVSS v4.0-specific thresholds (Spec §9) and is not used by `cvss2`.
+- `cvss2/cvss_handlers.py`: simplified `_accumulate_groups` with a loop.
+- `cvss2/cvss_210.py`: renamed `fcn` to `_severity_multiplier`; added
+  spec reference comments.
+
+### Fixed
+
+- `cvss4/cvss_handlers.py`: replaced bare `assert` with an explicit guard
+  in `process_cmd_line`.
+- `cvss2/cvss_handlers.py`: removed unused `read_metrics_as_dict`
+  function.
+- `cvss2/vulnerability.py`: removed dead `VulnerabilityVectorError` class.
+- `pyproject.toml`: updated project description to include CVSS v4.0.
+
+### Added
+
+- `tests/cvss4/test_handlers.py`: unit tests for `_cvs_from_vector`,
+  `process_cmd_line`, `make_clarg`, and `_validate_flags`
+  (valid/invalid vector paths, exit codes 1 and 2).
+- `tests/cvss2/conftest.py`: extracted shared `make_clarg` helper from
+  test modules.
+
+### Documentation
+
+- `cvss4/cvss_40.py`: documented why all metric weights are 0.0.
+- `CLAUDE.md`, `README.md`, `cvss2/CLAUDE.md`, `cvss4/CLAUDE.md`:
+  updated architecture descriptions to reflect separate `cvss2`/`cvss4`
+  ownership; `cvss/` now exports only three utilities.
+- `CLAUDE.md`: merged `CLAUDE_addon` behavioral guidelines.
+- `README.md`: reformatted all four tables to satisfy the 95-character
+  line-width rule; module names in structure tables no longer repeat the
+  package prefix.
+
+---
+
 ## [2.3.5] — 2026-06-16
 
 ### Added
